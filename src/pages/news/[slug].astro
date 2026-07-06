@@ -1,0 +1,32 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+
+export async function getStaticPaths() {
+  const items = await getCollection('news', ({ data }) => !data.draft);
+  return items.map((n) => ({ params: { slug: n.id }, props: { item: n } }));
+}
+const { item } = Astro.props;
+const { Content } = await render(item);
+const d = item.data;
+const fa = (x: Date) => x.toLocaleDateString('fa-IR', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+<Base title={d.title} description={d.description} image={d.cover} type="article" publishedTime={d.pubDate.toISOString()}>
+  <article class="container post">
+    <nav class="crumb muted"><a href="/">خانه</a> / <a href="/news">اخبار</a></nav>
+    <span class="tag">خبر</span>
+    <h1>{d.title}</h1>
+    <div class="post-meta muted"><span>{fa(d.pubDate)}</span>{d.source && <><span>•</span><span>منبع: {d.source}</span></>}</div>
+    {d.cover && <img class="cover" src={d.cover} alt={d.title} />}
+    <div class="prose"><Content /></div>
+    {d.sourceUrl && <a class="btn btn-ghost" href={d.sourceUrl} target="_blank" rel="noopener" style="margin-top:30px">مشاهده منبع اصلی</a>}
+  </article>
+</Base>
+<style>
+  .post { max-width: 760px; padding-block: 40px 80px; }
+  .crumb { font-size: 14px; margin-bottom: 18px; }
+  .crumb a:hover { color: var(--brand); }
+  .post h1 { margin-block: 14px 12px; }
+  .post-meta { display: flex; gap: 10px; font-size: 14.5px; margin-bottom: 26px; }
+  .cover { width: 100%; border-radius: var(--radius); margin-bottom: 30px; aspect-ratio: 16/9; object-fit: cover; }
+</style>

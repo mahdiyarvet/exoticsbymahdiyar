@@ -1,0 +1,18 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Card from '../../components/Card.astro';
+const items = await getCollection('books', ({ data }) => !data.draft);
+---
+<Base title="کتابخانه" description="کتابخانه تخصصی دامپزشکی حیوانات اگزوتیک؛ منابع فارسی و انگلیسی درباره خزندگان، پرندگان و پستانداران اگزوتیک.">
+  <section class="section container">
+    <span class="eyebrow">کتابخانه</span>
+    <h1>کتابخانه تخصصی</h1>
+    <p class="muted" style="max-width:60ch;margin-top:8px">مجموعه‌ای از بهترین کتاب‌ها و منابع دامپزشکی حیوانات اگزوتیک.</p>
+    {items.length === 0
+      ? <p class="empty muted">هنوز کتابی اضافه نشده. به‌زودی…</p>
+      : <div class="grid grid-3" style="margin-top:28px">{items.map((b) => (
+          <Card href={`/books/${b.id}`} title={b.data.title} description={b.data.description} cover={b.data.cover} tag={b.data.lang === 'fa' ? 'فارسی' : 'English'} meta={b.data.author} />))}</div>}
+  </section>
+</Base>
+<style>.empty{padding:60px 0;text-align:center}</style>

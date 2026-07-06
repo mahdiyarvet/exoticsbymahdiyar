@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: http://exoticsbymahdiyar.ir/sitemap-index.xml

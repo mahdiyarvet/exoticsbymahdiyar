@@ -1,0 +1,19 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Card from '../../components/Card.astro';
+const fa = (d) => d.toLocaleDateString('fa-IR', { year: 'numeric', month: 'long', day: 'numeric' });
+const items = (await getCollection('news', ({ data }) => !data.draft)).sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+---
+<Base title="اخبار" description="آخرین اخبار و رویدادهای دنیای دامپزشکی حیوانات اگزوتیک؛ تازه‌ترین یافته‌ها و پژوهش‌ها.">
+  <section class="section container">
+    <span class="eyebrow">اخبار</span>
+    <h1>اخبار دامپزشکی اگزوتیک</h1>
+    <p class="muted" style="max-width:60ch;margin-top:8px">تازه‌ترین خبرها و پیشرفت‌های علمی حوزه‌ی حیوانات اگزوتیک.</p>
+    {items.length === 0
+      ? <p class="empty muted">هنوز خبری منتشر نشده. به‌زودی…</p>
+      : <div class="grid grid-3" style="margin-top:28px">{items.map((n) => (
+          <Card href={`/news/${n.id}`} title={n.data.title} description={n.data.description} cover={n.data.cover} tag="خبر" meta={fa(n.data.pubDate)} />))}</div>}
+  </section>
+</Base>
+<style>.empty{padding:60px 0;text-align:center}</style>

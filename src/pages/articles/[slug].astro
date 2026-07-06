@@ -1,0 +1,63 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+
+export async function getStaticPaths() {
+  const items = await getCollection('articles', ({ data }) => !data.draft);
+  return items.map((a) => ({ params: { slug: a.id }, props: { article: a } }));
+}
+
+const { article } = Astro.props;
+const { Content } = await render(article);
+const d = article.data;
+const fa = (x: Date) => x.toLocaleDateString('fa-IR', { year: 'numeric', month: 'long', day: 'numeric' });
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'MedicalWebPage',
+  headline: d.title,
+  description: d.description,
+  datePublished: d.pubDate.toISOString(),
+  dateModified: (d.updatedDate ?? d.pubDate).toISOString(),
+  author: { '@type': 'Person', name: d.author },
+  inLanguage: 'fa-IR',
+};
+---
+<Base title={d.title} description={d.description} image={d.cover} type="article" publishedTime={d.pubDate.toISOString()}>
+  <article class="container post">
+    <nav class="crumb muted"><a href="/">خانه</a> / <a href="/articles">مقالات</a></nav>
+    <span class="tag">{d.category}</span>
+    <h1>{d.title}</h1>
+    <div class="post-meta muted">
+      <span>{d.author}</span><span>•</span><span>{fa(d.pubDate)}</span>
+    </div>
+    {d.cover && <img class="cover" src={d.cover} alt={d.title} />}
+    <div class="prose"><Content /></div>
+
+    {d.sources.length > 0 && (
+      <div class="sources">
+        <h3>منابع</h3>
+        <ol>{d.sources.map((s) => (
+          <li>{s.url ? <a href={s.url} target="_blank" rel="noopener">{s.label}</a> : s.label}</li>
+        ))}</ol>
+      </div>
+    )}
+
+    {d.tags.length > 0 && <div class="tags">{d.tags.map((t) => <span class="tag">#{t}</span>)}</div>}
+  </article>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+</Base>
+<style>
+  .post { max-width: 760px; padding-block: 40px 80px; }
+  .crumb { font-size: 14px; margin-bottom: 18px; }
+  .crumb a:hover { color: var(--brand); }
+  .post h1 { margin-block: 14px 12px; }
+  .post-meta { display: flex; gap: 10px; font-size: 14.5px; margin-bottom: 26px; }
+  .cover { width: 100%; border-radius: var(--radius); margin-bottom: 30px; aspect-ratio: 16/9; object-fit: cover; }
+  .sources { margin-top: 44px; padding: 22px 24px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+  .sources h3 { font-size: 18px; margin-bottom: 12px; }
+  .sources ol { padding-inline-start: 1.3em; }
+  .sources li { margin-bottom: 8px; font-size: 15px; }
+  .sources a { color: var(--brand); }
+  .tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 30px; }
+</style>

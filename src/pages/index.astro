@@ -1,0 +1,110 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Card from '../components/Card.astro';
+
+const fa = (d: Date) => d.toLocaleDateString('fa-IR', { year: 'numeric', month: 'long', day: 'numeric' });
+
+const articles = (await getCollection('articles', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+const news = (await getCollection('news', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+const books = (await getCollection('books', ({ data }) => !data.draft));
+
+const featured = articles.slice(0, 3);
+const latestNews = news.slice(0, 3);
+const topBooks = books.slice(0, 3);
+---
+
+<Base
+  title="اگزوتیک با مهدیار"
+  description="مرجع فارسی دامپزشکی حیوانات اگزوتیک؛ مقالات علمی، اخبار روز و کتابخانه تخصصی خزندگان، پرندگان و پستانداران اگزوتیک. با دکتر مهدیار رمزگویان."
+>
+  <section class="hero">
+    <div class="container hero-inner">
+      <span class="tag">دامپزشکی حیوانات اگزوتیک</span>
+      <h1>دنیای علمی و شگفت‌انگیزِ<br /><span class="grad">حیوانات اگزوتیک</span></h1>
+      <p class="lead">مقالات معتبر، اخبار روز دنیای دامپزشکی و کتابخانه‌ای تخصصی برای نگهدارندگان و علاقه‌مندان خزندگان، پرندگان و پستانداران اگزوتیک — گردآوری و نگارش دکتر مهدیار رمزگویان.</p>
+      <div class="hero-cta">
+        <a href="/articles" class="btn">شروع مطالعه</a>
+        <a href="https://instagram.com/exoticsbymahdiyar" target="_blank" rel="noopener" class="btn btn-ghost">اینستاگرام</a>
+      </div>
+    </div>
+  </section>
+
+  {featured.length > 0 && (
+    <section class="section container">
+      <div class="section-head">
+        <div><span class="eyebrow">مقالات منتخب</span><h2>جدیدترین مقالات علمی</h2></div>
+        <a href="/articles" class="btn btn-ghost">همه مقالات</a>
+      </div>
+      <div class="grid grid-3">
+        {featured.map((a) => (
+          <Card href={`/articles/${a.id}`} title={a.data.title} description={a.data.description}
+            cover={a.data.cover} tag={a.data.category} meta={fa(a.data.pubDate)} />
+        ))}
+      </div>
+    </section>
+  )}
+
+  {latestNews.length > 0 && (
+    <section class="section container">
+      <div class="section-head">
+        <div><span class="eyebrow">تازه‌ها</span><h2>اخبار دامپزشکی اگزوتیک</h2></div>
+        <a href="/news" class="btn btn-ghost">همه اخبار</a>
+      </div>
+      <div class="grid grid-3">
+        {latestNews.map((n) => (
+          <Card href={`/news/${n.id}`} title={n.data.title} description={n.data.description}
+            cover={n.data.cover} tag="خبر" meta={fa(n.data.pubDate)} />
+        ))}
+      </div>
+    </section>
+  )}
+
+  {topBooks.length > 0 && (
+    <section class="section container">
+      <div class="section-head">
+        <div><span class="eyebrow">کتابخانه</span><h2>کتاب‌های تخصصی</h2></div>
+        <a href="/books" class="btn btn-ghost">همه کتاب‌ها</a>
+      </div>
+      <div class="grid grid-3">
+        {topBooks.map((b) => (
+          <Card href={`/books/${b.id}`} title={b.data.title} description={b.data.description}
+            cover={b.data.cover} tag={b.data.lang === 'fa' ? 'فارسی' : 'English'}
+            meta={b.data.author} />
+        ))}
+      </div>
+    </section>
+  )}
+
+  <section class="section">
+    <div class="container ig-cta">
+      <h2>هر روز محتوای تازه در اینستاگرام</h2>
+      <p class="muted">آموزش، کیس‌های بالینی و نکات نگهداری حیوانات اگزوتیک — همراه شوید.</p>
+      <a href="https://instagram.com/exoticsbymahdiyar" target="_blank" rel="noopener" class="btn">@exoticsbymahdiyar</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero { position: relative; overflow: hidden; padding-block: clamp(60px, 12vw, 130px); }
+  .hero::before {
+    content: ''; position: absolute; inset: 0; z-index: -1;
+    background:
+      radial-gradient(60% 55% at 78% 12%, rgba(63,174,109,.18), transparent 60%),
+      radial-gradient(50% 50% at 15% 90%, rgba(217,164,65,.12), transparent 60%);
+  }
+  .hero-inner { max-width: 760px; }
+  .hero h1 { margin-block: 20px 18px; }
+  .grad { background: linear-gradient(90deg, var(--brand), var(--accent)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .lead { font-size: clamp(1.05rem, 2vw, 1.25rem); color: var(--text-muted); max-width: 62ch; }
+  .hero-cta { display: flex; gap: 12px; margin-top: 30px; flex-wrap: wrap; }
+  .ig-cta {
+    text-align: center; background: var(--surface);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: clamp(36px, 6vw, 60px);
+    background-image: radial-gradient(50% 80% at 50% 0%, rgba(63,174,109,.1), transparent);
+  }
+  .ig-cta p { margin-block: 10px 24px; }
+</style>

@@ -1,0 +1,74 @@
+---
+const nav = [
+  { href: '/', label: 'خانه' },
+  { href: '/articles', label: 'مقالات' },
+  { href: '/news', label: 'اخبار' },
+  { href: '/books', label: 'کتابخانه' },
+  { href: '/about', label: 'درباره من' },
+];
+const path = Astro.url.pathname;
+const isActive = (href: string) => href === '/' ? path === '/' : path.startsWith(href);
+---
+
+<header class="site-header">
+  <div class="container bar">
+    <a href="/" class="logo" aria-label="خانه">
+      <span class="logo-mark">🦎</span>
+      <span class="logo-text">اگزوتیک <b>با مهدیار</b></span>
+    </a>
+
+    <nav class="nav" aria-label="ناوبری اصلی">
+      {nav.map((i) => (
+        <a href={i.href} class:list={['nav-link', { active: isActive(i.href) }]}>{i.label}</a>
+      ))}
+    </nav>
+
+    <button class="menu-btn" aria-label="منو" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <nav class="mobile-nav" aria-label="ناوبری موبایل">
+    {nav.map((i) => <a href={i.href} class:list={['nav-link', { active: isActive(i.href) }]}>{i.label}</a>)}
+  </nav>
+</header>
+
+<style>
+  .site-header {
+    position: sticky; top: 0; z-index: 50;
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+  .bar { display: flex; align-items: center; justify-content: space-between; height: 70px; }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 18px; }
+  .logo-mark { font-size: 24px; }
+  .logo-text b { color: var(--brand); font-weight: 700; }
+  .nav { display: flex; gap: 6px; }
+  .nav-link {
+    padding: 8px 14px; border-radius: 999px; font-size: 15px; font-weight: 500;
+    color: var(--text-muted); transition: color .2s, background .2s;
+  }
+  .nav-link:hover { color: var(--text); background: var(--surface); }
+  .nav-link.active { color: var(--brand); background: rgba(63,174,109,.1); }
+  .menu-btn { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; }
+  .menu-btn span { width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: .25s; }
+  .menu-btn[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .menu-btn[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+  .menu-btn[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  .mobile-nav { display: none; flex-direction: column; padding: 8px 22px 16px; gap: 4px; border-bottom: 1px solid var(--border); }
+  .mobile-nav.open { display: flex; }
+  @media (max-width: 780px) {
+    .nav { display: none; }
+    .menu-btn { display: flex; }
+  }
+</style>
+
+<script>
+  const btn = document.querySelector('.menu-btn');
+  const menu = document.querySelector('.mobile-nav');
+  btn?.addEventListener('click', () => {
+    const open = menu?.classList.toggle('open');
+    btn.setAttribute('aria-expanded', String(!!open));
+  });
+</script>

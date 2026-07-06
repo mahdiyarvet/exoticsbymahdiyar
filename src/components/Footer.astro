@@ -1,0 +1,43 @@
+---
+const year = new Date().toLocaleDateString('fa-IR', { year: 'numeric' });
+---
+
+<footer class="site-footer">
+  <div class="container foot">
+    <div class="brand">
+      <div class="logo"><span>🦎</span> اگزوتیک با مهدیار</div>
+      <p class="muted">مرجع فارسی دامپزشکی حیوانات اگزوتیک — مقاله، اخبار و کتاب. نوشته و گردآوری دکتر مهدیار رمزگویان.</p>
+    </div>
+
+    <div class="cols">
+      <div>
+        <h4>بخش‌ها</h4>
+        <a href="/articles">مقالات</a>
+        <a href="/news">اخبار</a>
+        <a href="/books">کتابخانه</a>
+      </div>
+      <div>
+        <h4>ارتباط</h4>
+        <a href="https://instagram.com/exoticsbymahdiyar" target="_blank" rel="noopener">اینستاگرام</a>
+        <a href="/about">درباره من</a>
+        <a href="/rss.xml">RSS</a>
+      </div>
+    </div>
+  </div>
+  <div class="container copy">
+    <span class="muted">© {year} — دکتر مهدیار رمزگویان. تمامی حقوق محفوظ است.</span>
+  </div>
+</footer>
+
+<style>
+  .site-footer { margin-top: auto; border-top: 1px solid var(--border); background: var(--bg-soft); padding-top: 54px; }
+  .foot { display: grid; grid-template-columns: 1.5fr 1fr; gap: 40px; padding-bottom: 34px; }
+  .brand .logo { font-weight: 700; font-size: 18px; margin-bottom: 12px; }
+  .brand p { max-width: 44ch; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .cols h4 { font-size: 14px; color: var(--accent); margin-bottom: 14px; }
+  .cols a { display: block; color: var(--text-muted); padding: 5px 0; font-size: 15px; transition: color .2s; }
+  .cols a:hover { color: var(--brand); }
+  .copy { border-top: 1px solid var(--border); padding-block: 20px; font-size: 14px; }
+  @media (max-width: 720px) { .foot { grid-template-columns: 1fr; gap: 28px; } }
+</style>

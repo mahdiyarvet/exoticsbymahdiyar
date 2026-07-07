@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" fill="none" role="img" aria-label="تغذیه طوطی‌سانان">
+  <defs>
+    <linearGradient id="parBg" x1="0" y1="0" x2="640" y2="400" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0f1512"/>
+      <stop offset="1" stop-color="#1b271f"/>
+    </linearGradient>
+    <radialGradient id="parGlow" cx="0" cy="0" r="1" gradientTransform="translate(210 150) scale(240)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3fae6d" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#3fae6d" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="parBody" x1="330" y1="110" x2="470" y2="330" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3fae6d"/>
+      <stop offset="1" stop-color="#2f9159"/>
+    </linearGradient>
+    <pattern id="parDots" width="26" height="26" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.4" fill="#3fae6d" fill-opacity="0.12"/>
+    </pattern>
+  </defs>
+
+  <rect width="640" height="400" fill="url(#parBg)"/>
+  <rect width="640" height="400" fill="url(#parDots)"/>
+  <rect width="640" height="400" fill="url(#parGlow)"/>
+
+  <!-- perch -->
+  <rect x="150" y="330" width="360" height="12" rx="6" fill="#6b4a2b"/>
+
+  <!-- leaves -->
+  <g fill="#2f9159" fill-opacity="0.9">
+    <path d="M120 250 c-40 -6 -70 -30 -78 -66 c40 -2 74 20 88 56 Z"/>
+    <path d="M132 292 c-44 6 -80 -6 -100 -40 c40 -14 82 -4 108 26 Z"/>
+  </g>
+
+  <!-- parrot -->
+  <g>
+    <!-- tail -->
+    <path d="M436 300 c40 6 78 30 96 74 c-40 2 -78 -14 -104 -44 Z" fill="#d9a441"/>
+    <!-- body -->
+    <path d="M360 150
+      c48 0 86 34 86 92
+      c0 52 -34 92 -84 92
+      c-46 0 -80 -36 -80 -86
+      c0 -54 34 -98 78 -98 Z" fill="url(#parBody)"/>
+    <!-- wing -->
+    <path d="M356 214 c34 -4 58 14 66 48 c-8 30 -34 46 -64 42 c-12 -30 -12 -60 -2 -90 Z" fill="#2f9159"/>
+    <!-- head -->
+    <circle cx="360" cy="168" r="52" fill="#3fae6d"/>
+    <path d="M328 150 a34 30 0 0 1 64 0 Z" fill="#d9a441"/>
+    <!-- eye -->
+    <circle cx="372" cy="160" r="9" fill="#0f1512"/>
+    <circle cx="375" cy="157" r="3" fill="#eef3ee"/>
+    <!-- beak -->
+    <path d="M318 168 c-30 2 -44 20 -42 40 c18 0 34 -10 42 -22 c8 8 4 22 -6 30 c22 2 34 -14 32 -34 c-2 -18 -12 -14 -26 -14 Z" fill="#d9a441"/>
+  </g>
+
+  <!-- brand corner mark -->
+  <rect x="36" y="340" width="4" height="24" rx="2" fill="#3fae6d"/>
+</svg>

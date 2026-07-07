@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" fill="none" role="img" aria-label="بیوسکیوریتی و آنفولانزای پرندگان">
+  <defs>
+    <linearGradient id="afBg" x1="0" y1="0" x2="640" y2="400" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0f1512"/>
+      <stop offset="1" stop-color="#1b271f"/>
+    </linearGradient>
+    <radialGradient id="afGlow" cx="0" cy="0" r="1" gradientTransform="translate(320 180) scale(260)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#d9a441" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#d9a441" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="afShield" x1="320" y1="70" x2="320" y2="340" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3fae6d"/>
+      <stop offset="1" stop-color="#2f9159"/>
+    </linearGradient>
+    <pattern id="afDots" width="26" height="26" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.4" fill="#3fae6d" fill-opacity="0.12"/>
+    </pattern>
+  </defs>
+
+  <rect width="640" height="400" fill="url(#afBg)"/>
+  <rect width="640" height="400" fill="url(#afDots)"/>
+  <rect width="640" height="400" fill="url(#afGlow)"/>
+
+  <!-- floating pathogen motifs -->
+  <g stroke="#d9a441" stroke-opacity="0.5" stroke-width="3" fill="none">
+    <g transform="translate(110 108)">
+      <circle r="16" fill="#d9a441" fill-opacity="0.12"/>
+      <g stroke-linecap="round">
+        <line x1="0" y1="-16" x2="0" y2="-26"/><circle cx="0" cy="-29" r="3" fill="#d9a441" stroke="none"/>
+        <line x1="16" y1="0" x2="26" y2="0"/><circle cx="29" cy="0" r="3" fill="#d9a441" stroke="none"/>
+        <line x1="0" y1="16" x2="0" y2="26"/><circle cx="0" cy="29" r="3" fill="#d9a441" stroke="none"/>
+        <line x1="-16" y1="0" x2="-26" y2="0"/><circle cx="-29" cy="0" r="3" fill="#d9a441" stroke="none"/>
+      </g>
+    </g>
+    <g transform="translate(540 250) scale(0.8)">
+      <circle r="16" fill="#d9a441" fill-opacity="0.12"/>
+      <g stroke-linecap="round">
+        <line x1="0" y1="-16" x2="0" y2="-26"/><circle cx="0" cy="-29" r="3" fill="#d9a441" stroke="none"/>
+        <line x1="16" y1="0" x2="26" y2="0"/><circle cx="29" cy="0" r="3" fill="#d9a441" stroke="none"/>
+        <line x1="0" y1="16" x2="0" y2="26"/><circle cx="0" cy="29" r="3" fill="#d9a441" stroke="none"/>
+        <line x1="-16" y1="0" x2="-26" y2="0"/><circle cx="-29" cy="0" r="3" fill="#d9a441" stroke="none"/>
+      </g>
+    </g>
+  </g>
+
+  <!-- protective shield -->
+  <path d="M320 70 l108 34 v96 c0 78 -52 122 -108 144 c-56 -22 -108 -66 -108 -144 v-96 Z" fill="url(#afShield)"/>
+  <path d="M320 70 l108 34 v96 c0 78 -52 122 -108 144 c-56 -22 -108 -66 -108 -144 v-96 Z" fill="#0f1512" fill-opacity="0.0" stroke="#eef3ee" stroke-opacity="0.15" stroke-width="2"/>
+
+  <!-- bird inside shield -->
+  <g fill="#0f1512" fill-opacity="0.9">
+    <circle cx="320" cy="176" r="30"/>
+    <path d="M300 196 c26 8 44 30 46 62 c-24 4 -52 -8 -66 -30 c-6 -18 6 -28 20 -32 Z"/>
+    <path d="M338 168 c14 -6 24 -2 30 6 c-8 6 -18 8 -28 6 Z"/>
+  </g>
+  <circle cx="330" cy="170" r="4.5" fill="#3fae6d"/>
+
+  <!-- check mark -->
+  <path d="M292 258 l18 20 l40 -46" stroke="#d9a441" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+  <!-- brand corner mark -->
+  <rect x="36" y="344" width="4" height="24" rx="2" fill="#3fae6d"/>
+</svg>

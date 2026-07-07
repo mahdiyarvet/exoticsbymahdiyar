@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" fill="none" role="img" aria-label="کتاب مرجع طب خزندگان">
+  <defs>
+    <linearGradient id="bkBg" x1="0" y1="0" x2="640" y2="400" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0f1512"/>
+      <stop offset="1" stop-color="#1b271f"/>
+    </linearGradient>
+    <radialGradient id="bkGlow" cx="0" cy="0" r="1" gradientTransform="translate(320 200) scale(240)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3fae6d" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#3fae6d" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="bkCoverL" x1="180" y1="120" x2="320" y2="330" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2f9159"/>
+      <stop offset="1" stop-color="#245f3d"/>
+    </linearGradient>
+    <linearGradient id="bkCoverR" x1="320" y1="120" x2="470" y2="330" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3fae6d"/>
+      <stop offset="1" stop-color="#2f9159"/>
+    </linearGradient>
+    <pattern id="bkDots" width="26" height="26" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.4" fill="#3fae6d" fill-opacity="0.12"/>
+    </pattern>
+  </defs>
+
+  <rect width="640" height="400" fill="url(#bkBg)"/>
+  <rect width="640" height="400" fill="url(#bkDots)"/>
+  <rect width="640" height="400" fill="url(#bkGlow)"/>
+
+  <!-- open book -->
+  <g>
+    <!-- pages shadow -->
+    <path d="M320 132 c-46 -22 -100 -26 -150 -14 v192 c50 -12 104 -8 150 14 Z" fill="#0f1512" fill-opacity="0.35" transform="translate(6 8)"/>
+    <path d="M320 132 c46 -22 100 -26 150 -14 v192 c-50 -12 -104 -8 -150 14 Z" fill="#0f1512" fill-opacity="0.35" transform="translate(6 8)"/>
+    <!-- left cover -->
+    <path d="M320 132 c-46 -22 -100 -26 -150 -14 v192 c50 -12 104 -8 150 14 Z" fill="url(#bkCoverL)"/>
+    <!-- right cover -->
+    <path d="M320 132 c46 -22 100 -26 150 -14 v192 c-50 -12 -104 -8 -150 14 Z" fill="url(#bkCoverR)"/>
+    <!-- page lines left -->
+    <g stroke="#0f1512" stroke-opacity="0.25" stroke-width="4" stroke-linecap="round">
+      <line x1="206" y1="152" x2="292" y2="166"/>
+      <line x1="206" y1="180" x2="292" y2="194"/>
+      <line x1="206" y1="208" x2="292" y2="222"/>
+      <line x1="206" y1="236" x2="278" y2="248"/>
+    </g>
+    <!-- medical cross on right page -->
+    <g fill="#d9a441">
+      <rect x="380" y="176" width="20" height="64" rx="6"/>
+      <rect x="358" y="198" width="64" height="20" rx="6"/>
+    </g>
+    <!-- spine -->
+    <rect x="316" y="128" width="8" height="204" rx="4" fill="#d9a441"/>
+  </g>
+
+  <!-- reptile scale accent -->
+  <g fill="#3fae6d" fill-opacity="0.5">
+    <path d="M96 300 a16 16 0 0 1 32 0 Z"/>
+    <path d="M128 300 a16 16 0 0 1 32 0 Z"/>
+    <path d="M544 118 a14 14 0 0 1 28 0 Z"/>
+  </g>
+
+  <!-- brand corner mark -->
+  <rect x="36" y="344" width="4" height="24" rx="2" fill="#3fae6d"/>
+</svg>

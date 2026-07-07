@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" fill="none" role="img" aria-label="نور UVB برای خزندگان">
+  <defs>
+    <linearGradient id="uvbBg" x1="0" y1="0" x2="640" y2="400" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0f1512"/>
+      <stop offset="1" stop-color="#1b271f"/>
+    </linearGradient>
+    <radialGradient id="uvbSun" cx="0" cy="0" r="1" gradientTransform="translate(482 96) scale(210)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ffd98a"/>
+      <stop offset="0.35" stop-color="#d9a441" stop-opacity="0.75"/>
+      <stop offset="1" stop-color="#d9a441" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="uvbGround" x1="0" y1="300" x2="0" y2="400" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2f9159" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#2f9159" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="uvbDots" width="26" height="26" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.4" fill="#3fae6d" fill-opacity="0.12"/>
+    </pattern>
+  </defs>
+
+  <rect width="640" height="400" fill="url(#uvbBg)"/>
+  <rect width="640" height="400" fill="url(#uvbDots)"/>
+  <rect width="640" height="400" fill="url(#uvbSun)"/>
+
+  <!-- sun disc -->
+  <circle cx="482" cy="96" r="46" fill="#d9a441"/>
+  <circle cx="482" cy="96" r="46" fill="#ffd98a" fill-opacity="0.35"/>
+  <!-- UV rays -->
+  <g stroke="#d9a441" stroke-width="4" stroke-linecap="round" stroke-opacity="0.85">
+    <line x1="482" y1="18" x2="482" y2="40"/>
+    <line x1="560" y1="96" x2="538" y2="96"/>
+    <line x1="404" y1="96" x2="426" y2="96"/>
+    <line x1="482" y1="152" x2="482" y2="174"/>
+    <line x1="537" y1="41" x2="521" y2="57"/>
+    <line x1="427" y1="41" x2="443" y2="57"/>
+    <line x1="537" y1="151" x2="521" y2="135"/>
+    <line x1="427" y1="151" x2="443" y2="135"/>
+  </g>
+
+  <!-- basking branch -->
+  <rect x="70" y="300" width="500" height="150" fill="url(#uvbGround)"/>
+  <path d="M60 322 C180 300 300 336 470 306 C520 298 560 306 585 300" stroke="#6b4a2b" stroke-width="16" stroke-linecap="round" fill="none"/>
+
+  <!-- gecko / bearded dragon silhouette basking -->
+  <g fill="#3fae6d">
+    <path d="M150 300
+      c14 -6 26 -6 40 -2
+      c10 -18 30 -30 56 -30
+      c30 0 46 16 52 32
+      c26 2 44 12 62 12
+      c22 0 34 -8 44 -8
+      c10 0 16 6 12 12
+      c-6 8 -22 8 -40 10
+      c-14 2 -26 8 -44 8
+      c-20 0 -34 -6 -46 -14
+      c-18 8 -40 8 -58 2
+      c-16 6 -30 6 -44 4
+      c-16 -2 -34 -4 -34 -14
+      c0 -8 22 -10 32 -12 Z"/>
+  </g>
+  <!-- spikes -->
+  <g fill="#2f9159">
+    <path d="M212 270 l8 -16 l8 16 Z"/>
+    <path d="M234 266 l9 -18 l9 18 Z"/>
+    <path d="M258 268 l8 -16 l8 16 Z"/>
+  </g>
+  <circle cx="176" cy="290" r="3.6" fill="#0f1512"/>
+
+  <!-- brand corner mark -->
+  <g transform="translate(40 356)">
+    <rect x="-4" y="-16" width="4" height="24" rx="2" fill="#3fae6d"/>
+  </g>
+</svg>

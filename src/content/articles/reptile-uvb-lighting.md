@@ -4,7 +4,7 @@ description: "چرا نور UVB برای سلامت استخوان و متابو
 pubDate: 2026-06-20
 category: "خزندگان"
 tags: ["UVB", "متابولیسم کلسیم", "MBD", "روشنایی"]
-cover: "/images/uvb.jpg"
+cover: "/images/uvb.svg"
 sources:
   - label: "Baines FM et al., How much UVB does my reptile need? (2016), Journal of Zoo and Aquarium Research"
     url: "https://www.jzar.org/jzar/article/view/150"

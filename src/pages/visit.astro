@@ -1,0 +1,125 @@
+---
+import Base from '../layouts/Base.astro';
+
+// ⚠️ این مقادیر را با اطلاعات واقعی جایگزین کنید (به Claude بگویید یا خودتان اینجا عوض کنید):
+const CONTACT_EMAIL = 'REPLACE_WITH_YOUR_EMAIL';   // مثال: mahdiyar@example.com
+const WHATSAPP_NUMBER = '989000000000';            // شماره واتساپ با کد کشور، بدون + و بدون صفر ابتدایی. مثال: 989123456789
+const TELEGRAM_USER = 'exoticsbymahdiyar';         // آیدی تلگرام بدون @
+
+const waText = encodeURIComponent('سلام، برای ویزیت آنلاین حیوان اگزوتیکم می‌خواستم عکس و فیلم بفرستم.');
+const steps = [
+  { n: '۱', t: 'توضیح بده', d: 'نوع حیوان، سن، علائم و مدت آن را در فرم بنویس.' },
+  { n: '۲', t: 'عکس بفرست', d: 'چند عکس واضح از حیوان و محل مشکل را پیوست کن.' },
+  { n: '۳', t: 'فیلم در واتساپ', d: 'اگر فیلم داری (حجیم است)، از دکمه‌ی واتساپ/تلگرام مستقیم بفرست.' },
+  { n: '۴', t: 'پاسخ', d: 'بررسی اولیه انجام و نتیجه به تو اعلام می‌شود.' },
+];
+---
+
+<Base title="ویزیت آنلاین" description="ویزیت و مشاوره‌ی آنلاین حیوانات اگزوتیک؛ ارسال عکس و فیلم از حیوان برای بررسی اولیه توسط دکتر مهدیار رمزگویان.">
+  <section class="section container">
+    <span class="eyebrow">مشاوره</span>
+    <h1>ویزیت آنلاین حیوانات اگزوتیک</h1>
+    <p class="lead muted">
+      توضیحات و عکس حیوانت را از طریق فرم زیر بفرست؛ برای فیلم هم می‌توانی مستقیم در واتساپ یا تلگرام ارسال کنی.
+      بررسی اولیه انجام و نتیجه به تو اعلام می‌شود.
+    </p>
+
+    <div class="note">
+      ⚠️ ویزیت آنلاین جایگزین معاینه‌ی حضوری در موارد <b>اورژانسی</b> نیست. اگر حیوانت بی‌حال، بی‌اشتها یا دچار مشکل تنفسی است، سریعاً حضوری به دامپزشک مراجعه کن.
+    </div>
+
+    <div class="steps">
+      {steps.map((s) => (
+        <div class="step">
+          <span class="step-n">{s.n}</span>
+          <h3>{s.t}</h3>
+          <p class="muted">{s.d}</p>
+        </div>
+      ))}
+    </div>
+
+    <div class="grid-visit">
+      <!-- form -->
+      <form class="visit-form" action={`https://formsubmit.co/${CONTACT_EMAIL}`} method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="_subject" value="ویزیت آنلاین جدید — exoticsbymahdiyar.ir" />
+        <input type="hidden" name="_captcha" value="true" />
+        <input type="hidden" name="_template" value="table" />
+        <input type="text" name="_honey" style="display:none" />
+
+        <h2>فرم ویزیت آنلاین</h2>
+
+        <label>نام و نام خانوادگی
+          <input type="text" name="نام" required placeholder="نام شما" />
+        </label>
+        <label>شماره تماس / واتساپ
+          <input type="tel" name="تلفن" required placeholder="۰۹..." />
+        </label>
+        <label>نوع حیوان
+          <input type="text" name="نوع حیوان" required placeholder="مثلاً بردد دراگون، کاسکو، همستر…" />
+        </label>
+        <label>سن حیوان
+          <input type="text" name="سن" placeholder="مثلاً ۸ ماه" />
+        </label>
+        <label>شرح مشکل و علائم
+          <textarea name="شرح مشکل" rows="5" required placeholder="علائم، مدت آن، تغذیه و شرایط نگهداری را بنویسید…"></textarea>
+        </label>
+        <label>عکس حیوان (چند عکس مجاز است)
+          <input type="file" name="attachment" accept="image/*" multiple />
+          <span class="hint">فقط عکس. برای فیلم از دکمه‌ی واتساپ استفاده کن.</span>
+        </label>
+
+        <button type="submit" class="btn">ارسال درخواست ویزیت</button>
+        <p class="hint">بعد از ارسال، یک ایمیل تأیید برای فعال‌سازی ارسال می‌شود (فقط بار اول).</p>
+      </form>
+
+      <!-- media / direct -->
+      <aside class="visit-side">
+        <h2>ارسال فیلم و عکس مستقیم</h2>
+        <p class="muted">فیلم‌ها حجم بالایی دارند؛ بهترین راه ارسال مستقیم در واتساپ یا تلگرام است:</p>
+        <a class="btn btn-wa" href={`https://wa.me/${WHATSAPP_NUMBER}?text=${waText}`} target="_blank" rel="noopener">ارسال در واتساپ</a>
+        <a class="btn btn-ghost" href={`https://t.me/${TELEGRAM_USER}`} target="_blank" rel="noopener">ارسال در تلگرام</a>
+        <a class="btn btn-ghost" href="https://instagram.com/exoticsbymahdiyar" target="_blank" rel="noopener">پیام در اینستاگرام</a>
+        <p class="hint">لطفاً همراه فیلم، نام و شرح کوتاه مشکل را هم بنویس.</p>
+      </aside>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .lead { font-size: clamp(1.02rem, 2vw, 1.18rem); max-width: 64ch; margin-top: 12px; }
+  .note {
+    margin-top: 22px; background: rgba(217,164,65,.1); border: 1px solid rgba(217,164,65,.3);
+    color: var(--text); border-radius: var(--radius-sm); padding: 14px 18px; line-height: 1.8; font-size: 15px;
+  }
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 34px; }
+  .step { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 20px 18px; }
+  .step-n {
+    display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 50%;
+    background: rgba(63,174,109,.12); color: var(--brand); font-weight: 700; margin-bottom: 12px;
+  }
+  .step h3 { font-size: 16px; margin-bottom: 6px; }
+  .step p { font-size: 14px; line-height: 1.7; }
+
+  .grid-visit { display: grid; grid-template-columns: 1.4fr 1fr; gap: 24px; margin-top: 34px; align-items: start; }
+  .visit-form, .visit-side {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 28px;
+  }
+  .visit-form h2, .visit-side h2 { font-size: 20px; margin-bottom: 18px; }
+  .visit-form label { display: block; margin-bottom: 16px; font-size: 14.5px; font-weight: 500; }
+  .visit-form input, .visit-form textarea {
+    width: 100%; margin-top: 7px; background: var(--bg); color: var(--text);
+    border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 11px 14px;
+    font-family: inherit; font-size: 15px; transition: border-color .2s ease;
+  }
+  .visit-form input:focus, .visit-form textarea:focus { outline: none; border-color: var(--brand); }
+  .visit-form input[type=file] { padding: 9px; }
+  .hint { display: block; color: var(--text-muted); font-size: 12.5px; margin-top: 6px; font-weight: 400; }
+  .visit-side .btn { width: 100%; justify-content: center; margin-bottom: 12px; }
+  .btn-wa { background: #25D366; color: #06110b; }
+  .btn-wa:hover { background: #1eb457; }
+  @media (max-width: 820px) {
+    .steps { grid-template-columns: repeat(2, 1fr); }
+    .grid-visit { grid-template-columns: 1fr; }
+  }
+</style>

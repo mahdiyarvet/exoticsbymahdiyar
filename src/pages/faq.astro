@@ -1,0 +1,86 @@
+---
+import Base from '../layouts/Base.astro';
+
+const faqs = [
+  {
+    q: 'آیا برای نگهداری حیوان اگزوتیک به دامپزشک تخصصی نیاز دارم؟',
+    a: 'بله. فیزیولوژی خزندگان، پرندگان و پستانداران اگزوتیک با سگ و گربه بسیار متفاوت است و بسیاری از داروها و روش‌های درمانی رایج برای آن‌ها خطرناک است. حتماً به دامپزشکی مراجعه کنید که در حوزه‌ی حیوانات اگزوتیک تجربه دارد.',
+  },
+  {
+    q: 'چرا نور UVB برای خزنده‌ی من مهم است؟',
+    a: 'بیشتر خزندگان روزگرد برای ساخت ویتامین D3 و جذب کلسیم به نور UVB نیاز دارند. نبود UVB کافی به بیماری متابولیک استخوان (MBD) منجر می‌شود. لامپ UVB را هر ۶ تا ۱۲ ماه تعویض کنید چون خروجی آن با زمان افت می‌کند.',
+  },
+  {
+    q: 'رژیم غذایی درست برای طوطی چیست؟',
+    a: 'رژیم تک‌دانه برای طوطی خطرناک است. پایه‌ی رژیم باید پلت باکیفیت (حدود ۶۰ تا ۷۰٪) به‌همراه سبزیجات تازه باشد و دانه فقط بخش کوچکی از رژیم یا پاداش آموزشی. تغییر رژیم باید تدریجی و زیر نظر دامپزشک پرندگان انجام شود.',
+  },
+  {
+    q: 'چه علائمی نشانه‌ی فوریت پزشکی در حیوان اگزوتیک است؟',
+    a: 'بی‌اشتهایی، بی‌حالی ناگهانی، مشکل تنفسی، کاهش یا قطع مدفوع، تورم و خون‌ریزی از نشانه‌های هشدارند. این حیوانات بیماری خود را پنهان می‌کنند، پس تا زمانی که علامت آشکار شود معمولاً وضعیت جدی است؛ سریع اقدام کنید.',
+  },
+  {
+    q: 'آیا می‌توانم برای حیوانم مشاوره‌ی آنلاین بگیرم؟',
+    a: 'بله. از طریق بخش «ویزیت آنلاین» می‌توانید توضیحات و عکس/فیلم از حیوان خود را ارسال کنید تا بررسی اولیه انجام شود. توجه داشته باشید مشاوره‌ی آنلاین جایگزین معاینه‌ی حضوری در موارد اورژانسی نیست.',
+  },
+  {
+    q: 'چطور می‌توانم محتوای بیشتری دنبال کنم؟',
+    a: 'مقالات و اخبار این سایت به‌طور مرتب به‌روزرسانی می‌شوند. برای آموزش‌های روزانه، کیس‌های بالینی و نکات نگهداری، صفحه‌ی اینستاگرام @exoticsbymahdiyar را دنبال کنید.',
+  },
+];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+
+<Base title="سوالات متداول" description="پاسخ به پرسش‌های پرتکرار درباره‌ی نگهداری، تغذیه و سلامت حیوانات اگزوتیک؛ خزندگان، پرندگان و پستانداران.">
+  <section class="section container">
+    <span class="eyebrow">راهنما</span>
+    <h1>سوالات متداول</h1>
+    <p class="muted" style="max-width:60ch;margin-top:8px">پاسخ کوتاه و علمی به پرتکرارترین پرسش‌های نگهدارندگان حیوانات اگزوتیک.</p>
+
+    <div class="faq" style="margin-top:34px">
+      {faqs.map((f) => (
+        <details class="faq-item">
+          <summary>{f.q}</summary>
+          <p>{f.a}</p>
+        </details>
+      ))}
+    </div>
+
+    <div class="faq-cta">
+      <p class="muted">جواب سوالت را پیدا نکردی؟</p>
+      <a href="/visit" class="btn">ویزیت آنلاین</a>
+    </div>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+</Base>
+
+<style>
+  .faq { display: flex; flex-direction: column; gap: 12px; max-width: 780px; }
+  .faq-item {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); overflow: hidden;
+    transition: border-color .2s ease;
+  }
+  .faq-item[open] { border-color: var(--brand); }
+  .faq-item summary {
+    cursor: pointer; padding: 18px 20px; font-weight: 700; font-size: 16.5px;
+    list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 14px;
+  }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary::after {
+    content: '+'; color: var(--brand); font-size: 22px; font-weight: 400;
+    transition: transform .25s ease; line-height: 1;
+  }
+  .faq-item[open] summary::after { transform: rotate(45deg); }
+  .faq-item p { padding: 0 20px 20px; color: var(--text-muted); line-height: 1.9; }
+  .faq-cta { margin-top: 40px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+</style>

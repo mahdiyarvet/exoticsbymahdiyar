@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" fill="none" role="img" aria-label="نگهداری مار">
+  <defs>
+    <linearGradient id="snBg" x1="0" y1="0" x2="640" y2="400" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0f1512"/><stop offset="1" stop-color="#1b271f"/>
+    </linearGradient>
+    <radialGradient id="snGlow" cx="0" cy="0" r="1" gradientTransform="translate(320 200) scale(250)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3fae6d" stop-opacity="0.20"/><stop offset="1" stop-color="#3fae6d" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="snDots" width="26" height="26" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.4" fill="#3fae6d" fill-opacity="0.12"/>
+    </pattern>
+  </defs>
+  <rect width="640" height="400" fill="url(#snBg)"/>
+  <rect width="640" height="400" fill="url(#snDots)"/>
+  <rect width="640" height="400" fill="url(#snGlow)"/>
+
+  <!-- coiled snake body -->
+  <g fill="none" stroke-linecap="round">
+    <path d="M180 300 C220 210 420 210 452 288 C470 332 402 356 372 322 C352 300 372 268 404 276"
+      stroke="#2f9159" stroke-width="40"/>
+    <path d="M180 300 C220 210 420 210 452 288 C470 332 402 356 372 322 C352 300 372 268 404 276"
+      stroke="#3fae6d" stroke-width="26"/>
+  </g>
+  <!-- scale spots -->
+  <g fill="#d9a441" fill-opacity="0.55">
+    <circle cx="250" cy="252" r="6"/><circle cx="300" cy="238" r="6"/>
+    <circle cx="352" cy="240" r="6"/><circle cx="404" cy="262" r="6"/>
+  </g>
+  <!-- head -->
+  <g>
+    <path d="M150 300 q-30 6 -34 -14 q-2 -16 22 -20 q28 -6 42 8 q-8 20 -30 26 Z" fill="#3fae6d"/>
+    <circle cx="140" cy="290" r="4.5" fill="#0f1512"/>
+    <!-- tongue -->
+    <path d="M108 292 l-20 -4 m20 4 l-20 8" stroke="#d9a441" stroke-width="3" stroke-linecap="round"/>
+  </g>
+
+  <rect x="36" y="344" width="4" height="24" rx="2" fill="#3fae6d"/>
+</svg>

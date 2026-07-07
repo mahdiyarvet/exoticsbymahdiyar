@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" fill="none" role="img" aria-label="نشانه‌های بیماری و معاینه">
+  <defs>
+    <linearGradient id="vcBg" x1="0" y1="0" x2="640" y2="400" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0f1512"/><stop offset="1" stop-color="#1b271f"/>
+    </linearGradient>
+    <radialGradient id="vcGlow" cx="0" cy="0" r="1" gradientTransform="translate(320 200) scale(240)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3fae6d" stop-opacity="0.22"/><stop offset="1" stop-color="#3fae6d" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="vcDots" width="26" height="26" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.4" fill="#3fae6d" fill-opacity="0.12"/>
+    </pattern>
+  </defs>
+  <rect width="640" height="400" fill="url(#vcBg)"/>
+  <rect width="640" height="400" fill="url(#vcDots)"/>
+  <rect width="640" height="400" fill="url(#vcGlow)"/>
+
+  <!-- stethoscope -->
+  <g fill="none" stroke="#3fae6d" stroke-width="12" stroke-linecap="round">
+    <path d="M236 120 v58 a70 70 0 0 0 140 0 v-14"/>
+  </g>
+  <g fill="#2f9159">
+    <rect x="226" y="104" width="20" height="22" rx="6"/>
+    <rect x="366" y="104" width="20" height="22" rx="6"/>
+  </g>
+  <circle cx="376" cy="176" r="16" fill="#d9a441"/>
+  <circle cx="376" cy="176" r="7" fill="#0f1512"/>
+
+  <!-- heartbeat line inside a rounded panel -->
+  <rect x="150" y="250" width="340" height="90" rx="16" fill="#16201b" stroke="#2c3a30" stroke-width="2"/>
+  <path d="M170 296 h60 l18 -30 l26 60 l22 -46 l16 16 h180"
+    stroke="#3fae6d" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- heart -->
+  <path d="M300 210 c-10 -14 -34 -10 -34 8 c0 16 22 28 34 38 c12 -10 34 -22 34 -38 c0 -18 -24 -22 -34 -8 Z"
+    fill="#d9a441" fill-opacity="0.85"/>
+
+  <rect x="36" y="344" width="4" height="24" rx="2" fill="#3fae6d"/>
+</svg>

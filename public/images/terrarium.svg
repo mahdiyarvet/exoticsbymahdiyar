@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" fill="none" role="img" aria-label="چیدمان تراریوم">
+  <defs>
+    <linearGradient id="teBg" x1="0" y1="0" x2="640" y2="400" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0f1512"/><stop offset="1" stop-color="#1b271f"/>
+    </linearGradient>
+    <radialGradient id="teLamp" cx="0" cy="0" r="1" gradientTransform="translate(210 90) scale(180)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ffd98a" stop-opacity="0.5"/><stop offset="1" stop-color="#d9a441" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="teDots" width="26" height="26" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.4" fill="#3fae6d" fill-opacity="0.12"/>
+    </pattern>
+  </defs>
+  <rect width="640" height="400" fill="url(#teBg)"/>
+  <rect width="640" height="400" fill="url(#teDots)"/>
+  <rect width="640" height="400" fill="url(#teLamp)"/>
+
+  <!-- heat lamp -->
+  <path d="M186 44 h48 l14 34 h-76 Z" fill="#223026"/>
+  <ellipse cx="210" cy="80" rx="26" ry="10" fill="#d9a441"/>
+  <g stroke="#d9a441" stroke-width="3" stroke-linecap="round" stroke-opacity="0.6">
+    <line x1="200" y1="96" x2="196" y2="120"/>
+    <line x1="210" y1="98" x2="210" y2="124"/>
+    <line x1="220" y1="96" x2="224" y2="120"/>
+  </g>
+
+  <!-- glass tank -->
+  <rect x="96" y="150" width="448" height="210" rx="12" fill="#16201b" stroke="#3fae6d" stroke-opacity="0.4" stroke-width="3"/>
+  <rect x="96" y="150" width="448" height="210" rx="12" fill="#3fae6d" fill-opacity="0.05"/>
+
+  <!-- substrate -->
+  <path d="M100 330 h440 v22 a10 10 0 0 1 -10 10 h-420 a10 10 0 0 1 -10 -10 Z" fill="#6b4a2b"/>
+  <path d="M100 330 q110 -16 220 0 t220 0 v6 h-440 Z" fill="#7d5731"/>
+
+  <!-- rock / hide -->
+  <path d="M150 330 a56 40 0 0 1 112 0 Z" fill="#2c3a30"/>
+  <ellipse cx="206" cy="330" rx="20" ry="14" fill="#0f1512"/>
+
+  <!-- plant -->
+  <g fill="#2f9159">
+    <path d="M430 330 c-4 -40 10 -66 34 -80 c-6 30 -10 56 -34 80 Z"/>
+    <path d="M440 330 c14 -30 40 -44 66 -44 c-18 24 -40 40 -66 44 Z"/>
+  </g>
+  <!-- water dish -->
+  <ellipse cx="360" cy="336" rx="30" ry="10" fill="#245f3d"/>
+  <ellipse cx="360" cy="334" rx="22" ry="6" fill="#3fae6d" fill-opacity="0.6"/>
+
+  <rect x="36" y="344" width="4" height="24" rx="2" fill="#3fae6d"/>
+</svg>

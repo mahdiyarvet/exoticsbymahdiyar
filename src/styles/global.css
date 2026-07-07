@@ -102,6 +102,23 @@ p { color: var(--text); }
 .muted { color: var(--text-muted); }
 .center { text-align: center; }
 
+/* scroll reveal */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity .7s cubic-bezier(.22,.61,.36,1), transform .7s cubic-bezier(.22,.61,.36,1);
+  will-change: opacity, transform;
+}
+[data-reveal].is-visible { opacity: 1; transform: none; }
+[data-reveal].d1 { transition-delay: .08s; }
+[data-reveal].d2 { transition-delay: .16s; }
+[data-reveal].d3 { transition-delay: .24s; }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] { opacity: 1; transform: none; transition: none; }
+  html { scroll-behavior: auto; }
+}
+
 /* article prose */
 .prose { font-size: 17.5px; }
 .prose h2 { margin-top: 2em; margin-bottom: .6em; }

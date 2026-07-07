@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" fill="none" role="img" aria-label="نگهداری لاک‌پشت">
+  <defs>
+    <linearGradient id="ttBg" x1="0" y1="0" x2="640" y2="400" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0f1512"/><stop offset="1" stop-color="#1b271f"/>
+    </linearGradient>
+    <radialGradient id="ttGlow" cx="0" cy="0" r="1" gradientTransform="translate(320 210) scale(250)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3fae6d" stop-opacity="0.22"/><stop offset="1" stop-color="#3fae6d" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="ttShell" x1="220" y1="150" x2="430" y2="300" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3fae6d"/><stop offset="1" stop-color="#245f3d"/>
+    </linearGradient>
+    <pattern id="ttDots" width="26" height="26" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.4" fill="#3fae6d" fill-opacity="0.12"/>
+    </pattern>
+  </defs>
+  <rect width="640" height="400" fill="url(#ttBg)"/>
+  <rect width="640" height="400" fill="url(#ttDots)"/>
+  <rect width="640" height="400" fill="url(#ttGlow)"/>
+
+  <!-- water line -->
+  <path d="M0 320 q80 -14 160 0 t160 0 t160 0 t160 0" stroke="#2f9159" stroke-opacity="0.35" stroke-width="4" fill="none"/>
+
+  <!-- ground -->
+  <ellipse cx="320" cy="312" rx="180" ry="26" fill="#2f9159" fill-opacity="0.18"/>
+
+  <!-- turtle -->
+  <g>
+    <!-- legs -->
+    <g fill="#2f9159">
+      <ellipse cx="250" cy="296" rx="20" ry="14"/>
+      <ellipse cx="392" cy="296" rx="20" ry="14"/>
+    </g>
+    <!-- head -->
+    <circle cx="440" cy="248" r="26" fill="#3fae6d"/>
+    <circle cx="452" cy="242" r="4" fill="#0f1512"/>
+    <!-- shell -->
+    <path d="M222 288 a100 78 0 0 1 200 0 Z" fill="url(#ttShell)"/>
+    <path d="M222 288 a100 78 0 0 1 200 0" fill="none" stroke="#0f1512" stroke-opacity="0.25" stroke-width="3"/>
+    <!-- scutes -->
+    <g stroke="#0f1512" stroke-opacity="0.28" stroke-width="3" fill="none">
+      <path d="M322 214 v74"/>
+      <path d="M270 232 l30 40"/>
+      <path d="M374 232 l-30 40"/>
+      <path d="M240 272 h164"/>
+    </g>
+    <g fill="#d9a441" fill-opacity="0.55">
+      <circle cx="322" cy="250" r="9"/>
+      <circle cx="284" cy="266" r="7"/>
+      <circle cx="360" cy="266" r="7"/>
+    </g>
+  </g>
+
+  <rect x="36" y="344" width="4" height="24" rx="2" fill="#3fae6d"/>
+</svg>

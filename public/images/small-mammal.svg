@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" fill="none" role="img" aria-label="پستانداران کوچک اگزوتیک">
+  <defs>
+    <linearGradient id="smBg" x1="0" y1="0" x2="640" y2="400" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0f1512"/><stop offset="1" stop-color="#1b271f"/>
+    </linearGradient>
+    <radialGradient id="smGlow" cx="0" cy="0" r="1" gradientTransform="translate(360 190) scale(240)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#d9a441" stop-opacity="0.16"/><stop offset="1" stop-color="#d9a441" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="smBody" x1="250" y1="180" x2="420" y2="320" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3fae6d"/><stop offset="1" stop-color="#2f9159"/>
+    </linearGradient>
+    <pattern id="smDots" width="26" height="26" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.4" fill="#3fae6d" fill-opacity="0.12"/>
+    </pattern>
+  </defs>
+  <rect width="640" height="400" fill="url(#smBg)"/>
+  <rect width="640" height="400" fill="url(#smDots)"/>
+  <rect width="640" height="400" fill="url(#smGlow)"/>
+
+  <!-- ground -->
+  <ellipse cx="330" cy="320" rx="190" ry="26" fill="#2f9159" fill-opacity="0.16"/>
+
+  <!-- sunflower seed / food dots -->
+  <g fill="#d9a441" fill-opacity="0.7">
+    <ellipse cx="470" cy="312" rx="10" ry="6" transform="rotate(20 470 312)"/>
+    <ellipse cx="492" cy="320" rx="10" ry="6" transform="rotate(-15 492 320)"/>
+  </g>
+
+  <!-- hamster body -->
+  <g>
+    <ellipse cx="320" cy="256" rx="98" ry="72" fill="url(#smBody)"/>
+    <!-- belly -->
+    <ellipse cx="320" cy="276" rx="66" ry="46" fill="#eef3ee" fill-opacity="0.14"/>
+    <!-- ears -->
+    <circle cx="268" cy="196" r="24" fill="#3fae6d"/>
+    <circle cx="268" cy="196" r="12" fill="#d9a441" fill-opacity="0.55"/>
+    <circle cx="360" cy="196" r="24" fill="#3fae6d"/>
+    <circle cx="360" cy="196" r="12" fill="#d9a441" fill-opacity="0.55"/>
+    <!-- face -->
+    <circle cx="284" cy="238" r="6" fill="#0f1512"/>
+    <circle cx="344" cy="238" r="6" fill="#0f1512"/>
+    <ellipse cx="314" cy="262" rx="9" ry="7" fill="#d9a441"/>
+    <!-- whiskers -->
+    <g stroke="#eef3ee" stroke-opacity="0.35" stroke-width="2" stroke-linecap="round">
+      <line x1="300" y1="266" x2="250" y2="258"/>
+      <line x1="300" y1="272" x2="252" y2="278"/>
+      <line x1="330" y1="266" x2="380" y2="258"/>
+      <line x1="330" y1="272" x2="378" y2="278"/>
+    </g>
+    <!-- little hands -->
+    <ellipse cx="312" cy="312" rx="14" ry="10" fill="#2f9159"/>
+  </g>
+
+  <rect x="36" y="344" width="4" height="24" rx="2" fill="#3fae6d"/>
+</svg>

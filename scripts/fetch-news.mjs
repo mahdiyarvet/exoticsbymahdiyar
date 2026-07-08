@@ -7,7 +7,11 @@ const NEWS_DIR = 'src/content/news';
 const MAX_NEW = 3;                 // max new posts per run
 const TRANSLATE_EMAIL = 'm.ramzgooyan@gmail.com'; // raises MyMemory free quota
 const COVERS = ['/images/snake.jpg', '/images/turtle.jpg', '/images/uvb.jpg', '/images/terrarium.svg', '/images/vet-check.svg'];
-const FEED = 'https://news.google.com/rss/search?q=(reptile%20OR%20herpetology%20OR%20snake%20OR%20lizard%20OR%20tortoise)%20when:7d&hl=en-US&gl=US&ceid=US:en';
+const QUERY = '(reptile OR herpetology OR tortoise OR "bearded dragon" OR chameleon OR iguana OR gecko OR "exotic pet") (care OR health OR species OR conservation OR veterinary OR discovered OR study OR rescue OR habitat) when:14d';
+const FEED = `https://news.google.com/rss/search?q=${encodeURIComponent(QUERY)}&hl=en-US&gl=US&ceid=US:en`;
+// only keep genuinely animal/reptile stories; drop political/sports/tech uses of "snake"/"python"
+const ANIMAL_RE = /reptile|lizard|snake|python|boa|gecko|tortoise|turtle|chameleon|iguana|herpetolog|amphibian|salamander|crocodile|alligator|bearded dragon|monitor lizard|terrarium|exotic pet|frog|newt/i;
+const NOISE_RE = /\b(python (programming|code|coder|developer|script|django|flask|library)|monty python|nfl|nba|mlb|premier league|la liga|world cup|senate|congress|parliament|election|stock|shares|crypto|bitcoin|box office|trailer|xbox|playstation|smartphone)\b/i;
 
 const decode = (s) => s
   .replace(/<!\[CDATA\[|\]\]>/g, '')
@@ -22,15 +26,34 @@ const field = (block, tag) => {
 
 const yaml = (s) => '"' + String(s).replace(/"/g, '“').replace(/[\r\n]+/g, ' ').trim() + '"';
 
-async function translate(text) {
+// collapse immediate repeated words (a common machine-translation glitch)
+const tidy = (t) => decode(t).replace(/(\S+)(\s+\1)+/gu, '$1').replace(/\s{2,}/g, ' ').trim();
+
+async function gTranslate(text) {
+  try {
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=fa&dt=t&q=${encodeURIComponent(text)}`;
+    const r = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0' } });
+    if (!r.ok) return null;
+    const j = await r.json();
+    const t = (j?.[0] || []).map((s) => (s && s[0]) || '').join('');
+    return t ? tidy(t) : null;
+  } catch { return null; }
+}
+
+async function myMemory(text) {
   try {
     const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|fa&de=${TRANSLATE_EMAIL}`;
     const r = await fetch(url, { headers: { 'User-Agent': 'exoticsbymahdiyar-newsbot' } });
     const j = await r.json();
     const t = j?.responseData?.translatedText;
     if (!t || /MYMEMORY WARNING|QUERY LENGTH LIMIT|INVALID|AUTH/i.test(t)) return null;
-    return decode(t);
+    return tidy(t);
   } catch { return null; }
+}
+
+// Google (better quality) first, MyMemory as fallback
+async function translate(text) {
+  return (await gTranslate(text)) || (await myMemory(text));
 }
 
 async function main() {
@@ -50,6 +73,9 @@ async function main() {
 
     // strip trailing " - Publisher" that Google News appends
     title = title.replace(/\s+-\s+[^-]+$/, '').trim();
+
+    // relevance filter: must be about a real animal/reptile, not a metaphor
+    if (!ANIMAL_RE.test(title) || NOISE_RE.test(title)) continue;
 
     const id = createHash('md5').update(link).digest('hex').slice(0, 10);
     const file = `${NEWS_DIR}/auto-${id}.md`;
@@ -74,11 +100,9 @@ sourceUrl: "${link}"
 
 ${faTitle}
 
-این خبر به‌صورت خودکار از منابع خبری بین‌المللی درباره‌ی خزندگان گردآوری و به فارسی ترجمه شده است. برای مطالعه‌ی متن کامل و اصلی، به منبع مراجعه کنید:
+برای مطالعه‌ی متن کامل، به منبع اصلی خبر مراجعه کنید:
 
 > منبع: [${source}](${link})
-
-*ترجمه‌ی ماشینی خودکار — ممکن است دقیق نباشد.*
 `;
     writeFileSync(file, md, 'utf8');
     console.log('added:', file, '=>', faTitle);

@@ -6,7 +6,7 @@ import { createHash } from 'crypto';
 const NEWS_DIR = 'src/content/news';
 const MAX_NEW = 3;                 // max new posts per run
 const TRANSLATE_EMAIL = 'm.ramzgooyan@gmail.com'; // raises MyMemory free quota
-const COVERS = ['/images/snake.svg', '/images/turtle.svg', '/images/uvb.svg', '/images/terrarium.svg', '/images/vet-check.svg'];
+const COVERS = ['/images/snake.jpg', '/images/turtle.jpg', '/images/uvb.jpg', '/images/terrarium.svg', '/images/vet-check.svg'];
 const FEED = 'https://news.google.com/rss/search?q=(reptile%20OR%20herpetology%20OR%20snake%20OR%20lizard%20OR%20tortoise)%20when:7d&hl=en-US&gl=US&ceid=US:en';
 
 const decode = (s) => s

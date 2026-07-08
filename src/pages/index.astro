@@ -21,13 +21,18 @@ const topBooks = books.slice(0, 3);
   description="مرجع فارسی دامپزشکی حیوانات اگزوتیک؛ مقالات علمی، اخبار روز و کتابخانه تخصصی خزندگان، پرندگان و پستانداران اگزوتیک. با دکتر مهدیار رمزگویان."
 >
   <section class="hero">
-    <div class="container hero-inner">
-      <span class="tag">دامپزشکی حیوانات اگزوتیک</span>
-      <h1>دنیای علمی و شگفت‌انگیزِ<br /><span class="grad">حیوانات اگزوتیک</span></h1>
-      <p class="lead">مقالات معتبر، اخبار روز دنیای دامپزشکی و کتابخانه‌ای تخصصی برای نگهدارندگان و علاقه‌مندان خزندگان، پرندگان و پستانداران اگزوتیک — گردآوری و نگارش دکتر مهدیار رمزگویان.</p>
-      <div class="hero-cta">
-        <a href="/articles" class="btn">شروع مطالعه</a>
-        <a href="https://instagram.com/exoticsbymahdiyar" target="_blank" rel="noopener" class="btn btn-ghost">اینستاگرام</a>
+    <div class="container hero-grid">
+      <div class="hero-inner">
+        <span class="tag">دامپزشکی حیوانات اگزوتیک</span>
+        <h1>دنیای علمی و شگفت‌انگیزِ<br /><span class="grad">حیوانات اگزوتیک</span></h1>
+        <p class="lead">مقالات معتبر، اخبار روز دنیای دامپزشکی و کتابخانه‌ای تخصصی برای نگهدارندگان و علاقه‌مندان خزندگان، پرندگان و پستانداران اگزوتیک — گردآوری و نگارش دکتر مهدیار رمزگویان.</p>
+        <div class="hero-cta">
+          <a href="/articles" class="btn">شروع مطالعه</a>
+          <a href="https://instagram.com/exoticsbymahdiyar" target="_blank" rel="noopener" class="btn btn-ghost">اینستاگرام</a>
+        </div>
+      </div>
+      <div class="hero-media">
+        <img src="/images/hero.jpg" alt="حیوانات اگزوتیک: طوطی، آفتاب‌پرست، لاک‌پشت و فنک روی شاخه" width="1600" height="900" fetchpriority="high" />
       </div>
     </div>
   </section>
@@ -95,7 +100,16 @@ const topBooks = books.slice(0, 3);
       radial-gradient(60% 55% at 78% 12%, rgba(63,174,109,.18), transparent 60%),
       radial-gradient(50% 50% at 15% 90%, rgba(217,164,65,.12), transparent 60%);
   }
-  .hero-inner { max-width: 760px; }
+  .hero-grid { display: grid; grid-template-columns: 1fr 1.05fr; gap: clamp(24px, 4vw, 52px); align-items: center; }
+  .hero-inner { max-width: 620px; }
+  .hero-media img {
+    width: 100%; height: auto; border-radius: var(--radius);
+    border: 1px solid var(--border); box-shadow: var(--shadow);
+  }
+  @media (max-width: 880px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .hero-media { order: 2; margin-top: 8px; }
+  }
   .hero h1 { margin-block: 20px 18px; }
   .grad { background: linear-gradient(90deg, var(--brand), var(--accent)); -webkit-background-clip: text; background-clip: text; color: transparent; }
   .lead { font-size: clamp(1.05rem, 2vw, 1.25rem); color: var(--text-muted); max-width: 62ch; }

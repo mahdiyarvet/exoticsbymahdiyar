@@ -5,7 +5,7 @@ pubDate: 2026-06-20
 updatedDate: 2026-07-08
 category: "خزندگان"
 tags: ["UVB", "متابولیسم کلسیم", "MBD", "روشنایی", "ویتامین D3"]
-cover: "/images/uvb.svg"
+cover: "/images/uvb.jpg"
 sources:
   - label: "Baines FM et al., How much UVB does my reptile need? (2016), Journal of Zoo and Aquarium Research"
     url: "https://www.jzar.org/jzar/article/view/150"

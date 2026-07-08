@@ -5,7 +5,7 @@ pubDate: 2026-06-28
 updatedDate: 2026-07-08
 category: "پرندگان"
 tags: ["طوطی", "تغذیه", "پلت", "کمبود ویتامین A", "کاسکو"]
-cover: "/images/parrot.svg"
+cover: "/images/parrot.jpg"
 sources:
   - label: "Association of Avian Veterinarians — Basic Pet Bird Care"
   - label: "Harrison GJ, Lightfoot TL — Clinical Avian Medicine (2006)"

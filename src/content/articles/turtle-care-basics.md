@@ -5,7 +5,7 @@ pubDate: 2026-07-04
 updatedDate: 2026-07-08
 category: "خزندگان"
 tags: ["لاک‌پشت", "UVB", "تغذیه", "آبزی‌پروری", "نرمی لاک"]
-cover: "/images/turtle.svg"
+cover: "/images/turtle.jpg"
 sources:
   - label: "ARAV — Association of Reptilian and Amphibian Veterinarians, Chelonian husbandry"
   - label: "Highfield AC — Practical Encyclopedia of Keeping and Breeding Tortoises and Freshwater Turtles"

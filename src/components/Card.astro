@@ -13,7 +13,7 @@ const { href, title, description, cover, tag, meta } = Astro.props;
 <a href={href} class="card">
   <div class="thumb">
     {cover
-      ? <img src={cover} alt={title} loading="lazy" />
+      ? <img src={cover} alt={tag ? `${title} — ${tag}` : title} loading="lazy" width="640" height="400" />
       : <div class="thumb-fallback"><span>🦎</span></div>}
     {tag && <span class="card-tag">{tag}</span>}
   </div>

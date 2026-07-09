@@ -10,6 +10,7 @@ const { book } = Astro.props;
 const { Content } = await render(book);
 const d = book.data;
 
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
 const schema = {
   '@context': 'https://schema.org',
   '@type': 'Book',
@@ -17,6 +18,15 @@ const schema = {
   author: { '@type': 'Person', name: d.author },
   inLanguage: d.lang,
   ...(d.year && { datePublished: String(d.year) }),
+};
+const breadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'خانه', item: new URL('/', Astro.site).href },
+    { '@type': 'ListItem', position: 2, name: 'کتابخانه', item: new URL('/books', Astro.site).href },
+    { '@type': 'ListItem', position: 3, name: d.title, item: canonicalUrl },
+  ],
 };
 ---
 <Base title={d.title} description={d.description} image={d.cover} type="article">
@@ -42,6 +52,7 @@ const schema = {
     <div class="prose"><Content /></div>
   </article>
   <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumb)} />
 </Base>
 <style>
   .book { max-width: 860px; padding-block: 40px 80px; }

@@ -10,8 +10,23 @@ const { item } = Astro.props;
 const { Content } = await render(item);
 const d = item.data;
 const fa = (x: Date) => x.toLocaleDateString('fa-IR', { year: 'numeric', month: 'long', day: 'numeric' });
+
+// auto-translated news items are thin/short content -> exclude from Google's index
+// (still fully visible and linked for site visitors; just not indexed as a low-value page)
+const isAutoTranslated = item.id.startsWith('auto-');
+
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
+const breadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'خانه', item: new URL('/', Astro.site).href },
+    { '@type': 'ListItem', position: 2, name: 'اخبار', item: new URL('/news', Astro.site).href },
+    { '@type': 'ListItem', position: 3, name: d.title, item: canonicalUrl },
+  ],
+};
 ---
-<Base title={d.title} description={d.description} image={d.cover} type="article" publishedTime={d.pubDate.toISOString()}>
+<Base title={d.title} description={d.description} image={d.cover} type="article" publishedTime={d.pubDate.toISOString()} noindex={isAutoTranslated}>
   <article class="container post">
     <nav class="crumb muted"><a href="/">خانه</a> / <a href="/news">اخبار</a></nav>
     <span class="tag">خبر</span>
@@ -21,6 +36,7 @@ const fa = (x: Date) => x.toLocaleDateString('fa-IR', { year: 'numeric', month: 
     <div class="prose"><Content /></div>
     {d.sourceUrl && <a class="btn btn-ghost" href={d.sourceUrl} target="_blank" rel="noopener" style="margin-top:30px">مشاهده منبع اصلی</a>}
   </article>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumb)} />
 </Base>
 <style>
   .post { max-width: 760px; padding-block: 40px 80px; }

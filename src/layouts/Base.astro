@@ -25,14 +25,27 @@ const site = 'اگزوتیک با مهدیار';
 const fullTitle = title === site ? title : `${title} | ${site}`;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const ogImage = new URL(image, Astro.site).href;
+const isHome = Astro.url.pathname === '/';
 
-const orgSchema = {
+const personSchema = {
   '@context': 'https://schema.org',
   '@type': 'Person',
   name: 'دکتر مهدیار رمزگویان',
   jobTitle: 'دامپزشک حیوانات اگزوتیک',
   url: Astro.site?.href,
   sameAs: ['https://instagram.com/exoticsbymahdiyar'],
+};
+
+// WebSite schema only on the homepage (helps brand/sitelinks understanding; avoids duplicate emission)
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: site,
+  alternateName: 'دامپزشکی حیوانات اگزوتیک با مهدیار',
+  url: Astro.site?.href,
+  inLanguage: 'fa-IR',
+  description: 'مرجع فارسی دامپزشکی حیوانات اگزوتیک؛ مقالات علمی، اخبار روز و کتابخانه‌ی تخصصی خزندگان، پرندگان و پستانداران اگزوتیک.',
+  publisher: { '@type': 'Person', name: 'دکتر مهدیار رمزگویان' },
 };
 ---
 
@@ -41,6 +54,7 @@ const orgSchema = {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0f1512" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preload" href="/fonts/Vazirmatn-Regular.woff2" as="font" type="font/woff2" crossorigin />
 
@@ -54,6 +68,9 @@ const orgSchema = {
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={fullTitle} />
     <meta property="og:locale" content="fa_IR" />
     <meta property="og:site_name" content={site} />
     {publishedTime && <meta property="article:published_time" content={publishedTime} />}
@@ -64,7 +81,8 @@ const orgSchema = {
     <meta name="twitter:image" content={ogImage} />
 
     <link rel="alternate" type="application/rss+xml" title={site} href="/rss.xml" />
-    <script type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+    {isHome && <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />}
   </head>
   <body>
     <Header />

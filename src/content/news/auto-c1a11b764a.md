@@ -1,0 +1,14 @@
+---
+title: "چگونه ممنوعیتجارت و حفاظت محلی به نجات یک مارمولک آبی خیره کننده کمکرد - اخبار"
+description: "چگونه ممنوعیتجارت و حفاظت محلی به نجات یک مارمولک آبی خیره کننده کمکرد - اخبار"
+pubDate: 2026-06-06
+cover: "/images/terrarium.svg"
+source: "news - Mongabay"
+sourceUrl: "https://news.google.com/rss/articles/CBMiqgFBVV95cUxQcTRXR090NV9ndS1JQU5lRnE4a3FDNEp2cWxsSkxrbFFKNnlWWXJlTDI2c2RySHpPZUdVa3JvRlR5ck9YbFFoa3NpNWZYWVJqOHUzMFN3YTdEVEJXOUotc3dsX0lpSFM2LWFkVUlJb0VjY0NaYWNsYlhvV21DMTJLMGRWSjJfOTg4dE96Q0pxa1F0WHpvZEcxQjN2ZDMzWTh5NmxBcTVyc2xrZ9IBrwFBVV95cUxQRVRhd0hIYjgzSlI4eWlLNnZBbmh0WXdXcF81aGNsRGpOYWNobEUtaEZvcFBUWDdzb0JaNXZqSEpfYWk3T2J6QjR1RGRLSFk4UWJOVk9YeWtId18zdUtzU1ctMWdQUUpiRUt2ZUtMQktSUGZvNnFTM2o4dkt3ZWViUkJMb1p1eExseUNZSkhrbWVlUjlpOVA5MTczemdWazJGaUkxdm9rOE1HY3VOVHE0?oc=5"
+---
+
+چگونه ممنوعیتجارت و حفاظت محلی به نجات یک مارمولک آبی خیره کننده کمکرد - اخبار
+
+برای مطالعه‌ی متن کامل، به منبع اصلی خبر مراجعه کنید:
+
+> منبع: [news - Mongabay](https://news.google.com/rss/articles/CBMiqgFBVV95cUxQcTRXR090NV9ndS1JQU5lRnE4a3FDNEp2cWxsSkxrbFFKNnlWWXJlTDI2c2RySHpPZUdVa3JvRlR5ck9YbFFoa3NpNWZYWVJqOHUzMFN3YTdEVEJXOUotc3dsX0lpSFM2LWFkVUlJb0VjY0NaYWNsYlhvV21DMTJLMGRWSjJfOTg4dE96Q0pxa1F0WHpvZEcxQjN2ZDMzWTh5NmxBcTVyc2xrZ9IBrwFBVV95cUxQRVRhd0hIYjgzSlI4eWlLNnZBbmh0WXdXcF81aGNsRGpOYWNobEUtaEZvcFBUWDdzb0JaNXZqSEpfYWk3T2J6QjR1RGRLSFk4UWJOVk9YeWtId18zdUtzU1ctMWdQUUpiRUt2ZUtMQktSUGZvNnFTM2o4dkt3ZWViUkJMb1p1eExseUNZSkhrbWVlUjlpOVA5MTczemdWazJGaUkxdm9rOE1HY3VOVHE0?oc=5)

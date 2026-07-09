@@ -46,4 +46,14 @@ const books = defineCollection({
   }),
 });
 
-export const collections = { articles, news, books };
+const pages = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/pages' }),
+  schema: z.object({
+    title: z.string(),
+    role: z.string().optional(),
+    specialties: z.array(z.string()).default([]),
+    education: z.array(z.string()).default([]),
+  }),
+});
+
+export const collections = { articles, news, books, pages };

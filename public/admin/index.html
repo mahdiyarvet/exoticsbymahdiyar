@@ -93,7 +93,7 @@
     <div id="listView">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
         <h2 id="listTitle" style="margin:0"></h2>
-        <button class="btn" onclick="newItem()">+ افزودن جدید</button>
+        <button class="btn" id="newBtn" onclick="newItem()">+ افزودن جدید</button>
       </div>
       <div id="list"></div>
     </div>
@@ -131,11 +131,12 @@
 
 <script>
 const OWNER='mahdiyarvet', REPO='exoticsbymahdiyar', BRANCH='main', API='https://api.github.com';
-const DIRS={articles:'src/content/articles', news:'src/content/news', books:'src/content/books'};
+const DIRS={articles:'src/content/articles', news:'src/content/news', books:'src/content/books', pages:'src/content/pages'};
 const TABS=[
   {k:'articles',label:'مقالات'},
   {k:'news',label:'اخبار'},
   {k:'books',label:'کتاب‌ها'},
+  {k:'pages',label:'صفحه‌ها'},
   {k:'media',label:'عکس‌ها'},
 ];
 // fields per collection
@@ -169,6 +170,12 @@ const FIELDS={
     {k:'downloadUrl',label:'لینک دانلود',t:'text'},
     {k:'tags',label:'برچسب‌ها (با ویرگول)',t:'text'},
     {k:'draft',label:'پیش‌نویس',t:'bool'},
+  ],
+  pages:[
+    {k:'title',label:'عنوان (نام)',t:'text',req:1},
+    {k:'role',label:'زیرعنوان / سمت',t:'text'},
+    {k:'specialties',label:'تخصص‌ها (هر مورد یک خط)',t:'lines'},
+    {k:'education',label:'تحصیلات و دوره‌ها (هر مورد یک خط)',t:'lines'},
   ],
 };
 
@@ -216,6 +223,7 @@ async function showList(){
   ['editView','mediaView'].forEach(v=>$(v).classList.add('hidden'));
   $('listView').classList.remove('hidden');
   $('listTitle').textContent=TABS.find(t=>t.k===cur).label;
+  $('newBtn').style.display = cur==='pages' ? 'none' : '';
   $('list').innerHTML='<p class="muted">در حال بارگذاری…</p>';
   try{
     const items=await gh(`/repos/${OWNER}/${REPO}/contents/${DIRS[cur]}?ref=${BRANCH}`);
@@ -226,7 +234,7 @@ async function showList(){
         <div><div class="t">${f.name.replace(/\.md$/,'')}</div><div class="m">${f.path}</div></div>
         <div class="acts">
           <button class="btn ghost sm" onclick="edit('${f.path}','${f.sha}')">ویرایش</button>
-          <button class="btn danger sm" onclick="del('${f.path}','${f.sha}','${f.name}')">حذف</button>
+          ${cur==='pages'?'':`<button class="btn danger sm" onclick="del('${f.path}','${f.sha}','${f.name}')">حذف</button>`}
         </div>
       </div>`).join('');
   }catch(e){$('list').innerHTML='<p style="color:#e88">خطا: '+e.message+'</p>';}
@@ -244,11 +252,12 @@ function fmGet(fm,key){
   if((v.startsWith('"')&&v.endsWith('"'))||(v.startsWith("'")&&v.endsWith("'")))v=v.slice(1,-1);
   return v;
 }
-function fmGetTags(fm){
-  const m=fm.match(/^tags:[ \t]*\[(.*)\]/m);
-  if(!m)return '';
-  return m[1].split(',').map(s=>s.trim().replace(/^["']|["']$/g,'')).filter(Boolean).join('، ');
+function fmArray(fm,key){
+  const m=fm.match(new RegExp('^'+key+':[ \\t]*\\[(.*)\\]','m'));
+  if(!m)return [];
+  return m[1].split(',').map(s=>s.trim().replace(/^["']|["']$/g,'')).filter(Boolean);
 }
+function fmGetTags(fm){return fmArray(fm,'tags').join('، ');}
 function yv(s){return '"'+String(s==null?'':s).replace(/"/g,'”').replace(/[\r\n]+/g,' ').trim()+'"';}
 
 // build/replace frontmatter line for a field
@@ -259,6 +268,7 @@ function setFmLine(fm,key,serialized){
 }
 function serialize(key,val,type){
   if(type==='bool')return key+': '+(val?'true':'false');
+  if(type==='lines'){const arr=(val||'').split(/\r?\n/).map(s=>s.trim()).filter(Boolean);return key+': ['+arr.map(yv).join(', ')+']';}
   if(key==='tags'){const arr=(val||'').split(/[،,]/).map(s=>s.trim()).filter(Boolean);return 'tags: ['+arr.map(yv).join(', ')+']';}
   if(key==='year'||key==='pages'){const n=parseInt(val);return key+': '+(isNaN(n)?0:n);}
   if(key==='pubDate'||key==='updatedDate')return key+': '+(val||'');
@@ -271,6 +281,7 @@ function renderForm(vals){
   $('fields').innerHTML=fs.map(f=>{
     const v=vals[f.k]??'';
     if(f.t==='textarea')return `<label>${f.label}</label><textarea data-k="${f.k}">${esc(v)}</textarea>`;
+    if(f.t==='lines')return `<label>${f.label}</label><textarea data-k="${f.k}" placeholder="${f.ph||''}">${esc(v)}</textarea>`;
     if(f.t==='bool')return `<label style="display:flex;gap:8px;align-items:center"><input type="checkbox" data-k="${f.k}" ${v?'checked':''} style="width:auto"> ${f.label}</label>`;
     if(f.t==='date')return `<label>${f.label}</label><input type="date" data-k="${f.k}" value="${esc(v)}">`;
     if(f.t==='select')return `<label>${f.label}</label><select data-k="${f.k}">${f.opts.map(o=>`<option ${o===v?'selected':''}>${o}</option>`).join('')}</select>`;
@@ -306,6 +317,7 @@ async function edit(path,sha){
     const vals={__body:body};
     FIELDS[cur].forEach(fd=>{
       if(fd.k==='tags')vals.tags=fmGetTags(fm);
+      else if(fd.t==='lines')vals[fd.k]=fmArray(fm,fd.k).join('\n');
       else if(fd.t==='bool')vals[fd.k]=fmGet(fm,fd.k)==='true';
       else vals[fd.k]=fmGet(fm,fd.k)||'';
     });

@@ -1,3 +1,5 @@
 User-agent: *
 Allow: /
-Sitemap: http://exoticsbymahdiyar.ir/sitemap-index.xml
+Disallow: /admin
+
+Sitemap: https://exoticsbymahdiyar.ir/sitemap-index.xml

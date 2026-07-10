@@ -56,6 +56,13 @@ async function translate(text) {
   return (await gTranslate(text)) || (await myMemory(text));
 }
 
+// NOTE: fetching a fuller summary from the source was tried and reverted.
+// Google News RSS <link> URLs resolve to a Google-hosted redirect page, not
+// the publisher's article -- so its meta description is just Google's own
+// generic boilerplate, identical on every item. Publishing that would create
+// near-duplicate thin content across all news posts (the opposite of the
+// goal), so we keep this to translated-headline + source + link only.
+
 async function main() {
   if (!existsSync(NEWS_DIR)) mkdirSync(NEWS_DIR, { recursive: true });
   const res = await fetch(FEED, { headers: { 'User-Agent': 'Mozilla/5.0 exoticsbymahdiyar-newsbot' } });

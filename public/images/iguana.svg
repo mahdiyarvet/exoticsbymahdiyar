@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" fill="none" role="img" aria-label="نگهداری ایگوانا">
+  <defs>
+    <linearGradient id="igBg" x1="0" y1="0" x2="640" y2="400" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0f1512"/><stop offset="1" stop-color="#1b271f"/>
+    </linearGradient>
+    <radialGradient id="igGlow" cx="0" cy="0" r="1" gradientTransform="translate(320 190) scale(250)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3fae6d" stop-opacity="0.22"/><stop offset="1" stop-color="#3fae6d" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="igBody" x1="180" y1="160" x2="460" y2="300" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3fae6d"/><stop offset="1" stop-color="#2f9159"/>
+    </linearGradient>
+    <pattern id="igDots" width="26" height="26" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.4" fill="#3fae6d" fill-opacity="0.12"/>
+    </pattern>
+  </defs>
+  <rect width="640" height="400" fill="url(#igBg)"/>
+  <rect width="640" height="400" fill="url(#igDots)"/>
+  <rect width="640" height="400" fill="url(#igGlow)"/>
+
+  <!-- branch -->
+  <ellipse cx="320" cy="322" rx="210" ry="22" fill="#2f9159" fill-opacity="0.16"/>
+  <path d="M100 300 C220 280 420 320 540 290" stroke="#6b4a2b" stroke-width="20" stroke-linecap="round" fill="none"/>
+
+  <!-- tail -->
+  <path d="M440 280 c60 6 110 34 130 74 c-50 4 -100 -16 -130 -54 Z" fill="#2f9159"/>
+  <!-- body -->
+  <path d="M230 300
+    c-6 -46 30 -80 76 -84
+    c48 -4 84 24 92 66
+    c30 4 56 16 60 16
+    c8 8 2 18 -8 20
+    c-16 4 -34 0 -48 -8
+    c-10 22 -34 36 -60 34
+    c-46 -2 -108 -14 -112 -44 Z" fill="url(#igBody)"/>
+  <!-- dewlap -->
+  <path d="M232 296 c-6 20 -4 40 6 54 c10 -16 12 -36 8 -54 Z" fill="#d9a441" fill-opacity="0.8"/>
+  <!-- spiny dorsal crest -->
+  <g fill="#245f3d">
+    <path d="M270 236 l6 -16 l6 16 Z"/>
+    <path d="M292 228 l7 -18 l7 18 Z"/>
+    <path d="M316 224 l7 -18 l7 18 Z"/>
+    <path d="M340 226 l6 -16 l6 16 Z"/>
+    <path d="M362 232 l6 -14 l6 14 Z"/>
+  </g>
+  <!-- head -->
+  <ellipse cx="210" cy="288" rx="30" ry="22" fill="#3fae6d"/>
+  <circle cx="196" cy="282" r="7" fill="#0f1512"/>
+  <circle cx="198" cy="279" r="2.4" fill="#eef3ee"/>
+  <!-- legs -->
+  <g fill="#245f3d">
+    <ellipse cx="280" cy="318" rx="12" ry="16"/>
+    <ellipse cx="400" cy="318" rx="12" ry="16"/>
+  </g>
+
+  <rect x="36" y="344" width="4" height="24" rx="2" fill="#3fae6d"/>
+</svg>

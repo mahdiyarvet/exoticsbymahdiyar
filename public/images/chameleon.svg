@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" fill="none" role="img" aria-label="نگهداری آفتاب‌پرست">
+  <defs>
+    <linearGradient id="chBg" x1="0" y1="0" x2="640" y2="400" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0f1512"/><stop offset="1" stop-color="#1b271f"/>
+    </linearGradient>
+    <radialGradient id="chGlow" cx="0" cy="0" r="1" gradientTransform="translate(300 180) scale(240)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3fae6d" stop-opacity="0.22"/><stop offset="1" stop-color="#3fae6d" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="chBody" x1="220" y1="140" x2="420" y2="300" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3fae6d"/><stop offset="1" stop-color="#245f3d"/>
+    </linearGradient>
+    <pattern id="chDots" width="26" height="26" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.4" fill="#3fae6d" fill-opacity="0.12"/>
+    </pattern>
+  </defs>
+  <rect width="640" height="400" fill="url(#chBg)"/>
+  <rect width="640" height="400" fill="url(#chDots)"/>
+  <rect width="640" height="400" fill="url(#chGlow)"/>
+
+  <!-- branch -->
+  <path d="M120 260 C220 230 340 300 500 250" stroke="#6b4a2b" stroke-width="18" stroke-linecap="round" fill="none"/>
+
+  <!-- leaves -->
+  <g fill="#2f9159" fill-opacity="0.8">
+    <path d="M500 200 c40 -8 70 -34 78 -70 c-42 0 -76 26 -90 62 Z"/>
+    <path d="M150 180 c-36 -10 -62 -38 -68 -72 c38 2 68 28 80 62 Z"/>
+  </g>
+
+  <!-- chameleon body curled on branch -->
+  <g fill="url(#chBody)">
+    <path d="M220 262
+      c-6 -36 20 -66 60 -70
+      c14 -30 46 -50 82 -46
+      c40 4 66 34 68 68
+      c22 8 36 24 36 24
+      c-6 10 -24 12 -40 6
+      c-8 20 -30 32 -54 30
+      c-8 18 -28 28 -48 24
+      c-30 -6 -48 -30 -50 -60
+      c-14 6 -24 -2 -30 -12
+      c-4 -6 -2 -12 6 -14 Z"/>
+  </g>
+  <!-- casque/crest -->
+  <path d="M330 148 c8 -14 20 -22 32 -20 c-4 12 -14 22 -24 28 Z" fill="#d9a441"/>
+  <!-- eye turret -->
+  <circle cx="356" cy="188" r="20" fill="#245f3d"/>
+  <circle cx="360" cy="186" r="9" fill="#0f1512"/>
+  <circle cx="362" cy="183" r="3" fill="#eef3ee"/>
+  <!-- gold spots -->
+  <g fill="#d9a441" fill-opacity="0.6">
+    <circle cx="270" cy="240" r="5"/>
+    <circle cx="300" cy="220" r="4"/>
+    <circle cx="250" cy="210" r="4"/>
+  </g>
+  <!-- curled tail -->
+  <path d="M228 258 c-16 6 -24 20 -20 34 c10 -2 20 -12 22 -26 c8 8 6 22 -4 30 c14 2 24 -10 24 -24 c0 -10 -10 -18 -22 -14 Z" fill="#245f3d"/>
+
+  <rect x="36" y="344" width="4" height="24" rx="2" fill="#3fae6d"/>
+</svg>

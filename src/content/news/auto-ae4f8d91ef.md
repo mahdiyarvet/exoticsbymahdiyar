@@ -1,0 +1,14 @@
+---
+title: "کارآفرین وب سیتی در حال نوآوری در مراقبت از خزندگان"
+description: "کارآفرین وب سیتی در حال نوآوری در مراقبت از خزندگان"
+pubDate: 2026-04-29
+cover: "/images/terrarium.svg"
+source: "FourStatesHomepage.com"
+sourceUrl: "https://news.google.com/rss/articles/CBMinAFBVV95cUxNUi1zUDdveG1rQTFqYXVOcWpWVUNzS3BOWTFORGk3b1BWVklUOTlVakFDaU5mNTlQbnJ6NWpLaTJoNXdxN1YxbHYtTnRVN3VFWUM5YklPVGUtVmRVMWVCVllPbWJHWGpBcms0cnlFSk9iZnZORWl4RmE0TG1PUXNZV2JKOHBvUGR0cktRdzVXUDZSS3F6V08zWThpbEjSAaIBQVVfeXFMTThBQkpDRmpJdUZsaTM2c1BsMjM2QmowcU9zZU1yWU9PSjd5OVhQemFtNjh5c2Z4RjluU2tHdTJQN2NyZ2NkN0Fla3oycDVMNWdzR2NXU1RuUVJ4Zi1mSWZMXzE0ci1xeWdxQ2hQS00zaUlGbVJMbHE3VE0yenQ3NU1JejlCMDRjdVptaEhLVERXT191bWpsMnd5Z1FScDBBT3VR?oc=5"
+---
+
+کارآفرین وب سیتی در حال نوآوری در مراقبت از خزندگان
+
+برای مطالعه‌ی متن کامل، به منبع اصلی خبر مراجعه کنید:
+
+> منبع: [FourStatesHomepage.com](https://news.google.com/rss/articles/CBMinAFBVV95cUxNUi1zUDdveG1rQTFqYXVOcWpWVUNzS3BOWTFORGk3b1BWVklUOTlVakFDaU5mNTlQbnJ6NWpLaTJoNXdxN1YxbHYtTnRVN3VFWUM5YklPVGUtVmRVMWVCVllPbWJHWGpBcms0cnlFSk9iZnZORWl4RmE0TG1PUXNZV2JKOHBvUGR0cktRdzVXUDZSS3F6V08zWThpbEjSAaIBQVVfeXFMTThBQkpDRmpJdUZsaTM2c1BsMjM2QmowcU9zZU1yWU9PSjd5OVhQemFtNjh5c2Z4RjluU2tHdTJQN2NyZ2NkN0Fla3oycDVMNWdzR2NXU1RuUVJ4Zi1mSWZMXzE0ci1xeWdxQ2hQS00zaUlGbVJMbHE3VE0yenQ3NU1JejlCMDRjdVptaEhLVERXT191bWpsMnd5Z1FScDBBT3VR?oc=5)

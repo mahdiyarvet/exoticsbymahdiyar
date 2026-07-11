@@ -6,7 +6,35 @@ import { createHash } from 'crypto';
 const NEWS_DIR = 'src/content/news';
 const MAX_NEW = 3;                 // max new posts per run
 const TRANSLATE_EMAIL = 'm.ramzgooyan@gmail.com'; // raises MyMemory free quota
-const COVERS = ['/images/snake.jpg', '/images/turtle.jpg', '/images/uvb.jpg', '/images/terrarium.svg', '/images/vet-check.svg'];
+
+// real, free-license photos (see public/images/photos/CREDITS.json) mapped by keyword,
+// checked in order -- first keyword match in the (translated) title wins.
+const PHOTO_MAP = [
+  [/mar|snake|python|corn snake|ball python/i, ['/images/photos/corn-snake-1.jpg', '/images/photos/corn-snake-2.jpg', '/images/photos/ball-python-1.jpg', '/images/photos/ball-python-2.jpg', '/images/photos/ball-python-3.jpg']],
+  [/لاک‌پشت|turtle|tortoise/i, ['/images/photos/red-eared-slider-1.jpg', '/images/photos/red-eared-slider-2.jpg', '/images/photos/red-eared-slider-3.jpg']],
+  [/بردد|بیرد|dragon/i, ['/images/photos/bearded-dragon-1.jpg', '/images/photos/bearded-dragon-2.jpg', '/images/photos/bearded-dragon-3.jpg']],
+  [/گکو|gecko/i, ['/images/photos/leopard-gecko-1.jpg', '/images/photos/leopard-gecko-2.jpg', '/images/photos/crested-gecko-1.jpg', '/images/photos/crested-gecko-2.jpg']],
+  [/آفتاب‌پرست|chameleon/i, ['/images/photos/chameleon-1.jpg', '/images/photos/chameleon-2.jpg', '/images/photos/chameleon-3.jpg']],
+  [/ایگوانا|iguana/i, ['/images/photos/iguana-1.jpg', '/images/photos/iguana-2.jpg', '/images/photos/iguana-3.jpg']],
+  [/مانیتور|monitor lizard|varanus/i, ['/images/photos/monitor-lizard-1.jpg']],
+  [/طوطی|ماکائو|macaw|parrot/i, ['/images/photos/macaw-1.jpg', '/images/photos/macaw-2.jpg', '/images/photos/macaw-3.jpg']],
+  [/مرغ عشق|budg/i, ['/images/photos/budgerigar-1.jpg', '/images/photos/budgerigar-2.jpg', '/images/photos/budgerigar-3.jpg']],
+  [/کاکاتیل|cockatiel/i, ['/images/photos/cockatiel-1.jpg', '/images/photos/cockatiel-2.jpg', '/images/photos/cockatiel-3.jpg']],
+  [/لاوبرد|lovebird/i, ['/images/photos/lovebird-1.jpg', '/images/photos/lovebird-2.jpg', '/images/photos/lovebird-3.jpg']],
+  [/فرت|ferret/i, ['/images/photos/ferret-1.jpg', '/images/photos/ferret-2.jpg']],
+  [/همستر|hamster/i, ['/images/photos/hamster-1.jpg', '/images/photos/hamster-2.jpg', '/images/photos/hamster-3.jpg']],
+  [/خرگوش|rabbit/i, ['/images/photos/rabbit-1.jpg', '/images/photos/rabbit-2.jpg', '/images/photos/rabbit-3.jpg']],
+  [/خوکچه|guinea pig/i, ['/images/photos/guinea-pig-1.jpg', '/images/photos/guinea-pig-2.jpg', '/images/photos/guinea-pig-3.jpg']],
+];
+// fallback rotation for stories that don't match a specific species
+const COVERS = ['/images/photos/corn-snake-3.jpg', '/images/photos/red-eared-slider-1.jpg', '/images/photos/bearded-dragon-1.jpg', '/images/terrarium.svg', '/images/vet-check.svg'];
+
+function pickCover(title, id) {
+  for (const [re, pool] of PHOTO_MAP) {
+    if (re.test(title)) return pool[parseInt(id, 16) % pool.length];
+  }
+  return COVERS[parseInt(id, 16) % COVERS.length];
+}
 const QUERY = '(reptile OR herpetology OR tortoise OR "bearded dragon" OR chameleon OR iguana OR gecko OR "exotic pet") (care OR health OR species OR conservation OR veterinary OR discovered OR study OR rescue OR habitat) when:14d';
 const FEED = `https://news.google.com/rss/search?q=${encodeURIComponent(QUERY)}&hl=en-US&gl=US&ceid=US:en`;
 // only keep genuinely animal/reptile stories; drop political/sports/tech uses of "snake"/"python"
@@ -93,7 +121,7 @@ async function main() {
 
     const date = pub ? new Date(pub) : new Date();
     const iso = isNaN(date) ? new Date().toISOString().slice(0, 10) : date.toISOString().slice(0, 10);
-    const cover = COVERS[parseInt(id, 16) % COVERS.length];
+    const cover = pickCover(`${title} ${faTitle}`, id);
     const desc = faTitle.length > 150 ? faTitle.slice(0, 147) + '…' : faTitle;
 
     const md = `---

@@ -5,7 +5,7 @@ pubDate: 2026-07-06
 updatedDate: 2026-07-08
 category: "خزندگان"
 tags: ["مار", "پوست‌اندازی", "تغذیه", "رطوبت", "دست‌کاری"]
-cover: "/images/snake.jpg"
+cover: "/images/photos/corn-snake-1.jpg"
 sources:
   - label: "ARAV — Snake Husbandry Guidelines"
   - label: "Mader DR — Reptile Medicine and Surgery"

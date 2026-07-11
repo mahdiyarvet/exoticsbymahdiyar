@@ -28,6 +28,7 @@ const year = new Date().toLocaleDateString('fa-IR', { year: 'numeric' });
   </div>
   <div class="container copy">
     <span class="muted">© {year} — دکتر مهدیار رمزگویان. تمامی حقوق محفوظ است.</span>
+    <a href="/photo-credits" class="credits-link muted">منابع عکس‌ها</a>
   </div>
 </footer>
 
@@ -40,6 +41,8 @@ const year = new Date().toLocaleDateString('fa-IR', { year: 'numeric' });
   .cols h4 { font-size: 14px; color: var(--accent); margin-bottom: 14px; }
   .cols a { display: block; color: var(--text-muted); padding: 5px 0; font-size: 15px; transition: color .2s; }
   .cols a:hover { color: var(--brand); }
-  .copy { border-top: 1px solid var(--border); padding-block: 20px; font-size: 14px; }
+  .copy { border-top: 1px solid var(--border); padding-block: 20px; font-size: 14px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+  .credits-link { font-size: 12.5px; }
+  .credits-link:hover { color: var(--brand); }
   @media (max-width: 720px) { .foot { grid-template-columns: 1fr; gap: 28px; } }
 </style>

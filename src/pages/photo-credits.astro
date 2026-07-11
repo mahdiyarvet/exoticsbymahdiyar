@@ -1,0 +1,47 @@
+---
+import { readFileSync } from 'fs';
+import Base from '../layouts/Base.astro';
+
+const credits = JSON.parse(readFileSync('public/images/photos/CREDITS.json', 'utf8'));
+const rows = Object.entries(credits).sort(([a], [b]) => a.localeCompare(b));
+
+const wikiUrl = (title: string) => `https://commons.wikimedia.org/wiki/${encodeURIComponent(title.replace(/ /g, '_'))}`;
+---
+<Base title="منابع عکس‌ها" description="فهرست منابع و مجوز عکس‌های واقعی حیوانات استفاده‌شده در سایت، از ویکی‌مدیا کامنز." noindex={true}>
+  <section class="section container">
+    <span class="eyebrow">شفافیت</span>
+    <h1>منابع و مجوز عکس‌ها</h1>
+    <p class="muted" style="max-width:65ch;margin-top:10px">
+      عکس‌های واقعی حیوانات در این سایت از <a href="https://commons.wikimedia.org" target="_blank" rel="noopener">ویکی‌مدیا کامنز</a> و
+      با مجوزهای آزاد (Public Domain / CC0 / CC BY / CC BY-SA) گرفته شده‌اند. طبق این فهرست، منبع و نویسنده‌ی هر عکس ذکر شده است.
+    </p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>فایل در سایت</th><th>منبع در ویکی‌مدیا</th><th>نویسنده</th><th>مجوز</th></tr>
+        </thead>
+        <tbody>
+          {rows.map(([file, c]: [string, any]) => (
+            <tr>
+              <td><code>{file}</code></td>
+              <td><a href={wikiUrl(c.title)} target="_blank" rel="noopener">{c.title.replace(/^File:/, '')}</a></td>
+              <td>{c.artist}</td>
+              <td>{c.license}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .table-wrap { margin-top: 30px; overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius); }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 720px; }
+  th, td { padding: 10px 14px; text-align: right; border-bottom: 1px solid var(--border); }
+  th { background: var(--surface); color: var(--text-muted); font-weight: 600; }
+  td code { background: var(--surface-2); padding: 2px 6px; border-radius: 5px; font-size: 12px; }
+  tr:last-child td { border-bottom: none; }
+  a { color: var(--brand); }
+</style>

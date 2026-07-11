@@ -5,7 +5,7 @@ pubDate: 2026-07-05
 updatedDate: 2026-07-08
 category: "پستانداران"
 tags: ["همستر", "خرگوش", "خوکچه هندی", "تغذیه", "فیبر", "ویتامین C"]
-cover: "/images/small-mammal.jpg"
+cover: "/images/photos/guinea-pig-2.jpg"
 sources:
   - label: "House Rabbit Society — Rabbit Care & Diet"
   - label: "Quesenberry KE, Carpenter JW — Ferrets, Rabbits, and Rodents: Clinical Medicine and Surgery"

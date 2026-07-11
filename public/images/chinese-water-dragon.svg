@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" fill="none" role="img" aria-label="نگهداری اژدهای آبی چینی">
+  <defs>
+    <linearGradient id="cwdBg" x1="0" y1="0" x2="640" y2="400" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0f1512"/><stop offset="1" stop-color="#1b271f"/>
+    </linearGradient>
+    <radialGradient id="cwdGlow" cx="0" cy="0" r="1" gradientTransform="translate(360 150) scale(260)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3fae6d" stop-opacity="0.22"/><stop offset="1" stop-color="#3fae6d" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="cwdBody" x1="180" y1="120" x2="440" y2="320" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#38a866"/><stop offset="1" stop-color="#245f3d"/>
+    </linearGradient>
+    <pattern id="cwdDots" width="26" height="26" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.4" fill="#3fae6d" fill-opacity="0.12"/>
+    </pattern>
+  </defs>
+  <rect width="640" height="400" fill="url(#cwdBg)"/>
+  <rect width="640" height="400" fill="url(#cwdDots)"/>
+  <rect width="640" height="400" fill="url(#cwdGlow)"/>
+
+  <!-- branch, diagonal for arboreal feel -->
+  <path d="M60 340 C220 300 380 260 560 150" stroke="#6b4a2b" stroke-width="18" stroke-linecap="round" fill="none"/>
+  <path d="M60 340 C220 300 380 260 560 150" stroke="#54371f" stroke-width="4" stroke-linecap="round" fill="none" opacity="0.5"/>
+
+  <!-- tail, long and curling -->
+  <path d="M470 190 c70 -40 100 -90 84 -140 c-50 24 -84 78 -104 132 Z" fill="#245f3d"/>
+  <path d="M486 168 c46 -30 66 -66 58 -104" stroke="#1c4a30" stroke-width="3" fill="none" opacity="0.6"/>
+
+  <!-- hind leg gripping branch -->
+  <g fill="#245f3d">
+    <ellipse cx="330" cy="238" rx="13" ry="17"/>
+  </g>
+
+  <!-- body, low and long along the branch -->
+  <path d="M210 260
+    c-10 -34 20 -66 62 -70
+    c46 -4 96 6 132 -18
+    c18 -12 34 -30 34 -30
+    c8 2 8 14 -2 22
+    c-18 16 -36 34 -40 56
+    c-6 30 -40 46 -74 44
+    c-46 -2 -104 -2 -112 -4 Z" fill="url(#cwdBody)"/>
+
+  <!-- crest spines along the back -->
+  <g fill="#1c4a30">
+    <path d="M250 196 l6 -14 l6 14 Z"/>
+    <path d="M270 190 l6 -16 l6 16 Z"/>
+    <path d="M290 186 l6 -17 l6 17 Z"/>
+    <path d="M310 184 l6 -17 l6 17 Z"/>
+    <path d="M330 186 l6 -16 l6 16 Z"/>
+  </g>
+
+  <!-- front leg -->
+  <ellipse cx="234" cy="252" rx="12" ry="16" fill="#245f3d"/>
+
+  <!-- head -->
+  <ellipse cx="196" cy="238" rx="30" ry="17" fill="#38a866"/>
+  <path d="M170 234 l-16 -4 m16 4 l-16 6" stroke="#d9a441" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="182" cy="232" r="5.5" fill="#0f1512"/>
+  <circle cx="184" cy="229" r="1.8" fill="#eef3ee"/>
+
+  <!-- gold scale accents -->
+  <g fill="#d9a441" fill-opacity="0.4">
+    <circle cx="256" cy="212" r="3.5"/>
+    <circle cx="284" cy="206" r="3.5"/>
+    <circle cx="312" cy="204" r="3.5"/>
+    <circle cx="340" cy="208" r="3.5"/>
+  </g>
+
+  <!-- water hint below branch -->
+  <ellipse cx="320" cy="352" rx="240" ry="16" fill="#3fae6d" fill-opacity="0.12"/>
+
+  <rect x="36" y="344" width="4" height="24" rx="2" fill="#3fae6d"/>
+</svg>

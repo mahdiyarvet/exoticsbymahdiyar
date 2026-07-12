@@ -15,9 +15,12 @@ const schema = {
   '@context': 'https://schema.org',
   '@type': 'Book',
   name: d.title,
+  description: d.description,
   author: { '@type': 'Person', name: d.author },
   inLanguage: d.lang,
   ...(d.year && { datePublished: String(d.year) }),
+  ...(d.cover && { image: new URL(d.cover, Astro.site).href }),
+  ...(d.tags.length > 0 && { keywords: d.tags.join('، ') }),
 };
 const breadcrumb = {
   '@context': 'https://schema.org',

@@ -16,6 +16,19 @@ const fa = (x: Date) => x.toLocaleDateString('fa-IR', { year: 'numeric', month: 
 const isAutoTranslated = item.id.startsWith('auto-');
 
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
+// only emit rich NewsArticle schema for the hand-written items actually in Google's index
+const newsSchema = !isAutoTranslated && {
+  '@context': 'https://schema.org',
+  '@type': 'NewsArticle',
+  headline: d.title,
+  description: d.description,
+  datePublished: d.pubDate.toISOString(),
+  inLanguage: 'fa-IR',
+  author: { '@type': 'Person', name: 'دکتر مهدیار رمزگویان' },
+  publisher: { '@type': 'Person', name: 'دکتر مهدیار رمزگویان' },
+  mainEntityOfPage: canonicalUrl,
+  ...(d.cover && { image: new URL(d.cover, Astro.site).href }),
+};
 const breadcrumb = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
@@ -37,6 +50,7 @@ const breadcrumb = {
     {d.sourceUrl && <a class="btn btn-ghost" href={d.sourceUrl} target="_blank" rel="noopener" style="margin-top:30px">مشاهده منبع اصلی</a>}
   </article>
   <script type="application/ld+json" set:html={JSON.stringify(breadcrumb)} />
+  {newsSchema && <script type="application/ld+json" set:html={JSON.stringify(newsSchema)} />}
 </Base>
 <style>
   .post { max-width: 760px; padding-block: 40px 80px; }

@@ -7,8 +7,24 @@ const fa = (d: Date) => d.toLocaleDateString('fa-IR', { year: 'numeric', month: 
 const items = (await getCollection('articles', ({ data }) => !data.draft))
   .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
 const cats = [...new Set(items.map((i) => i.data.category))];
+
+const listSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'مقالات دامپزشکی اگزوتیک',
+  url: new URL('/articles', Astro.site).href,
+  isPartOf: { '@type': 'WebSite', name: 'اگزوتیک با مهدیار', url: Astro.site?.href },
+  mainEntity: {
+    '@type': 'ItemList',
+    itemListElement: items.slice(0, 20).map((a, i) => ({
+      '@type': 'ListItem', position: i + 1,
+      url: new URL(`/articles/${a.id}`, Astro.site).href, name: a.data.title,
+    })),
+  },
+};
 ---
 <Base title="مقالات" description="مجموعه مقالات علمی و آموزشی دامپزشکی حیوانات اگزوتیک؛ خزندگان، پرندگان و پستانداران، نگارش دکتر مهدیار رمزگویان.">
+  <script type="application/ld+json" set:html={JSON.stringify(listSchema)} />
   <section class="section container">
     <span class="eyebrow">مقالات</span>
     <h1>مقالات دامپزشکی اگزوتیک</h1>

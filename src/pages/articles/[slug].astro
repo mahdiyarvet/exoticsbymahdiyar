@@ -22,8 +22,11 @@ const schema = {
   datePublished: d.pubDate.toISOString(),
   dateModified: (d.updatedDate ?? d.pubDate).toISOString(),
   author: { '@type': 'Person', name: d.author },
+  publisher: { '@type': 'Person', name: 'دکتر مهدیار رمزگویان' },
   inLanguage: 'fa-IR',
   mainEntityOfPage: canonicalUrl,
+  ...(d.cover && { image: new URL(d.cover, Astro.site).href }),
+  ...(d.tags.length > 0 && { keywords: d.tags.join('، ') }),
 };
 const breadcrumb = {
   '@context': 'https://schema.org',

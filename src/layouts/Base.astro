@@ -32,8 +32,17 @@ const personSchema = {
   '@type': 'Person',
   name: 'دکتر مهدیار رمزگویان',
   jobTitle: 'دامپزشک حیوانات اگزوتیک',
+  description: 'دامپزشک باغ پرندگان تهران، متخصص طب حیوانات اگزوتیک، خزندگان و پرندگان زینتی.',
   url: Astro.site?.href,
+  image: new URL('/images/photos/macaw-1.jpg', Astro.site).href,
   sameAs: ['https://instagram.com/exoticsbymahdiyar'],
+  worksFor: {
+    '@type': 'Organization',
+    name: 'باغ پرندگان تهران',
+    address: { '@type': 'PostalAddress', addressLocality: 'تهران', addressCountry: 'IR' },
+  },
+  knowsAbout: ['طب حیوانات اگزوتیک', 'خزندگان', 'هرپتولوژی', 'طب پرندگان', 'نگهداری بردد دراگون', 'نگهداری مار', 'نگهداری طوطی'],
+  knowsLanguage: ['fa', 'en'],
 };
 
 // WebSite schema only on the homepage (helps brand/sitelinks understanding; avoids duplicate emission)

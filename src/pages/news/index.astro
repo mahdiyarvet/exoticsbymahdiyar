@@ -4,8 +4,24 @@ import Base from '../../layouts/Base.astro';
 import Card from '../../components/Card.astro';
 const fa = (d) => d.toLocaleDateString('fa-IR', { year: 'numeric', month: 'long', day: 'numeric' });
 const items = (await getCollection('news', ({ data }) => !data.draft)).sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+
+const listSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'اخبار دامپزشکی اگزوتیک',
+  url: new URL('/news', Astro.site).href,
+  isPartOf: { '@type': 'WebSite', name: 'اگزوتیک با مهدیار', url: Astro.site?.href },
+  mainEntity: {
+    '@type': 'ItemList',
+    itemListElement: items.filter((n) => !n.id.startsWith('auto-')).slice(0, 20).map((n, i) => ({
+      '@type': 'ListItem', position: i + 1,
+      url: new URL(`/news/${n.id}`, Astro.site).href, name: n.data.title,
+    })),
+  },
+};
 ---
 <Base title="اخبار" description="آخرین اخبار و رویدادهای دنیای دامپزشکی حیوانات اگزوتیک؛ تازه‌ترین یافته‌ها و پژوهش‌ها.">
+  <script type="application/ld+json" set:html={JSON.stringify(listSchema)} />
   <section class="section container">
     <span class="eyebrow">اخبار</span>
     <h1>اخبار دامپزشکی اگزوتیک</h1>

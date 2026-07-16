@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" role="img" aria-label="جلد اختصاصی معرفی BSAVA Manual of Reptiles">
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#242b18"/><stop offset="1" stop-color="#69713a"/></linearGradient><pattern id="p" width="56" height="32" patternUnits="userSpaceOnUse"><path d="M0 0c0 20 28 32 28 32S56 20 56 0" fill="none" stroke="#e7c76d" stroke-opacity=".2" stroke-width="2"/></pattern></defs>
+  <rect width="600" height="800" rx="18" fill="url(#bg)"/><rect y="365" width="600" height="435" fill="url(#p)"/>
+  <rect x="44" y="48" width="116" height="45" rx="5" fill="#e7c76d"/><text x="102" y="79" text-anchor="middle" fill="#242b18" font-family="Arial,sans-serif" font-size="20" font-weight="800">BSAVA</text>
+  <text x="48" y="170" fill="#f7f0d9" font-family="Arial,sans-serif" font-size="21" letter-spacing="3">MANUAL OF</text>
+  <text x="48" y="247" fill="#f7f0d9" font-family="Georgia,serif" font-size="58" font-weight="700">REPTILES</text>
+  <text x="48" y="294" fill="#e7c76d" font-family="Arial,sans-serif" font-size="22">THIRD EDITION</text>
+  <g transform="translate(74 400)" fill="none" stroke="#f7f0d9" stroke-width="9" stroke-linecap="round"><path d="M11 176c48-90 115-123 201-99 81 22 132 3 168-58M203 77c31 42 47 87 48 135M144 78 102 33M285 60l45-42"/><circle cx="13" cy="176" r="7" fill="#e7c76d" stroke="none"/></g>
+  <text x="48" y="704" fill="#f7f0d9" font-family="Arial,sans-serif" font-size="19">SIMON J. GIRLING</text>
+  <text x="48" y="737" fill="#f7f0d9" font-family="Arial,sans-serif" font-size="19">PAUL RAITI</text>
+</svg>

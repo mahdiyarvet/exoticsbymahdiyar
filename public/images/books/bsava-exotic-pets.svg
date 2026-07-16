@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" role="img" aria-label="جلد اختصاصی معرفی BSAVA Manual of Exotic Pets">
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#24203c"/><stop offset="1" stop-color="#613f67"/></linearGradient></defs>
+  <rect width="600" height="800" rx="18" fill="url(#bg)"/>
+  <rect x="0" y="420" width="600" height="76" fill="#0f746e"/><rect x="0" y="496" width="600" height="76" fill="#b96a3b"/><rect x="0" y="572" width="600" height="76" fill="#8e9b53"/>
+  <rect x="44" y="48" width="116" height="45" rx="5" fill="#efc86d"/><text x="102" y="79" text-anchor="middle" fill="#24203c" font-family="Arial,sans-serif" font-size="20" font-weight="800">BSAVA</text>
+  <text x="48" y="170" fill="#f6eddb" font-family="Arial,sans-serif" font-size="21" letter-spacing="3">MANUAL OF</text>
+  <text x="48" y="244" fill="#f6eddb" font-family="Georgia,serif" font-size="54" font-weight="700">EXOTIC</text>
+  <text x="48" y="304" fill="#f6eddb" font-family="Georgia,serif" font-size="54" font-weight="700">PETS</text>
+  <text x="48" y="350" fill="#efc86d" font-family="Arial,sans-serif" font-size="21">A FOUNDATION MANUAL · 5TH</text>
+  <g fill="none" stroke="#fff4df" stroke-width="7" stroke-linecap="round">
+    <path d="M82 458h70m-35-24v48"/><path d="M238 448c18-25 45-25 64 0-10 25-22 35-32 35s-22-10-32-35Z"/><path d="M387 460c30-38 68-24 88 0-32 29-61 31-88 0Z"/>
+  </g>
+  <text x="48" y="708" fill="#f6eddb" font-family="Arial,sans-serif" font-size="18">ANNA MEREDITH</text>
+  <text x="48" y="739" fill="#f6eddb" font-family="Arial,sans-serif" font-size="18">CATHY JOHNSON-DELANEY</text>
+</svg>

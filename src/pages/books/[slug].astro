@@ -19,6 +19,8 @@ const schema = {
   author: { '@type': 'Person', name: d.author },
   inLanguage: d.lang,
   ...(d.year && { datePublished: String(d.year) }),
+  ...(d.publisher && { publisher: { '@type': 'Organization', name: d.publisher } }),
+  ...(d.officialUrl && { sameAs: d.officialUrl }),
   ...(d.cover && { image: new URL(d.cover, Astro.site).href }),
   ...(d.tags.length > 0 && { keywords: d.tags.join('، ') }),
 };
@@ -37,18 +39,25 @@ const breadcrumb = {
     <nav class="crumb muted"><a href="/">خانه</a> / <a href="/books">کتابخانه</a></nav>
     <div class="head">
       <div class="cover-wrap">
-        {d.cover ? <img src={d.cover} alt={d.title} /> : <div class="cover-fallback">📚</div>}
+        {d.cover ? <img src={d.cover} alt={`جلد معرفی کتاب ${d.title}`} width="600" height="800" /> : <div class="cover-fallback">📚</div>}
       </div>
       <div class="info">
         <span class="tag">{d.lang === 'fa' ? 'فارسی' : 'English'}</span>
         <h1>{d.title}</h1>
         <p class="author muted">نویسنده: {d.author}</p>
         <ul class="specs muted">
+          {d.edition && <li>ویرایش: {d.edition}</li>}
           {d.year && <li>سال: {d.year.toLocaleString('fa-IR', { useGrouping: false })}</li>}
           {d.pages && <li>{d.pages.toLocaleString('fa-IR')} صفحه</li>}
+          {d.publisher && <li>ناشر: {d.publisher}</li>}
         </ul>
         <p class="desc">{d.description}</p>
-        {d.downloadUrl && <a class="btn" href={d.downloadUrl} target="_blank" rel="noopener">دانلود / مشاهده</a>}
+        <div class="book-actions">
+          {d.downloadUrl && <a class="btn download" href={d.downloadUrl} target="_blank" rel="noopener noreferrer">دانلود قانونی {d.downloadSize && `(${d.downloadSize})`}</a>}
+          {d.officialUrl && <a class="btn" href={d.officialUrl} target="_blank" rel="noopener noreferrer external">مشاهده در وب‌سایت ناشر</a>}
+          {d.sampleUrl && <a class="btn btn-ghost" href={d.sampleUrl} target="_blank" rel="noopener noreferrer external">نمونهٔ رسمی کتاب</a>}
+        </div>
+        {!d.downloadUrl && d.officialUrl && <p class="rights-note">برای رعایت حق نشر، نسخهٔ کامل فقط از ناشر یا فروشندهٔ رسمی قابل تهیه است.</p>}
         {d.tags.length > 0 && <div class="tags">{d.tags.map((t) => <span class="tag">#{t}</span>)}</div>}
       </div>
     </div>
@@ -68,6 +77,10 @@ const breadcrumb = {
   .info h1 { margin-block: 12px 8px; }
   .specs { display: flex; gap: 16px; list-style: none; padding: 0; margin-block: 14px; font-size: 14.5px; }
   .desc { margin-block: 16px 24px; }
+  .book-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .book-actions .btn { padding: 10px 17px; font-size: 13.5px; }
+  .book-actions .download { background: #d66a32; color: #fff8e8; }
+  .rights-note { max-width: 58ch; margin-top: 14px; padding: 9px 12px; border-inline-start: 2px solid var(--brand); color: var(--text-muted); font-size: 12.5px; line-height: 1.75; }
   .tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 20px; }
-  @media (max-width: 640px) { .head { grid-template-columns: 1fr; } .cover-wrap { max-width: 200px; } }
+  @media (max-width: 640px) { .head { grid-template-columns: 1fr; } .cover-wrap { max-width: 210px; } .specs { flex-wrap: wrap; gap: 7px 14px; } }
 </style>

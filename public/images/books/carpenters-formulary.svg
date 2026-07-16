@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" role="img" aria-label="جلد اختصاصی معرفی Carpenter's Exotic Animal Formulary">
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#10283a"/><stop offset="1" stop-color="#0f5c58"/></linearGradient><radialGradient id="glow"><stop stop-color="#55c6ae" stop-opacity=".28"/><stop offset="1" stop-color="#55c6ae" stop-opacity="0"/></radialGradient></defs>
+  <rect width="600" height="800" rx="18" fill="url(#bg)"/><circle cx="450" cy="190" r="250" fill="url(#glow)"/>
+  <g fill="none" stroke="#7dd5c0" stroke-opacity=".18" stroke-width="2"><circle cx="490" cy="110" r="68"/><circle cx="490" cy="110" r="42"/><circle cx="490" cy="110" r="18"/></g>
+  <text x="52" y="105" fill="#f3c86f" font-family="Arial,sans-serif" font-size="20" font-weight="700" letter-spacing="3">CARPENTER'S</text>
+  <text x="52" y="185" fill="#f5f0df" font-family="Georgia,serif" font-size="52" font-weight="700">EXOTIC</text>
+  <text x="52" y="246" fill="#f5f0df" font-family="Georgia,serif" font-size="46" font-weight="700">ANIMAL</text>
+  <text x="52" y="307" fill="#f5f0df" font-family="Georgia,serif" font-size="43" font-weight="700">FORMULARY</text>
+  <text x="52" y="352" fill="#7dd5c0" font-family="Arial,sans-serif" font-size="22">SIXTH EDITION</text>
+  <g transform="translate(124 420)" fill="none" stroke="#f3c86f" stroke-width="12" stroke-linecap="round"><circle cx="176" cy="95" r="105" stroke-opacity=".6"/><path d="M176 35v120M116 95h120"/></g>
+  <rect x="52" y="672" width="496" height="1" fill="#7dd5c0" fill-opacity=".55"/>
+  <text x="52" y="716" fill="#f5f0df" font-family="Arial,sans-serif" font-size="20">JAMES W. CARPENTER</text>
+  <text x="52" y="748" fill="#f5f0df" font-family="Arial,sans-serif" font-size="20">CRAIG A. HARMS</text>
+  <text x="548" y="748" text-anchor="end" fill="#f3c86f" font-family="Arial,sans-serif" font-size="18" font-weight="700">ELSEVIER</text>
+</svg>

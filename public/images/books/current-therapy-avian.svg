@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" role="img" aria-label="جلد اختصاصی معرفی Current Therapy in Avian Medicine and Surgery Volume II">
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#102238"/><stop offset="1" stop-color="#126b74"/></linearGradient></defs>
+  <rect width="600" height="800" rx="18" fill="url(#bg)"/>
+  <path d="M420 0h180v800H320c90-148 117-286 81-414C370 277 377 148 420 0Z" fill="#efb34f" fill-opacity=".16"/>
+  <text x="50" y="102" fill="#efb34f" font-family="Arial,sans-serif" font-size="18" font-weight="700" letter-spacing="3">CURRENT THERAPY IN</text>
+  <text x="50" y="182" fill="#f3f0e4" font-family="Georgia,serif" font-size="58" font-weight="700">AVIAN</text>
+  <text x="50" y="242" fill="#f3f0e4" font-family="Georgia,serif" font-size="42" font-weight="700">MEDICINE &amp;</text>
+  <text x="50" y="298" fill="#f3f0e4" font-family="Georgia,serif" font-size="44" font-weight="700">SURGERY</text>
+  <text x="50" y="343" fill="#67d0cf" font-family="Arial,sans-serif" font-size="23">VOLUME II</text>
+  <g transform="translate(145 408) rotate(-12)" fill="none" stroke="#f3f0e4" stroke-width="9" stroke-linecap="round">
+    <path d="M18 202C76 78 164 10 284 1c-20 113-88 201-208 250"/>
+    <path d="M35 226 246 36M93 174l-54-5M135 133l-48-35M178 92l-31-46M135 133l62 7M93 174l58 29" stroke="#efb34f" stroke-width="6"/>
+  </g>
+  <line x1="50" y1="665" x2="550" y2="665" stroke="#67d0cf" stroke-opacity=".55"/>
+  <text x="50" y="713" fill="#f3f0e4" font-family="Arial,sans-serif" font-size="20">BRIAN SPEER</text>
+  <text x="50" y="745" fill="#f3f0e4" font-family="Arial,sans-serif" font-size="20">YVONNE R.A. VAN ZEELAND</text>
+  <text x="550" y="745" text-anchor="end" fill="#efb34f" font-family="Arial,sans-serif" font-size="18" font-weight="700">ELSEVIER</text>
+</svg>

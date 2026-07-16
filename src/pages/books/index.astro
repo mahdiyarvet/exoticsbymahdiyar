@@ -1,34 +1,109 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
-import Card from '../../components/Card.astro';
-const items = await getCollection('books', ({ data }) => !data.draft);
+
+const items = (await getCollection('books', ({ data }) => !data.draft))
+  .sort((a, b) => Number(b.data.featured) - Number(a.data.featured) || (b.data.year ?? 0) - (a.data.year ?? 0));
 
 const listSchema = {
   '@context': 'https://schema.org',
   '@type': 'CollectionPage',
-  name: 'کتابخانه تخصصی',
+  name: 'کتابخانه تخصصی دامپزشکی اگزوتیک',
   url: new URL('/books', Astro.site).href,
   isPartOf: { '@type': 'WebSite', name: 'اگزوتیک با مهدیار', url: Astro.site?.href },
   mainEntity: {
     '@type': 'ItemList',
-    itemListElement: items.map((b, i) => ({
-      '@type': 'ListItem', position: i + 1,
-      url: new URL(`/books/${b.id}`, Astro.site).href, name: b.data.title,
+    itemListElement: items.map((book, index) => ({
+      '@type': 'ListItem', position: index + 1,
+      url: new URL(`/books/${book.id}`, Astro.site).href, name: book.data.title,
     })),
   },
 };
 ---
-<Base title="کتابخانه" description="کتابخانه تخصصی دامپزشکی حیوانات اگزوتیک؛ منابع فارسی و انگلیسی درباره خزندگان، پرندگان و پستانداران اگزوتیک.">
+<Base title="کتابخانه" description="کتابخانه تخصصی دامپزشکی حیوانات اگزوتیک؛ معرفی منابع معتبر خزندگان، پرندگان، دوزیستان و پستانداران کوچک با لینک رسمی ناشر.">
   <script type="application/ld+json" set:html={JSON.stringify(listSchema)} />
-  <section class="section container">
-    <span class="eyebrow">کتابخانه</span>
-    <h1>کتابخانه تخصصی</h1>
-    <p class="muted" style="max-width:60ch;margin-top:8px">مجموعه‌ای از بهترین کتاب‌ها و منابع دامپزشکی حیوانات اگزوتیک.</p>
+  <section class="section container library-page">
+    <header class="library-hero">
+      <div>
+        <span class="eyebrow">کتابخانه اگزوتیک</span>
+        <h1>منابعی که ارزش ماندن روی میز کار را دارند</h1>
+        <p>گزیده‌ای از مراجع شناخته‌شدهٔ دامپزشکی اگزوتیک برای مطالعه، انتخاب و تهیه از ناشران رسمی.</p>
+      </div>
+      <div class="library-stats" aria-label="آمار کتابخانه">
+        <strong>{items.length.toLocaleString('fa-IR')}</strong>
+        <span>عنوان منتخب</span>
+      </div>
+    </header>
+
+    <div class="library-note">
+      <span aria-hidden="true">✓</span>
+      <p>لینک دانلود تنها برای فایل‌های دارای مجوز انتشار نمایش داده می‌شود؛ سایر کتاب‌ها به صفحهٔ رسمی ناشر متصل هستند.</p>
+    </div>
+
     {items.length === 0
       ? <p class="empty muted">هنوز کتابی اضافه نشده. به‌زودی…</p>
-      : <div class="grid grid-3" style="margin-top:28px">{items.map((b) => (
-          <Card href={`/books/${b.id}`} title={b.data.title} description={b.data.description} cover={b.data.cover} tag={b.data.lang === 'fa' ? 'فارسی' : 'English'} meta={b.data.author} />))}</div>}
+      : <div class="books-grid">{items.map((book) => {
+          const d = book.data;
+          return (
+            <a class="book-card" href={`/books/${book.id}`}>
+              <div class="book-cover">
+                {d.cover
+                  ? <img src={d.cover} alt={`جلد معرفی کتاب ${d.title}`} loading="lazy" width="600" height="800" />
+                  : <div class="cover-fallback">📚</div>}
+                {d.featured && <span class="featured">پیشنهاد ویژه</span>}
+              </div>
+              <div class="book-info">
+                <div class="book-kicker">
+                  <span>{d.lang === 'fa' ? 'فارسی' : 'English'}</span>
+                  {d.edition && <span>{d.edition}</span>}
+                </div>
+                <h2>{d.title}</h2>
+                <p class="book-author">{d.author}</p>
+                <p class="book-description">{d.description}</p>
+                <div class="book-meta">
+                  <span>{d.publisher ?? 'مرجع تخصصی'}</span>
+                  {d.year && <span>{d.year.toLocaleString('fa-IR', { useGrouping: false })}</span>}
+                </div>
+                <span class="book-cta">مشاهده معرفی و لینک رسمی <b>←</b></span>
+              </div>
+            </a>
+          );
+        })}</div>}
   </section>
 </Base>
-<style>.empty{padding:60px 0;text-align:center}</style>
+
+<style>
+  .library-page { min-height: 70vh; }
+  .library-hero { display: flex; align-items: end; justify-content: space-between; gap: 28px; padding: clamp(24px,4vw,42px); border: 1px solid var(--border); border-radius: 24px; background: radial-gradient(circle at 12% 0%,rgba(196,154,74,.16),transparent 32%),linear-gradient(135deg,#30351e,#222617); box-shadow: var(--shadow); }
+  .library-hero h1 { max-width: 18ch; font-size: clamp(2rem,5vw,3.7rem); }
+  .library-hero p { max-width: 65ch; margin-top: 12px; color: var(--text-muted); }
+  .library-stats { display: grid; place-items: center; flex: none; width: 126px; aspect-ratio: 1; border: 1px solid rgba(196,154,74,.38); border-radius: 50%; background: rgba(16,20,10,.35); text-align: center; }
+  .library-stats strong { margin-bottom: -17px; color: var(--brand); font-size: 2.2rem; line-height: 1; }
+  .library-stats span { color: var(--text-muted); font-size: 12px; }
+  .library-note { display: flex; align-items: center; gap: 10px; margin: 22px 0 28px; padding: 10px 15px; border: 1px solid rgba(196,154,74,.24); border-radius: 12px; background: rgba(196,154,74,.07); }
+  .library-note span { display: grid; place-items: center; flex: none; width: 24px; height: 24px; border-radius: 50%; background: var(--brand); color: #1b1f10; font-weight: 700; }
+  .library-note p { color: var(--text-muted); font-size: 13px; line-height: 1.75; }
+  .books-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 20px; }
+  .book-card { display: grid; grid-template-columns: 164px minmax(0,1fr); min-height: 248px; overflow: hidden; border: 1px solid var(--border); border-radius: 18px; background: var(--surface); transition: transform .24s ease,border-color .24s ease,box-shadow .24s ease; }
+  .book-card:hover { transform: translateY(-4px); border-color: rgba(196,154,74,.7); box-shadow: var(--shadow); }
+  .book-cover { position: relative; min-height: 100%; overflow: hidden; background: #171b10; }
+  .book-cover img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease; }
+  .book-card:hover .book-cover img { transform: scale(1.035); }
+  .cover-fallback { display: grid; place-items: center; height: 100%; font-size: 42px; }
+  .featured { position: absolute; inset: 10px 10px auto auto; padding: 4px 9px; border-radius: 999px; background: #d66a32; color: #fff7e7; font-size: 10.5px; font-weight: 700; }
+  .book-info { display: flex; flex-direction: column; min-width: 0; padding: 20px; }
+  .book-kicker { display: flex; gap: 6px; margin-bottom: 8px; }
+  .book-kicker span { padding: 2px 8px; border: 1px solid rgba(196,154,74,.25); border-radius: 999px; color: var(--brand); font-size: 10.5px; }
+  .book-info h2 { display: -webkit-box; overflow: hidden; font-size: 17px; line-height: 1.55; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+  .book-author { overflow: hidden; margin-top: 5px; color: #d1c29f; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+  .book-description { display: -webkit-box; overflow: hidden; margin-top: 9px; color: var(--text-muted); font-size: 12.5px; line-height: 1.7; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+  .book-meta { display: flex; gap: 9px; margin-top: 11px; color: #8f866e; font-size: 10.5px; }
+  .book-meta span + span::before { content: '•'; margin-inline-end: 9px; }
+  .book-cta { margin-top: auto; padding-top: 11px; color: var(--brand); font-size: 12px; font-weight: 700; }
+  .book-cta b { display: inline-block; margin-inline-start: 3px; transition: transform .2s; }
+  .book-card:hover .book-cta b { transform: translateX(-4px); }
+  .empty { padding: 60px 0; text-align: center; }
+  @media(max-width:900px){.books-grid{grid-template-columns:1fr}.book-card{grid-template-columns:150px minmax(0,1fr)}}
+  @media(max-width:620px){.library-hero{align-items:start;flex-direction:column}.library-stats{width:auto;aspect-ratio:auto;grid-template-columns:auto auto;gap:8px;padding:8px 14px;border-radius:999px}.library-stats strong{margin:0;font-size:1.25rem}.book-card{grid-template-columns:122px minmax(0,1fr);min-height:218px}.book-info{padding:15px}.book-description{-webkit-line-clamp:2}.book-meta{display:none}}
+  @media(max-width:390px){.book-card{grid-template-columns:105px minmax(0,1fr)}.book-info h2{font-size:15px}.book-description{display:none}}
+</style>

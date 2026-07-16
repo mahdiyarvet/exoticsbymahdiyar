@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" role="img" aria-label="جلد اختصاصی معرفی Manual of Exotic Pet Practice">
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#3a1d19"/><stop offset="1" stop-color="#934a2d"/></linearGradient><radialGradient id="g"><stop stop-color="#e9b95e" stop-opacity=".28"/><stop offset="1" stop-color="#e9b95e" stop-opacity="0"/></radialGradient></defs>
+  <rect width="600" height="800" rx="18" fill="url(#bg)"/><circle cx="470" cy="470" r="280" fill="url(#g)"/>
+  <text x="50" y="110" fill="#e9b95e" font-family="Arial,sans-serif" font-size="20" font-weight="700" letter-spacing="4">MANUAL OF</text>
+  <text x="50" y="190" fill="#fff1d4" font-family="Georgia,serif" font-size="55" font-weight="700">EXOTIC PET</text>
+  <text x="50" y="253" fill="#fff1d4" font-family="Georgia,serif" font-size="53" font-weight="700">PRACTICE</text>
+  <text x="50" y="298" fill="#e9b95e" font-family="Arial,sans-serif" font-size="21">CLINICAL REFERENCE</text>
+  <g transform="translate(84 386)" fill="none" stroke="#fff1d4" stroke-width="8" stroke-linecap="round">
+    <circle cx="216" cy="122" r="108" stroke-opacity=".42"/><path d="M145 168c43-112 89-134 142-64M159 146c-55-14-76-52-66-91M278 108c52-20 91-8 113 36M188 91c-7-55 16-89 70-101"/><circle cx="222" cy="116" r="20" fill="#e9b95e" stroke="none"/>
+  </g>
+  <line x1="50" y1="662" x2="550" y2="662" stroke="#e9b95e" stroke-opacity=".55"/>
+  <text x="50" y="711" fill="#fff1d4" font-family="Arial,sans-serif" font-size="20">MARK A. MITCHELL</text>
+  <text x="50" y="744" fill="#fff1d4" font-family="Arial,sans-serif" font-size="20">THOMAS N. TULLY JR.</text>
+  <text x="550" y="744" text-anchor="end" fill="#e9b95e" font-family="Arial,sans-serif" font-size="18" font-weight="700">ELSEVIER</text>
+</svg>

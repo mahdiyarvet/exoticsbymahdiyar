@@ -1,12 +1,11 @@
 ---
 const nav = [
   { href: '/', label: 'خانه' },
+  { href: '/articles#guides', label: 'راهنمای حیوانات' },
   { href: '/articles', label: 'مقالات' },
   { href: '/news', label: 'اخبار' },
   { href: '/books', label: 'کتابخانه' },
   { href: '/visit', label: 'ویزیت آنلاین' },
-  { href: '/faq', label: 'سوالات متداول' },
-  { href: '/about', label: 'درباره من' },
 ];
 const path = Astro.url.pathname;
 const isActive = (href: string) => href === '/' ? path === '/' : path.startsWith(href);
@@ -15,7 +14,7 @@ const isActive = (href: string) => href === '/' ? path === '/' : path.startsWith
 <header class="site-header">
   <div class="container bar">
     <a href="/" class="logo" aria-label="خانه">
-      <span class="logo-mark">🦎</span>
+      <span class="logo-mark">✦</span>
       <span class="logo-text">اگزوتیک <b>با مهدیار</b></span>
     </a>
 
@@ -24,6 +23,8 @@ const isActive = (href: string) => href === '/' ? path === '/' : path.startsWith
         <a href={i.href} class:list={['nav-link', { active: isActive(i.href) }]}>{i.label}</a>
       ))}
     </nav>
+
+    <div class="header-tools" aria-hidden="true"><span>⌕</span><span>♧</span></div>
 
     <button class="menu-btn" aria-label="منو" aria-expanded="false">
       <span></span><span></span><span></span>
@@ -42,9 +43,9 @@ const isActive = (href: string) => href === '/' ? path === '/' : path.startsWith
     backdrop-filter: blur(14px);
     border-bottom: 1px solid var(--border);
   }
-  .bar { display: flex; align-items: center; justify-content: space-between; height: 78px; }
-  .logo { display: flex; align-items: center; gap: 11px; font-weight: 700; font-size: 22px; letter-spacing: -.03em; }
-  .logo-mark { display: grid; place-items: center; width: 38px; height: 38px; border: 1px solid #b88b3d; border-radius: 50%; color: #d2aa5a; font-size: 20px; }
+  .bar { display: flex; align-items: center; justify-content: space-between; height: 78px; max-width: 1600px; }
+  .logo { display: flex; align-items: center; gap: 11px; font-weight: 700; font-size: 25px; letter-spacing: -.03em; }
+  .logo-mark { display: grid; place-items: center; width: 42px; height: 42px; border: 1px solid #b88b3d; border-radius: 50%; color: #d2aa5a; font-size: 19px; }
   .logo-text b { color: #d4b06a; font-weight: 700; }
   .nav { display: flex; gap: 6px; }
   .nav-link {
@@ -53,6 +54,8 @@ const isActive = (href: string) => href === '/' ? path === '/' : path.startsWith
   }
   .nav-link:hover { color: var(--text); background: var(--surface); }
   .nav-link.active { color: #e5bd70; background: transparent; box-shadow: inset 0 -2px #c18f3a; }
+  .header-tools { display: flex; gap: 10px; direction: ltr; }
+  .header-tools span { display:grid;place-items:center;width:34px;height:34px;border:1px solid rgba(196,154,74,.25);border-radius:10px;color:#ead9b5;font-size:19px; }
   .menu-btn { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; }
   .menu-btn span { width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: .25s; }
   .menu-btn[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
@@ -62,6 +65,7 @@ const isActive = (href: string) => href === '/' ? path === '/' : path.startsWith
   .mobile-nav.open { display: flex; }
   @media (max-width: 780px) {
     .nav { display: none; }
+    .header-tools { display: none; }
     .menu-btn { display: flex; }
   }
 </style>

@@ -8,8 +8,7 @@ mkdirSync(OUT_DIR, { recursive: true });
 
 // species: [slug, search query on Commons]
 const SPECIES = [
-  ['cockatoo', 'cockatoo Cacatua pet parrot'],
-  ['canary', 'domestic canary Serinus canaria'],
+  ['hedgehog', 'African pygmy hedgehog Atelerix albiventris'],
 ];
 
 const GOOD_LICENSE = /^(cc0|public domain|pd|cc by( |-)?\d|cc by-sa( |-)?\d)/i;

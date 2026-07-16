@@ -1,0 +1,171 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Card from '../../components/Card.astro';
+import { contentCategories, getContentCategorySlug, type ContentCategory } from '../../contentCategories';
+import { getNewsCover, normalizeContentTitle } from '../../contentImages';
+
+export function getStaticPaths() {
+  return contentCategories.map((category) => ({
+    params: { slug: category.slug },
+    props: { category },
+  }));
+}
+
+const { category } = Astro.props as { category: ContentCategory };
+const fa = (date: Date) => date.toLocaleDateString('fa-IR', { year: 'numeric', month: 'long', day: 'numeric' });
+
+const allArticles = await getCollection('articles', ({ data }) => !data.draft);
+const allNews = await getCollection('news', ({ data }) => !data.draft);
+
+const articles = allArticles
+  .filter((item) => getContentCategorySlug({
+    title: item.data.title,
+    description: item.data.description,
+    cover: item.data.cover,
+    category: item.data.category,
+    tags: item.data.tags,
+  }) === category.slug)
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+
+const seenNews = new Set<string>();
+const news = allNews
+  .filter((item) => getContentCategorySlug({
+    title: item.data.title,
+    description: item.data.description,
+    cover: item.data.cover,
+    category: item.data.category,
+  }) === category.slug)
+  .filter((item) => {
+    const key = normalizeContentTitle(item.data.title);
+    if (seenNews.has(key)) return false;
+    seenNews.add(key);
+    return true;
+  })
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+
+const usedNewsCovers = new Set<string>();
+const newsWithCovers = news.map((item) => ({ item, cover: getNewsCover(item, usedNewsCovers) }));
+const initialNewsCount = 18;
+const totalItems = articles.length + news.length;
+
+const listSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: `${category.label} اگزوتیک`,
+  description: category.description,
+  url: new URL(`/category/${category.slug}`, Astro.site).href,
+  isPartOf: { '@type': 'WebSite', name: 'اگزوتیک با مهدیار', url: Astro.site?.href },
+  mainEntity: {
+    '@type': 'ItemList',
+    itemListElement: [
+      ...articles.map((item) => ({ href: `/articles/${item.id}`, title: item.data.title, date: item.data.pubDate })),
+      ...news.map((item) => ({ href: `/news/${item.id}`, title: item.data.title, date: item.data.pubDate })),
+    ]
+      .sort((a, b) => b.date.getTime() - a.date.getTime())
+      .slice(0, 20)
+      .map((item, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        name: item.title,
+        url: new URL(item.href, Astro.site).href,
+      })),
+  },
+};
+---
+
+<Base title={`${category.label} اگزوتیک`} description={category.description} image={category.cover}>
+  <script type="application/ld+json" set:html={JSON.stringify(listSchema)} />
+
+  <section class="category-shell container">
+    <nav class="crumb muted" aria-label="مسیر صفحه"><a href="/">خانه</a><span>/</span><span>{category.label}</span></nav>
+
+    <div class="category-hero">
+      <div class="hero-copy">
+        <span class="eyebrow">راهنمای حیوانات</span>
+        <h1>{category.label}</h1>
+        <p>{category.description}</p>
+        <div class="category-stats">
+          <span><b>{articles.length.toLocaleString('fa-IR')}</b> مقاله و راهنما</span>
+          <span><b>{news.length.toLocaleString('fa-IR')}</b> خبر مرتبط</span>
+        </div>
+      </div>
+      <div class="hero-image"><img src={category.cover} alt={category.label} width="960" height="720" fetchpriority="high" /></div>
+    </div>
+
+    <nav class="category-tabs" aria-label="دسته‌بندی حیوانات">
+      {contentCategories.map((item) => (
+        <a href={`/category/${item.slug}`} class:list={{ active: item.slug === category.slug }} aria-current={item.slug === category.slug ? 'page' : undefined}>
+          <span>{item.symbol}</span>{item.label}
+        </a>
+      ))}
+    </nav>
+
+    {totalItems === 0 ? (
+      <div class="empty"><h2>هنوز مطلبی در این دسته نیست</h2><p class="muted">محتوای این بخش به‌زودی اضافه می‌شود.</p></div>
+    ) : (
+      <>
+        <section class="content-section" aria-labelledby="articles-title">
+          <div class="section-head">
+            <div><span class="eyebrow">آموزش و نگهداری</span><h2 id="articles-title">مقالات {category.label}</h2></div>
+            <span class="count">{articles.length.toLocaleString('fa-IR')} مطلب</span>
+          </div>
+          {articles.length > 0 ? (
+            <div class="grid grid-3">
+              {articles.map((item) => (
+                <Card href={`/articles/${item.id}`} title={item.data.title} description={item.data.description}
+                  cover={item.data.cover} tag={category.label} meta={fa(item.data.pubDate)} />
+              ))}
+            </div>
+          ) : <p class="empty-inline muted">هنوز مقاله‌ای برای این دسته منتشر نشده است.</p>}
+        </section>
+
+        <section class="content-section news-section" aria-labelledby="news-title">
+          <div class="section-head">
+            <div><span class="eyebrow">تازه‌ها</span><h2 id="news-title">اخبار {category.label}</h2></div>
+            <span class="count">{news.length.toLocaleString('fa-IR')} خبر</span>
+          </div>
+          {news.length > 0 ? (
+            <>
+              <div class="grid grid-3">
+                {newsWithCovers.map(({ item, cover }, index) => (
+                  <div class="news-entry" hidden={index >= initialNewsCount}>
+                    <Card href={`/news/${item.id}`} title={item.data.title} description={item.data.description}
+                      cover={cover} tag="خبر" meta={fa(item.data.pubDate)} />
+                  </div>
+                ))}
+              </div>
+              {news.length > initialNewsCount && (
+                <button class="load-more" type="button" data-category-load data-batch={initialNewsCount}>نمایش خبرهای بیشتر</button>
+              )}
+            </>
+          ) : <p class="empty-inline muted">هنوز خبر مرتبطی برای این دسته منتشر نشده است.</p>}
+        </section>
+      </>
+    )}
+  </section>
+
+  <script is:inline>
+    document.querySelector('[data-category-load]')?.addEventListener('click', (event) => {
+      const button = event.currentTarget;
+      const batch = Number(button.dataset.batch || 18);
+      const hiddenEntries = Array.from(document.querySelectorAll('.news-entry[hidden]'));
+      hiddenEntries.slice(0, batch).forEach((entry) => entry.removeAttribute('hidden'));
+      const remaining = document.querySelectorAll('.news-entry[hidden]').length;
+      if (remaining === 0) button.hidden = true;
+      else button.textContent = `نمایش ${Math.min(batch, remaining).toLocaleString('fa-IR')} خبر دیگر`;
+    });
+  </script>
+</Base>
+
+<style>
+  .category-shell{padding-block:28px 88px}.crumb{display:flex;gap:8px;font-size:13px;margin-bottom:18px}.crumb a:hover{color:var(--brand)}
+  .category-hero{display:grid;grid-template-columns:1.08fr .92fr;min-height:350px;overflow:hidden;border:1px solid rgba(196,154,74,.32);border-radius:22px;background:linear-gradient(135deg,#e9d8b4,#d6bd89);color:#252919;box-shadow:0 22px 55px rgba(0,0,0,.24)}
+  .hero-copy{display:flex;flex-direction:column;justify-content:center;padding:44px 52px}.hero-copy h1{font-size:clamp(2.8rem,7vw,5.4rem);line-height:1.05;margin-block:4px 14px}.hero-copy p{max-width:58ch;color:#55563f;line-height:1.9}.hero-image{min-height:350px;overflow:hidden;clip-path:polygon(10% 0,100% 0,100% 100%,0 100%,8% 84%,2% 66%,9% 48%,2% 28%)}.hero-image img{width:100%;height:100%;object-fit:cover}
+  .category-stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}.category-stats span{padding:8px 13px;border:1px solid rgba(77,78,50,.22);border-radius:999px;font-size:12px}.category-stats b{color:#a94b1e;font-size:15px;margin-inline-end:3px}
+  .category-tabs{display:grid;grid-template-columns:repeat(4,1fr);margin-top:18px;overflow:hidden;border:1px solid rgba(196,154,74,.32);border-radius:14px;background:#252a17}.category-tabs a{display:flex;align-items:center;justify-content:center;gap:9px;padding:15px 10px;color:#d8c49a;font-size:14px;font-weight:700;border-inline-start:1px solid rgba(196,154,74,.22);transition:.2s}.category-tabs a:first-child{border-inline-start:0}.category-tabs a:hover,.category-tabs a.active{background:#353b20;color:#f1d591;box-shadow:inset 0 -3px #bd8532}.category-tabs span{color:#c99b49;font-size:18px}
+  .content-section{padding-top:58px}.content-section+.content-section{margin-top:56px;padding-top:50px;border-top:1px solid var(--border)}.section-head{margin-bottom:26px}.section-head h2{font-size:clamp(1.7rem,4vw,2.5rem)}.count{padding:7px 12px;border:1px solid var(--border);border-radius:999px;color:var(--text-muted);font-size:12px}.news-entry{min-width:0}.news-entry :global(.card){height:100%}
+  .load-more{display:block;margin:32px auto 0;padding:11px 24px;border:1px solid rgba(63,174,109,.45);border-radius:999px;background:var(--surface);color:var(--brand);font:inherit;font-weight:700;cursor:pointer}.load-more:hover{background:var(--brand);color:#07110b}.empty{text-align:center;padding:90px 20px}.empty-inline{padding:28px;border:1px dashed var(--border);border-radius:var(--radius);text-align:center}
+  @media(max-width:800px){.category-hero{grid-template-columns:1fr}.hero-copy{padding:34px 28px}.hero-image{min-height:260px;clip-path:none}.category-tabs{grid-template-columns:1fr 1fr}.category-tabs a:nth-child(3){border-top:1px solid rgba(196,154,74,.22)}.category-tabs a:nth-child(4){border-top:1px solid rgba(196,154,74,.22)}}
+  @media(max-width:480px){.category-shell{padding-top:18px}.hero-copy h1{font-size:2.8rem}.category-tabs a{font-size:12px;padding:13px 6px}.category-stats{flex-direction:column;align-items:flex-start}}
+</style>

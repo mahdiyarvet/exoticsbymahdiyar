@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Card from '../../components/Card.astro';
+import { getCategoryByLabel } from '../../contentCategories';
 
 const fa = (d: Date) => d.toLocaleDateString('fa-IR', { year: 'numeric', month: 'long', day: 'numeric' });
 const items = (await getCollection('articles', ({ data }) => !data.draft))
@@ -29,7 +30,12 @@ const listSchema = {
     <span class="eyebrow">مقالات</span>
     <h1>مقالات دامپزشکی اگزوتیک</h1>
     <p class="muted" style="max-width:60ch;margin-top:8px">راهنماها و مقالات تخصصی درباره‌ی سلامت، تغذیه و نگهداری حیوانات اگزوتیک.</p>
-    {cats.length > 1 && <div class="filters">{cats.map((c) => <span class="tag">{c}</span>)}</div>}
+    {cats.length > 1 && <div class="filters">{cats.map((c) => {
+      const category = getCategoryByLabel(c);
+      return category
+        ? <a class="tag" href={`/category/${category.slug}`}>{c}</a>
+        : <span class="tag">{c}</span>;
+    })}</div>}
     {items.length === 0
       ? <p class="empty muted">هنوز مقاله‌ای منتشر نشده. به‌زودی…</p>
       : <div class="grid grid-3" style="margin-top:28px">{items.map((a) => (

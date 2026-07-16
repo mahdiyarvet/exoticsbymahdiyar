@@ -35,6 +35,13 @@ function pickCover(title, id) {
   }
   return COVERS[parseInt(id, 16) % COVERS.length];
 }
+
+function pickCategory(title) {
+  if (/amphibian|frog|toad|salamander|newt|axolotl|دوزیست|قورباغه|سمندر|آکسولوتل/i.test(title)) return 'دوزیستان';
+  if (/bird|avian|parrot|macaw|cockatiel|canary|طوطی|پرنده|ماکائو|کاکاتیل|قناری/i.test(title)) return 'پرندگان';
+  if (/rabbit|hamster|guinea pig|ferret|mammal|خرگوش|همستر|خوکچه|فرت|پستاندار/i.test(title)) return 'پستانداران';
+  return 'خزندگان';
+}
 const QUERY = '(reptile OR herpetology OR tortoise OR "bearded dragon" OR chameleon OR iguana OR gecko OR "exotic pet") (care OR health OR species OR conservation OR veterinary OR discovered OR study OR rescue OR habitat) when:14d';
 const FEED = `https://news.google.com/rss/search?q=${encodeURIComponent(QUERY)}&hl=en-US&gl=US&ceid=US:en`;
 // only keep genuinely animal/reptile stories; drop political/sports/tech uses of "snake"/"python"
@@ -122,6 +129,7 @@ async function main() {
     const date = pub ? new Date(pub) : new Date();
     const iso = isNaN(date) ? new Date().toISOString().slice(0, 10) : date.toISOString().slice(0, 10);
     const cover = pickCover(`${title} ${faTitle}`, id);
+    const category = pickCategory(`${title} ${faTitle}`);
     const desc = faTitle.length > 150 ? faTitle.slice(0, 147) + '…' : faTitle;
 
     const md = `---
@@ -129,6 +137,7 @@ title: ${yaml(faTitle)}
 description: ${yaml(desc)}
 pubDate: ${iso}
 cover: "${cover}"
+category: "${category}"
 source: ${yaml(source)}
 sourceUrl: "${link}"
 ---

@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import { getContentCategory } from '../../contentCategories';
 
 export async function getStaticPaths() {
   const items = await getCollection('news', ({ data }) => !data.draft);
@@ -9,6 +10,7 @@ export async function getStaticPaths() {
 const { item } = Astro.props;
 const { Content } = await render(item);
 const d = item.data;
+const contentCategory = getContentCategory({ title: d.title, description: d.description, cover: d.cover, category: d.category });
 const fa = (x: Date) => x.toLocaleDateString('fa-IR', { year: 'numeric', month: 'long', day: 'numeric' });
 
 // auto-translated news items are thin/short content -> exclude from Google's index
@@ -42,7 +44,9 @@ const breadcrumb = {
 <Base title={d.title} description={d.description} image={d.cover} type="article" publishedTime={d.pubDate.toISOString()} noindex={isAutoTranslated}>
   <article class="container post">
     <nav class="crumb muted"><a href="/">خانه</a> / <a href="/news">اخبار</a></nav>
-    <span class="tag">خبر</span>
+    {contentCategory
+      ? <a class="tag" href={`/category/${contentCategory.slug}`}>خبر · {contentCategory.label}</a>
+      : <span class="tag">خبر</span>}
     <h1>{d.title}</h1>
     <div class="post-meta muted"><span>{fa(d.pubDate)}</span>{d.source && <><span>•</span><span>منبع: {d.source}</span></>}</div>
     {d.cover && <img class="cover" src={d.cover} alt={d.title} />}

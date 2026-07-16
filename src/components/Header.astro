@@ -1,14 +1,17 @@
 ---
 const nav = [
   { href: '/', label: 'خانه' },
-  { href: '/articles#guides', label: 'راهنمای حیوانات' },
+  { href: '/category/reptiles', label: 'راهنمای حیوانات', activePrefix: '/category' },
   { href: '/articles', label: 'مقالات' },
   { href: '/news', label: 'اخبار' },
   { href: '/books', label: 'کتابخانه' },
   { href: '/visit', label: 'ویزیت آنلاین' },
 ];
 const path = Astro.url.pathname;
-const isActive = (href: string) => href === '/' ? path === '/' : path.startsWith(href);
+const isActive = (item: { href: string; activePrefix?: string }) => {
+  const match = item.activePrefix ?? item.href;
+  return match === '/' ? path === '/' : path.startsWith(match);
+};
 ---
 
 <header class="site-header">
@@ -22,7 +25,7 @@ const isActive = (href: string) => href === '/' ? path === '/' : path.startsWith
 
     <nav class="nav" aria-label="ناوبری اصلی">
       {nav.map((i) => (
-        <a href={i.href} class:list={['nav-link', { active: isActive(i.href) }]}>{i.label}</a>
+        <a href={i.href} class:list={['nav-link', { active: isActive(i) }]}>{i.label}</a>
       ))}
     </nav>
 
@@ -34,7 +37,7 @@ const isActive = (href: string) => href === '/' ? path === '/' : path.startsWith
   </div>
 
   <nav class="mobile-nav" aria-label="ناوبری موبایل">
-    {nav.map((i) => <a href={i.href} class:list={['nav-link', { active: isActive(i.href) }]}>{i.label}</a>)}
+    {nav.map((i) => <a href={i.href} class:list={['nav-link', { active: isActive(i) }]}>{i.label}</a>)}
   </nav>
 </header>
 

@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Card from '../../components/Card.astro';
+import { getContentCategory } from '../../contentCategories';
 
 export async function getStaticPaths() {
   const items = await getCollection('articles', ({ data }) => !data.draft);
@@ -11,6 +12,7 @@ export async function getStaticPaths() {
 const { article, allArticles } = Astro.props;
 const { Content } = await render(article);
 const d = article.data;
+const contentCategory = getContentCategory({ title: d.title, description: d.description, cover: d.cover, category: d.category, tags: d.tags });
 const fa = (x: Date) => x.toLocaleDateString('fa-IR', { year: 'numeric', month: 'long', day: 'numeric' });
 
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
@@ -48,7 +50,9 @@ const related = allArticles
 <Base title={d.title} description={d.description} image={d.cover} type="article" publishedTime={d.pubDate.toISOString()}>
   <article class="container post">
     <nav class="crumb muted"><a href="/">خانه</a> / <a href="/articles">مقالات</a></nav>
-    <span class="tag">{d.category}</span>
+    {contentCategory
+      ? <a class="tag" href={`/category/${contentCategory.slug}`}>{contentCategory.label}</a>
+      : <span class="tag">{d.category}</span>}
     <h1>{d.title}</h1>
     <div class="post-meta muted">
       <span>نویسنده: <a href="/about" rel="author">{d.author}</a></span><span>•</span><span>انتشار: {fa(d.pubDate)}</span>

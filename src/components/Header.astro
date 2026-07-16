@@ -13,8 +13,10 @@ const isActive = (href: string) => href === '/' ? path === '/' : path.startsWith
 
 <header class="site-header">
   <div class="container bar">
-    <a href="/" class="logo" aria-label="خانه">
-      <span class="logo-mark">✦</span>
+    <a href="/" class="logo" aria-label="اگزوتیک با مهدیار — خانه">
+      <span class="logo-mark" aria-hidden="true">
+        <img src="/images/logo-exotics.svg" alt="" width="52" height="52" />
+      </span>
       <span class="logo-text">اگزوتیک <b>با مهدیار</b></span>
     </a>
 
@@ -44,8 +46,10 @@ const isActive = (href: string) => href === '/' ? path === '/' : path.startsWith
     border-bottom: 1px solid var(--border);
   }
   .bar { display: flex; align-items: center; justify-content: space-between; height: 78px; max-width: 1600px; }
-  .logo { display: flex; align-items: center; gap: 11px; font-weight: 700; font-size: 25px; letter-spacing: -.03em; }
-  .logo-mark { display: grid; place-items: center; width: 42px; height: 42px; border: 1px solid #b88b3d; border-radius: 50%; color: #d2aa5a; font-size: 19px; }
+  .logo { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 25px; letter-spacing: -.03em; }
+  .logo-mark { display: grid; place-items: center; width: 50px; height: 50px; flex: none; filter: drop-shadow(0 5px 12px rgba(0,0,0,.28)); transition: transform .25s ease, filter .25s ease; }
+  .logo-mark img { display: block; width: 100%; height: 100%; }
+  .logo:hover .logo-mark { transform: translateY(-1px) rotate(-2deg); filter: drop-shadow(0 7px 14px rgba(0,0,0,.36)); }
   .logo-text b { color: #d4b06a; font-weight: 700; }
   .nav { display: flex; gap: 6px; }
   .nav-link {
@@ -67,6 +71,8 @@ const isActive = (href: string) => href === '/' ? path === '/' : path.startsWith
     .nav { display: none; }
     .header-tools { display: none; }
     .menu-btn { display: flex; }
+    .logo { gap: 9px; font-size: 21px; }
+    .logo-mark { width: 44px; height: 44px; }
   }
 </style>
 

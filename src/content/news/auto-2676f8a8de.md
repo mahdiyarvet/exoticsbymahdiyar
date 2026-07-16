@@ -1,0 +1,15 @@
+---
+title: "تحقیقات نشان می دهد تجارت خزندگان کنیا به سرعت در حال گسترش است و صادرات آن از 87000 حیوان عبور می کند."
+description: "تحقیقات نشان می دهد تجارت خزندگان کنیا به سرعت در حال گسترش است و صادرات آن از 87000 حیوان عبور می کند."
+pubDate: 2026-05-21
+cover: "/images/vet-check.svg"
+category: "خزندگان"
+source: "Down To Earth"
+sourceUrl: "https://news.google.com/rss/articles/CBMivwFBVV95cUxObFc0VkV4enBaQXNEWnNmRFBZVzVXQm94LTBqb210WWhISUtUUHlRTDdOUnNZV1ZLX0U0RHFRZy1ObUhYYzQxX1pwTXYwTVJqTkdrZWlEWVRDN3JhdHVkcHVSSjJHS19rZ2ZRcml6ZEYwZ2dobjRzcUQ3d3NFX3lxZ3FfOHllSkNQMS13TVhPZ0h4S2lEdElDUi1ZZzRqN1JBcnhYUDFXZ2pXbWc1ejFJSG9nZHQ3Rm9CWF9VYm5RUdIBzAFBVV95cUxNcnk2dDE0UTJKb1B4OEhNRHdlWlBPRW5FUmhlaWdtbE9Jb3lUakxBTnhIVXlhN0duQV9fV1h4aTJRWkt2NGZfekdmV1hXbzdjbjZ6NEVyeUV6UTJjUkdGSW9EM1lVeTFYVEZVMkRCMlphbjJDelVvT2ZFdFAzQ1hqd0VaLUZCcWgzRDlNa2xXY3hpOEZRNUFkWXRHVXJiWDJSSno5azh5Rm02d0tCX25EVjV6UTdpc1h3Wnp6ZWg0TThGZ21oMzBMTGFsOE0?oc=5"
+---
+
+تحقیقات نشان می دهد تجارت خزندگان کنیا به سرعت در حال گسترش است و صادرات آن از 87000 حیوان عبور می کند.
+
+برای مطالعه‌ی متن کامل، به منبع اصلی خبر مراجعه کنید:
+
+> منبع: [Down To Earth](https://news.google.com/rss/articles/CBMivwFBVV95cUxObFc0VkV4enBaQXNEWnNmRFBZVzVXQm94LTBqb210WWhISUtUUHlRTDdOUnNZV1ZLX0U0RHFRZy1ObUhYYzQxX1pwTXYwTVJqTkdrZWlEWVRDN3JhdHVkcHVSSjJHS19rZ2ZRcml6ZEYwZ2dobjRzcUQ3d3NFX3lxZ3FfOHllSkNQMS13TVhPZ0h4S2lEdElDUi1ZZzRqN1JBcnhYUDFXZ2pXbWc1ejFJSG9nZHQ3Rm9CWF9VYm5RUdIBzAFBVV95cUxNcnk2dDE0UTJKb1B4OEhNRHdlWlBPRW5FUmhlaWdtbE9Jb3lUakxBTnhIVXlhN0duQV9fV1h4aTJRWkt2NGZfekdmV1hXbzdjbjZ6NEVyeUV6UTJjUkdGSW9EM1lVeTFYVEZVMkRCMlphbjJDelVvT2ZFdFAzQ1hqd0VaLUZCcWgzRDlNa2xXY3hpOEZRNUFkWXRHVXJiWDJSSno5azh5Rm02d0tCX25EVjV6UTdpc1h3Wnp6ZWg0TThGZ21oMzBMTGFsOE0?oc=5)

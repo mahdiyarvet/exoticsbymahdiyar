@@ -131,5 +131,23 @@ const websiteSchema = {
         targets.forEach((el) => io.observe(el));
       }
     </script>
+
+    <script is:inline>
+      // lightweight GA4 engagement events -- helps decide what content/links to prioritize.
+      // No-ops silently if gtag isn't loaded (ad-blockers, offline, etc.)
+      document.addEventListener('click', (e) => {
+        if (typeof gtag !== 'function') return;
+        const a = e.target.closest('a[href]');
+        if (!a) return;
+        const href = a.getAttribute('href') || '';
+        if (href === '/visit' || href.startsWith('/visit#')) {
+          gtag('event', 'visit_cta_click', { link_url: href, link_text: a.textContent.trim().slice(0, 60) });
+        } else if (href.startsWith('/category/')) {
+          gtag('event', 'category_nav_click', { category: href.replace('/category/', '') });
+        } else if (a.href && /instagram\.com|wa\.me|t\.me/.test(a.href)) {
+          gtag('event', 'social_link_click', { link_url: a.href });
+        }
+      });
+    </script>
   </body>
 </html>

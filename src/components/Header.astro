@@ -331,6 +331,19 @@ const isActive = (item: { href: string; activePrefix?: string }) => {
     content.append(title, hint);
     box.append(content);
     searchResults.replaceChildren(box);
+    trackSearchSettled(query, 0);
+  };
+
+  // GA4: only report once the user pauses (not per keystroke) -- gives real content-gap
+  // signal (queries with 0 results = topics people want that we don't have yet).
+  let searchTrackTimer = 0;
+  const trackSearchSettled = (query: string, resultCount: number) => {
+    window.clearTimeout(searchTrackTimer);
+    searchTrackTimer = window.setTimeout(() => {
+      if (typeof gtag === 'function') {
+        gtag('event', 'site_search', { search_term: query, results_count: resultCount });
+      }
+    }, 900);
   };
 
   const createSearchResult = (item: SearchItem) => {
@@ -420,6 +433,7 @@ const isActive = (item: { href: string; activePrefix?: string }) => {
       list.className = 'search-result-list';
       matches.slice(0, 16).forEach(({ item }) => list.append(createSearchResult(item)));
       searchResults.replaceChildren(list);
+      trackSearchSettled(rawQuery, matches.length);
     } catch (error) {
       console.error(error);
       searchStatus.textContent = 'جست‌وجو فعلاً بارگذاری نشد؛ لطفاً دوباره امتحان کنید.';

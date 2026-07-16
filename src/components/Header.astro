@@ -24,66 +24,434 @@ const isActive = (item: { href: string; activePrefix?: string }) => {
     </a>
 
     <nav class="nav" aria-label="ناوبری اصلی">
-      {nav.map((i) => (
-        <a href={i.href} class:list={['nav-link', { active: isActive(i) }]}>{i.label}</a>
+      {nav.map((item) => (
+        <a href={item.href} class:list={['nav-link', { active: isActive(item) }]}>{item.label}</a>
       ))}
     </nav>
 
-    <div class="header-tools" aria-hidden="true"><span>⌕</span><span>♧</span></div>
+    <div class="header-tools">
+      <button class="tool-button search-trigger" type="button" aria-label="جست‌وجو در سایت" title="جست‌وجو در سایت" data-search-open>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="10.8" cy="10.8" r="6.5"></circle>
+          <path d="m16 16 4.2 4.2"></path>
+        </svg>
+      </button>
+      <a class="tool-button visit-shortcut" href="/visit" aria-label="ویزیت آنلاین" title="ویزیت آنلاین">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="5.2" cy="10.2" r="2"></circle>
+          <circle cx="9.2" cy="6.3" r="2"></circle>
+          <circle cx="14.8" cy="6.3" r="2"></circle>
+          <circle cx="18.8" cy="10.2" r="2"></circle>
+          <path d="M8.2 16.7c0-2.3 1.7-4.2 3.8-4.2s3.8 1.9 3.8 4.2c0 1.8-1.2 3-3 2.4a2.8 2.8 0 0 0-1.6 0c-1.8.6-3-.6-3-2.4Z"></path>
+        </svg>
+      </a>
+    </div>
 
-    <button class="menu-btn" aria-label="منو" aria-expanded="false">
+    <button class="menu-btn" type="button" aria-label="باز کردن منو" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
   </div>
 
   <nav class="mobile-nav" aria-label="ناوبری موبایل">
-    {nav.map((i) => <a href={i.href} class:list={['nav-link', { active: isActive(i) }]}>{i.label}</a>)}
+    {nav.map((item) => <a href={item.href} class:list={['nav-link', { active: isActive(item) }]}>{item.label}</a>)}
   </nav>
 </header>
 
-<style>
+<dialog class="site-search-dialog" data-site-search aria-labelledby="site-search-title" aria-describedby="site-search-description">
+  <div class="site-search-panel">
+    <div class="site-search-heading">
+      <div>
+        <span class="search-eyebrow">جست‌وجوی سریع</span>
+        <h2 id="site-search-title">چه چیزی می‌خواهید بدانید؟</h2>
+        <p id="site-search-description">میان همهٔ مقالات، اخبار و کتاب‌های سایت جست‌وجو کنید.</p>
+      </div>
+      <button class="search-close" type="button" aria-label="بستن جست‌وجو" title="بستن" data-search-close>×</button>
+    </div>
+
+    <label class="site-search-box" for="site-search-input">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="10.8" cy="10.8" r="6.5"></circle>
+        <path d="m16 16 4.2 4.2"></path>
+      </svg>
+      <input
+        id="site-search-input"
+        type="search"
+        placeholder="مثلاً ایگوانا، تغذیه طوطی یا نور UVB…"
+        autocomplete="off"
+        enterkeyhint="search"
+        spellcheck="false"
+        data-search-input
+      />
+      <kbd>Esc</kbd>
+    </label>
+
+    <p class="site-search-status" data-search-status aria-live="polite">برای شروع یک موضوع یا نام حیوان بنویسید.</p>
+
+    <div class="site-search-results" data-search-results>
+      <div class="search-welcome">
+        <p>جست‌وجوهای پیشنهادی</p>
+        <div class="search-suggestions">
+          <button type="button" data-search-suggestion="ایگوانا">ایگوانا</button>
+          <button type="button" data-search-suggestion="مار">مار</button>
+          <button type="button" data-search-suggestion="طوطی">طوطی</button>
+          <button type="button" data-search-suggestion="لاک پشت">لاک‌پشت</button>
+          <button type="button" data-search-suggestion="دوزیستان">دوزیستان</button>
+          <button type="button" data-search-suggestion="ویزیت آنلاین">ویزیت آنلاین</button>
+        </div>
+        <div class="search-quick-links">
+          <a href="/category/reptiles">راهنمای خزندگان <span>←</span></a>
+          <a href="/category/birds">راهنمای پرندگان <span>←</span></a>
+          <a href="/category/mammals">پستانداران کوچک <span>←</span></a>
+          <a href="/category/amphibians">راهنمای دوزیستان <span>←</span></a>
+        </div>
+      </div>
+    </div>
+
+    <noscript><p class="site-search-noscript">برای استفاده از جست‌وجو، JavaScript مرورگر باید فعال باشد.</p></noscript>
+  </div>
+</dialog>
+
+<style is:global>
   .site-header {
     position: sticky; top: 0; z-index: 50;
     background: color-mix(in srgb, #202313 90%, transparent);
     backdrop-filter: blur(14px);
     border-bottom: 1px solid var(--border);
   }
-  .bar { display: flex; align-items: center; justify-content: space-between; height: 78px; max-width: 1600px; }
-  .logo { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 25px; letter-spacing: -.03em; }
-  .logo-mark { display: grid; place-items: center; width: 50px; height: 50px; flex: none; filter: drop-shadow(0 5px 12px rgba(0,0,0,.28)); transition: transform .25s ease, filter .25s ease; }
-  .logo-mark img { display: block; width: 100%; height: 100%; }
-  .logo:hover .logo-mark { transform: translateY(-1px) rotate(-2deg); filter: drop-shadow(0 7px 14px rgba(0,0,0,.36)); }
-  .logo-text b { color: #d4b06a; font-weight: 700; }
-  .nav { display: flex; gap: 6px; }
-  .nav-link {
+  .site-header .bar { display: flex; align-items: center; justify-content: space-between; gap: 14px; height: 78px; max-width: 1600px; }
+  .site-header .logo { display: flex; align-items: center; gap: 12px; flex: none; font-weight: 700; font-size: 25px; letter-spacing: -.03em; }
+  .site-header .logo-mark { display: grid; place-items: center; width: 50px; height: 50px; flex: none; filter: drop-shadow(0 5px 12px rgba(0,0,0,.28)); transition: transform .25s ease, filter .25s ease; }
+  .site-header .logo-mark img { display: block; width: 100%; height: 100%; }
+  .site-header .logo:hover .logo-mark { transform: translateY(-1px) rotate(-2deg); filter: drop-shadow(0 7px 14px rgba(0,0,0,.36)); }
+  .site-header .logo-text b { color: #d4b06a; font-weight: 700; }
+  .site-header .nav { display: flex; justify-content: center; gap: 6px; }
+  .site-header .nav-link {
     padding: 9px 13px; border-radius: 7px; font-size: 14px; font-weight: 500;
     color: var(--text-muted); transition: color .2s, background .2s;
   }
-  .nav-link:hover { color: var(--text); background: var(--surface); }
-  .nav-link.active { color: #e5bd70; background: transparent; box-shadow: inset 0 -2px #c18f3a; }
-  .header-tools { display: flex; gap: 10px; direction: ltr; }
-  .header-tools span { display:grid;place-items:center;width:34px;height:34px;border:1px solid rgba(196,154,74,.25);border-radius:10px;color:#ead9b5;font-size:19px; }
-  .menu-btn { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; }
-  .menu-btn span { width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: .25s; }
-  .menu-btn[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-  .menu-btn[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
-  .menu-btn[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-  .mobile-nav { display: none; flex-direction: column; padding: 8px 22px 16px; gap: 4px; border-bottom: 1px solid var(--border); }
-  .mobile-nav.open { display: flex; }
+  .site-header .nav-link:hover { color: var(--text); background: var(--surface); }
+  .site-header .nav-link.active { color: #e5bd70; background: transparent; box-shadow: inset 0 -2px #c18f3a; }
+  .site-header .header-tools { display: flex; gap: 9px; direction: ltr; flex: none; }
+  .site-header .tool-button {
+    display: grid; place-items: center; width: 38px; height: 38px; padding: 0;
+    border: 1px solid rgba(196,154,74,.32); border-radius: 11px;
+    background: rgba(255,255,255,.018); color: #ead9b5; cursor: pointer;
+    transition: color .2s ease, border-color .2s ease, background .2s ease, transform .2s ease;
+  }
+  .site-header .tool-button:hover, .site-header .tool-button:focus-visible {
+    color: #fff3d4; border-color: var(--brand); background: rgba(196,154,74,.13); transform: translateY(-1px);
+  }
+  .site-header .tool-button svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .site-header .menu-btn { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; }
+  .site-header .menu-btn span { width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: .25s; }
+  .site-header .menu-btn[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .site-header .menu-btn[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+  .site-header .menu-btn[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  .site-header .mobile-nav { display: none; flex-direction: column; padding: 8px 22px 16px; gap: 4px; border-bottom: 1px solid var(--border); }
+  .site-header .mobile-nav.open { display: flex; }
+
+  .site-search-dialog {
+    width: min(780px, calc(100% - 32px)); max-height: min(82dvh, 820px); margin: 7dvh auto auto;
+    padding: 0; border: 1px solid rgba(196,154,74,.45); border-radius: 22px;
+    background: #202514; color: var(--text); box-shadow: 0 28px 90px rgba(0,0,0,.72); overflow: hidden;
+  }
+  .site-search-dialog::backdrop { background: rgba(8,10,5,.78); backdrop-filter: blur(8px); }
+  .site-search-panel { display: flex; flex-direction: column; max-height: min(82dvh, 820px); padding: 26px; }
+  .site-search-heading { display: flex; align-items: start; justify-content: space-between; gap: 22px; margin-bottom: 20px; }
+  .site-search-heading h2 { margin: 1px 0 4px; font-size: clamp(1.35rem, 4vw, 2rem); }
+  .site-search-heading p { color: var(--text-muted); font-size: 14px; }
+  .search-eyebrow { color: var(--brand); font-size: 12px; font-weight: 700; }
+  .search-close {
+    display: grid; place-items: center; flex: none; width: 38px; height: 38px; padding: 0 0 3px;
+    border: 1px solid var(--border); border-radius: 50%; background: var(--surface); color: var(--text);
+    font: 300 28px/1 var(--font); cursor: pointer; transition: .2s;
+  }
+  .search-close:hover { border-color: var(--brand); color: var(--brand); transform: rotate(5deg); }
+  .site-search-box {
+    display: grid; grid-template-columns: 24px 1fr auto; align-items: center; gap: 12px;
+    min-height: 58px; padding: 0 17px; border: 1px solid rgba(196,154,74,.55); border-radius: 15px;
+    background: #f0dfb8; color: #252916; box-shadow: 0 8px 28px rgba(0,0,0,.2);
+  }
+  .site-search-box:focus-within { border-color: #e2ac45; box-shadow: 0 0 0 3px rgba(196,154,74,.15), 0 8px 28px rgba(0,0,0,.2); }
+  .site-search-box svg { width: 23px; height: 23px; fill: none; stroke: #75613b; stroke-width: 1.9; stroke-linecap: round; }
+  .site-search-box input { width: 100%; min-width: 0; border: 0; outline: 0; background: transparent; color: #202313; font: 500 16px/1.5 var(--font); }
+  .site-search-box input::placeholder { color: #766c54; opacity: .88; }
+  .site-search-box input::-webkit-search-cancel-button { cursor: pointer; }
+  .site-search-box kbd { direction: ltr; padding: 2px 7px; border: 1px solid rgba(40,45,22,.2); border-radius: 6px; color: #756b54; font: 11px/1.5 system-ui,sans-serif; }
+  .site-search-status { min-height: 25px; margin: 10px 3px 5px; color: var(--text-muted); font-size: 13px; }
+  .site-search-results { min-height: 180px; overflow-y: auto; overscroll-behavior: contain; padding: 5px 2px 2px 5px; scrollbar-color: var(--brand) transparent; }
+  .search-welcome > p { margin-bottom: 10px; color: var(--text-muted); font-size: 13px; }
+  .search-suggestions { display: flex; flex-wrap: wrap; gap: 8px; }
+  .search-suggestions button {
+    padding: 7px 13px; border: 1px solid var(--border); border-radius: 999px;
+    background: var(--surface); color: var(--text); font: 500 13px var(--font); cursor: pointer; transition: .2s;
+  }
+  .search-suggestions button:hover { border-color: var(--brand); color: var(--brand); }
+  .search-quick-links { display: grid; grid-template-columns: repeat(2, 1fr); gap: 9px; margin-top: 22px; }
+  .search-quick-links a { display: flex; justify-content: space-between; gap: 12px; padding: 11px 14px; border: 1px solid var(--border); border-radius: 11px; color: var(--text-muted); font-size: 14px; transition: .2s; }
+  .search-quick-links a:hover { border-color: rgba(196,154,74,.65); background: var(--surface); color: var(--text); }
+  .search-quick-links span { color: var(--brand); }
+  .search-result-list { display: grid; gap: 9px; }
+  .search-result {
+    display: grid; grid-template-columns: 94px minmax(0,1fr) 24px; align-items: center; gap: 14px;
+    min-height: 92px; padding: 8px; border: 1px solid transparent; border-radius: 14px;
+    background: rgba(255,255,255,.025); transition: background .2s, border-color .2s, transform .2s;
+  }
+  .search-result.no-image { grid-template-columns: minmax(0,1fr) 24px; padding: 14px 16px; }
+  .search-result:hover, .search-result:focus-visible { border-color: rgba(196,154,74,.55); background: var(--surface); transform: translateY(-1px); outline: none; }
+  .search-result-image { width: 94px; height: 76px; overflow: hidden; border-radius: 10px; background: var(--surface-2); }
+  .search-result-image img { width: 100%; height: 100%; object-fit: cover; }
+  .search-result-content { min-width: 0; }
+  .search-result-tags { display: flex; align-items: center; gap: 7px; margin-bottom: 3px; }
+  .search-result-type { color: var(--brand); font-size: 11px; font-weight: 700; }
+  .search-result-category { color: var(--text-muted); font-size: 11px; }
+  .search-result h3 { overflow: hidden; margin: 0 0 2px; color: var(--text); font-size: 15px; line-height: 1.55; text-overflow: ellipsis; white-space: nowrap; }
+  .search-result p { display: -webkit-box; overflow: hidden; color: var(--text-muted); font-size: 12.5px; line-height: 1.65; -webkit-box-orient: vertical; -webkit-line-clamp: 1; }
+  .search-result-arrow { color: var(--brand); font-size: 19px; transition: transform .2s; }
+  .search-result:hover .search-result-arrow { transform: translateX(-3px); }
+  .search-no-results { display: grid; place-items: center; min-height: 180px; padding: 28px; text-align: center; border: 1px dashed var(--border); border-radius: 14px; }
+  .search-no-results strong { display: block; margin-bottom: 5px; color: var(--text); }
+  .search-no-results p, .site-search-noscript { color: var(--text-muted); font-size: 14px; }
+  html.search-is-open { overflow: hidden; }
+
+  @media (max-width: 1050px) {
+    .site-header .nav-link { padding-inline: 9px; font-size: 13px; }
+    .site-header .logo { font-size: 22px; }
+  }
   @media (max-width: 780px) {
-    .nav { display: none; }
-    .header-tools { display: none; }
-    .menu-btn { display: flex; }
-    .logo { gap: 9px; font-size: 21px; }
-    .logo-mark { width: 44px; height: 44px; }
+    .site-header .nav { display: none; }
+    .site-header .menu-btn { display: flex; }
+    .site-header .logo { gap: 9px; margin-inline-end: auto; font-size: 21px; }
+    .site-header .logo-mark { width: 44px; height: 44px; }
+    .site-header .visit-shortcut { display: none; }
+    .site-search-dialog { width: min(680px, calc(100% - 20px)); margin-top: 10px; max-height: calc(100dvh - 20px); border-radius: 18px; }
+    .site-search-panel { max-height: calc(100dvh - 20px); padding: 20px; }
+  }
+  @media (max-width: 520px) {
+    .site-header .bar { height: 70px; padding-inline: 14px; gap: 8px; }
+    .site-header .logo { font-size: 18px; }
+    .site-header .logo-mark { width: 40px; height: 40px; }
+    .site-header .tool-button { width: 36px; height: 36px; }
+    .site-search-panel { padding: 17px; }
+    .site-search-heading { margin-bottom: 16px; }
+    .site-search-heading p { max-width: 30ch; line-height: 1.65; }
+    .site-search-box { grid-template-columns: 22px 1fr; min-height: 55px; padding-inline: 14px; }
+    .site-search-box kbd { display: none; }
+    .site-search-box input { font-size: 14px; }
+    .search-quick-links { grid-template-columns: 1fr; }
+    .search-result { grid-template-columns: 72px minmax(0,1fr) 18px; gap: 10px; min-height: 82px; }
+    .search-result-image { width: 72px; height: 68px; }
+    .search-result h3 { font-size: 14px; }
+    .search-result p { display: none; }
+  }
+  @media (max-width: 360px) {
+    .site-header .logo-text { max-width: 112px; line-height: 1.25; }
   }
 </style>
 
 <script>
-  const btn = document.querySelector('.menu-btn');
-  const menu = document.querySelector('.mobile-nav');
-  btn?.addEventListener('click', () => {
-    const open = menu?.classList.toggle('open');
-    btn.setAttribute('aria-expanded', String(!!open));
+  type SearchItem = {
+    title: string;
+    description: string;
+    url: string;
+    type: 'article' | 'news' | 'book' | 'page';
+    typeLabel: string;
+    category: string;
+    image?: string;
+    keywords: string[];
+    timestamp: number;
+  };
+
+  const menuButton = document.querySelector<HTMLButtonElement>('.menu-btn');
+  const mobileMenu = document.querySelector<HTMLElement>('.mobile-nav');
+  menuButton?.addEventListener('click', () => {
+    const open = mobileMenu?.classList.toggle('open');
+    menuButton.setAttribute('aria-expanded', String(Boolean(open)));
+    menuButton.setAttribute('aria-label', open ? 'بستن منو' : 'باز کردن منو');
   });
+
+  const searchDialog = document.querySelector<HTMLDialogElement>('[data-site-search]');
+  const searchInput = searchDialog?.querySelector<HTMLInputElement>('[data-search-input]');
+  const searchResults = searchDialog?.querySelector<HTMLElement>('[data-search-results]');
+  const searchStatus = searchDialog?.querySelector<HTMLElement>('[data-search-status]');
+  const initialResultsMarkup = searchResults?.innerHTML ?? '';
+  let searchItemsPromise: Promise<SearchItem[]> | undefined;
+  let searchTimer = 0;
+
+  const normalizeSearchText = (value: string) => value
+    .normalize('NFKC')
+    .replace(/[يى]/g, 'ی')
+    .replace(/ك/g, 'ک')
+    .replace(/[\u064B-\u065F\u0670]/g, '')
+    .replace(/[‌ـ]/g, ' ')
+    .toLocaleLowerCase('fa')
+    .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  const loadSearchItems = () => {
+    searchItemsPromise ??= fetch('/search-index.json')
+      .then((response) => {
+        if (!response.ok) throw new Error(`Search index failed: ${response.status}`);
+        return response.json() as Promise<SearchItem[]>;
+      });
+    return searchItemsPromise;
+  };
+
+  const applySuggestion = (value: string) => {
+    if (!searchInput) return;
+    searchInput.value = value;
+    searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+    searchInput.focus();
+  };
+
+  const bindSuggestions = () => {
+    searchResults?.querySelectorAll<HTMLButtonElement>('[data-search-suggestion]').forEach((button) => {
+      button.addEventListener('click', () => applySuggestion(button.dataset.searchSuggestion ?? ''));
+    });
+  };
+
+  const renderWelcome = () => {
+    if (!searchResults || !searchStatus) return;
+    searchResults.innerHTML = initialResultsMarkup;
+    searchStatus.textContent = 'برای شروع یک موضوع یا نام حیوان بنویسید.';
+    bindSuggestions();
+  };
+
+  const renderNoResults = (query: string) => {
+    if (!searchResults || !searchStatus) return;
+    searchStatus.textContent = 'نتیجه‌ای پیدا نشد.';
+    const box = document.createElement('div');
+    box.className = 'search-no-results';
+    const content = document.createElement('div');
+    const title = document.createElement('strong');
+    title.textContent = `برای «${query}» مطلبی پیدا نشد`;
+    const hint = document.createElement('p');
+    hint.textContent = 'نام حیوان را کوتاه‌تر بنویسید؛ مثلاً «مار»، «طوطی» یا «ایگوانا».';
+    content.append(title, hint);
+    box.append(content);
+    searchResults.replaceChildren(box);
+  };
+
+  const createSearchResult = (item: SearchItem) => {
+    const link = document.createElement('a');
+    link.className = `search-result${item.image ? '' : ' no-image'}`;
+    link.href = item.url;
+
+    if (item.image) {
+      const figure = document.createElement('span');
+      figure.className = 'search-result-image';
+      const image = document.createElement('img');
+      image.src = item.image;
+      image.alt = '';
+      image.loading = 'lazy';
+      image.decoding = 'async';
+      figure.append(image);
+      link.append(figure);
+    }
+
+    const content = document.createElement('span');
+    content.className = 'search-result-content';
+    const tags = document.createElement('span');
+    tags.className = 'search-result-tags';
+    const type = document.createElement('span');
+    type.className = 'search-result-type';
+    type.textContent = item.typeLabel;
+    const category = document.createElement('span');
+    category.className = 'search-result-category';
+    category.textContent = `• ${item.category}`;
+    tags.append(type, category);
+    const title = document.createElement('h3');
+    title.textContent = item.title;
+    const description = document.createElement('p');
+    description.textContent = item.description;
+    content.append(tags, title, description);
+
+    const arrow = document.createElement('span');
+    arrow.className = 'search-result-arrow';
+    arrow.setAttribute('aria-hidden', 'true');
+    arrow.textContent = '←';
+    link.append(content, arrow);
+    return link;
+  };
+
+  const runSearch = async () => {
+    if (!searchInput || !searchResults || !searchStatus) return;
+    const rawQuery = searchInput.value.trim();
+    const query = normalizeSearchText(rawQuery);
+    if (!query) {
+      renderWelcome();
+      return;
+    }
+
+    searchStatus.textContent = 'در حال جست‌وجو…';
+    try {
+      const items = await loadSearchItems();
+      if (normalizeSearchText(searchInput.value) !== query) return;
+      const tokens = query.split(' ').filter(Boolean);
+      const matches = items
+        .map((item) => {
+          const title = normalizeSearchText(item.title);
+          const description = normalizeSearchText(item.description);
+          const category = normalizeSearchText(item.category);
+          const keywords = normalizeSearchText(item.keywords.join(' '));
+          const all = `${title} ${category} ${keywords} ${description}`;
+          if (!tokens.every((token) => all.includes(token))) return undefined;
+          let score = item.type === 'article' ? 52 : item.type === 'book' ? 34 : item.type === 'page' ? 26 : 0;
+          if (title === query) score += 160;
+          else if (title.startsWith(query)) score += 110;
+          else if (title.includes(query)) score += 80;
+          score += tokens.filter((token) => title.includes(token)).length * 24;
+          score += tokens.filter((token) => category.includes(token)).length * 14;
+          score += tokens.filter((token) => keywords.includes(token)).length * 10;
+          score += tokens.filter((token) => description.includes(token)).length * 4;
+          return { item, score };
+        })
+        .filter((match): match is { item: SearchItem; score: number } => Boolean(match))
+        .sort((a, b) => b.score - a.score || b.item.timestamp - a.item.timestamp);
+
+      if (!matches.length) {
+        renderNoResults(rawQuery);
+        return;
+      }
+
+      searchStatus.textContent = `${matches.length.toLocaleString('fa-IR')} نتیجه پیدا شد${matches.length > 16 ? ' — بهترین‌ها نمایش داده شده‌اند.' : '.'}`;
+      const list = document.createElement('div');
+      list.className = 'search-result-list';
+      matches.slice(0, 16).forEach(({ item }) => list.append(createSearchResult(item)));
+      searchResults.replaceChildren(list);
+    } catch (error) {
+      console.error(error);
+      searchStatus.textContent = 'جست‌وجو فعلاً بارگذاری نشد؛ لطفاً دوباره امتحان کنید.';
+    }
+  };
+
+  const openSearch = () => {
+    if (!searchDialog) return;
+    if (!searchDialog.open) searchDialog.showModal();
+    document.documentElement.classList.add('search-is-open');
+    window.setTimeout(() => searchInput?.focus(), 40);
+    void loadSearchItems();
+  };
+
+  document.querySelectorAll<HTMLButtonElement>('[data-search-open]').forEach((button) => {
+    button.addEventListener('click', openSearch);
+    button.addEventListener('pointerenter', () => void loadSearchItems(), { once: true });
+  });
+  searchDialog?.querySelector<HTMLButtonElement>('[data-search-close]')?.addEventListener('click', () => searchDialog.close());
+  searchDialog?.addEventListener('click', (event) => {
+    if (event.target === searchDialog) searchDialog.close();
+  });
+  searchDialog?.addEventListener('close', () => document.documentElement.classList.remove('search-is-open'));
+  searchInput?.addEventListener('input', () => {
+    window.clearTimeout(searchTimer);
+    searchTimer = window.setTimeout(runSearch, 110);
+  });
+  document.addEventListener('keydown', (event) => {
+    if ((event.ctrlKey || event.metaKey) && event.key.toLocaleLowerCase() === 'k') {
+      event.preventDefault();
+      openSearch();
+    }
+  });
+  bindSuggestions();
 </script>

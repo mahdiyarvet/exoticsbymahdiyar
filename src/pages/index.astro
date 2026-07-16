@@ -1,124 +1,110 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
-import Card from '../components/Card.astro';
 
 const fa = (d: Date) => d.toLocaleDateString('fa-IR', { year: 'numeric', month: 'long', day: 'numeric' });
-
-const articles = (await getCollection('articles', ({ data }) => !data.draft))
-  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
-const news = (await getCollection('news', ({ data }) => !data.draft))
-  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
-const books = (await getCollection('books', ({ data }) => !data.draft));
-
-const featured = articles.slice(0, 3);
-const latestNews = news.slice(0, 3);
-const topBooks = books.slice(0, 3);
+const articles = (await getCollection('articles', ({ data }) => !data.draft)).sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+const news = (await getCollection('news', ({ data }) => !data.draft)).sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+const books = await getCollection('books', ({ data }) => !data.draft);
+const guides = articles.slice(0, 5);
+const latestNews = news.slice(0, 5);
+const featuredBook = books[0];
 ---
 
-<Base
-  title="اگزوتیک با مهدیار"
-  description="مرجع فارسی دامپزشکی حیوانات اگزوتیک؛ مقالات علمی، اخبار روز و کتابخانه تخصصی خزندگان، پرندگان و پستانداران اگزوتیک. با دکتر مهدیار رمزگویان."
->
-  <section class="hero">
-    <div class="container hero-grid">
-      <div class="hero-inner">
-        <span class="tag">دامپزشکی حیوانات اگزوتیک</span>
-        <h1>دنیای علمی و شگفت‌انگیزِ<br /><span class="grad">حیوانات اگزوتیک</span></h1>
-        <p class="lead">مقالات معتبر، اخبار روز دنیای دامپزشکی و کتابخانه‌ای تخصصی برای نگهدارندگان و علاقه‌مندان خزندگان، پرندگان و پستانداران اگزوتیک — گردآوری و نگارش دکتر مهدیار رمزگویان.</p>
-        <div class="hero-cta">
-          <a href="/articles" class="btn">شروع مطالعه</a>
-          <a href="https://instagram.com/exoticsbymahdiyar" target="_blank" rel="noopener" class="btn btn-ghost">اینستاگرام</a>
+<Base title="اگزوتیک با مهدیار" description="مرجع فارسی نگهداری و دامپزشکی حیوانات اگزوتیک؛ راهنمای خزندگان، پرندگان، پستانداران کوچک، اخبار، کتابخانه و ویزیت آنلاین با دکتر مهدیار رمزگویان.">
+  <div class="magazine-shell container">
+    <section class="lead-layout" aria-labelledby="hero-title">
+      <aside class="news-rail">
+        <div class="rail-title"><span>اخبار و دانستنی‌ها</span><i></i></div>
+        <div class="rail-list">
+          {latestNews.map((item) => (
+            <a href={`/news/${item.id}`} class="rail-item">
+              {item.data.cover && <img src={item.data.cover} alt="" loading="lazy" width="120" height="90" />}
+              <span><b>{item.data.title}</b><small>{fa(item.data.pubDate)}</small></span>
+            </a>
+          ))}
+        </div>
+        <a href="/news" class="text-link">مشاهده همه اخبار <span>←</span></a>
+      </aside>
+
+      <div class="hero-collage">
+        <div class="hero-animal hero-iguana"><img src="/images/photos/iguana-1.jpg" alt="ایگوانای سبز" width="900" height="900" fetchpriority="high" /></div>
+        <div class="hero-copy">
+          <span class="kicker">دانش، تجربه و احترام به طبیعت</span>
+          <h1 id="hero-title">زندگی بهتر<br />برای حیوانات اگزوتیک</h1>
+          <p>هر موجود، دنیایی شگفت‌انگیز دارد. با راهنمایی درست می‌توانیم محیطی امن، سالم و غنی برای زندگی آن‌ها فراهم کنیم.</p>
+          <a href="/articles" class="rust-btn">مطالعه راهنمای ویژه <span>←</span></a>
+        </div>
+        <div class="hero-stack">
+          <img class="macaw" src="/images/photos/macaw-3.jpg" alt="طوطی ماکائو آبی و طلایی" width="800" height="650" fetchpriority="high" />
+          <img class="snake" src="/images/photos/corn-snake-3.jpg" alt="مار کورن اسنیک" width="800" height="520" fetchpriority="high" />
         </div>
       </div>
-      <div class="hero-media">
-        <img src="/images/hero.jpg" alt="حیوانات اگزوتیک: طوطی، آفتاب‌پرست، لاک‌پشت و فنک روی شاخه" width="1600" height="900" fetchpriority="high" />
-      </div>
-    </div>
-  </section>
-
-  {featured.length > 0 && (
-    <section class="section container">
-      <div class="section-head">
-        <div><span class="eyebrow">مقالات منتخب</span><h2>جدیدترین مقالات علمی</h2></div>
-        <a href="/articles" class="btn btn-ghost">همه مقالات</a>
-      </div>
-      <div class="grid grid-3">
-        {featured.map((a) => (
-          <Card href={`/articles/${a.id}`} title={a.data.title} description={a.data.description}
-            cover={a.data.cover} tag={a.data.category} meta={fa(a.data.pubDate)} />
-        ))}
-      </div>
     </section>
-  )}
 
-  {latestNews.length > 0 && (
-    <section class="section container">
-      <div class="section-head">
-        <div><span class="eyebrow">تازه‌ها</span><h2>اخبار دامپزشکی اگزوتیک</h2></div>
-        <a href="/news" class="btn btn-ghost">همه اخبار</a>
+    <nav class="animal-nav" aria-label="دسته‌بندی حیوانات">
+      <a href="/articles"><span>◉</span> خزندگان</a><a href="/articles"><span>◌</span> پرندگان</a>
+      <a href="/articles"><span>◈</span> پستانداران کوچک</a><a href="/articles"><span>⌁</span> دوزیستان</a>
+    </nav>
+
+    <section class="content-layout">
+      <div class="guides-panel">
+        <div class="panel-head"><div><span>راهنمای نگهداری</span><h2>جدیدترین راهنماها</h2></div><a href="/articles">مشاهده همه</a></div>
+        <div class="guide-grid">
+          {guides.map((item) => (
+            <a href={`/articles/${item.id}`} class="guide-card">
+              <div class="guide-image">{item.data.cover ? <img src={item.data.cover} alt={item.data.title} loading="lazy" width="520" height="600" /> : <div class="fallback">✦</div>}</div>
+              <div class="guide-body"><h3>{item.data.title}</h3><span>{item.data.category} · {fa(item.data.pubDate)}</span></div>
+            </a>
+          ))}
+        </div>
       </div>
-      <div class="grid grid-3">
-        {latestNews.map((n) => (
-          <Card href={`/news/${n.id}`} title={n.data.title} description={n.data.description}
-            cover={n.data.cover} tag="خبر" meta={fa(n.data.pubDate)} />
-        ))}
-      </div>
+
+      <aside class="action-stack">
+        <section class="consult-card"><span class="line-icon">♧</span><div><small>پاسخ تخصصی و مطمئن</small><h2>مشاوره با دامپزشک</h2><p>عکس، فیلم و توضیحات حیوان خود را ارسال کنید و راهنمایی تخصصی دریافت کنید.</p><a href="/visit">مشاوره با دامپزشک ←</a></div></section>
+        <section class="library-card"><div><small>منابع منتخب و معتبر</small><h2>کتابخانه اگزوتیک</h2><p>کتاب‌ها و منابع تخصصی پزشکی و نگهداری حیوانات خاص.</p><a href="/books">مشاهده کتاب‌ها ←</a></div>{featuredBook?.data.cover ? <img src={featuredBook.data.cover} alt={featuredBook.data.title} loading="lazy" width="220" height="300" /> : <div class="book-art">کتاب<br />اگزوتیک</div>}</section>
+      </aside>
     </section>
-  )}
 
-  {topBooks.length > 0 && (
-    <section class="section container">
-      <div class="section-head">
-        <div><span class="eyebrow">کتابخانه</span><h2>کتاب‌های تخصصی</h2></div>
-        <a href="/books" class="btn btn-ghost">همه کتاب‌ها</a>
-      </div>
-      <div class="grid grid-3">
-        {topBooks.map((b) => (
-          <Card href={`/books/${b.id}`} title={b.data.title} description={b.data.description}
-            cover={b.data.cover} tag={b.data.lang === 'fa' ? 'فارسی' : 'English'}
-            meta={b.data.author} />
-        ))}
-      </div>
+    <section class="species-strip">
+      <div><strong>از کجا شروع کنیم؟</strong><span>راهنمای سریع بر اساس حیوان شما</span></div>
+      <a href="/articles/snake-care-basics"><img src="/images/photos/ball-python-1.jpg" alt="مار" loading="lazy" /><span>مارها</span></a>
+      <a href="/articles/parrot-nutrition-basics"><img src="/images/photos/african-grey-1.jpg" alt="طوطی" loading="lazy" /><span>طوطی‌ها</span></a>
+      <a href="/articles/turtle-care-basics"><img src="/images/photos/russian-tortoise-1.jpg" alt="لاک‌پشت" loading="lazy" /><span>لاک‌پشت‌ها</span></a>
+      <a href="/articles/leopard-gecko-care"><img src="/images/photos/leopard-gecko-1.jpg" alt="گکو" loading="lazy" /><span>گکوها</span></a>
     </section>
-  )}
-
-  <section class="section">
-    <div class="container ig-cta">
-      <h2>هر روز محتوای تازه در اینستاگرام</h2>
-      <p class="muted">آموزش، کیس‌های بالینی و نکات نگهداری حیوانات اگزوتیک — همراه شوید.</p>
-      <a href="https://instagram.com/exoticsbymahdiyar" target="_blank" rel="noopener" class="btn">@exoticsbymahdiyar</a>
-    </div>
-  </section>
+  </div>
 </Base>
 
 <style>
-  .hero { position: relative; overflow: hidden; padding-block: clamp(60px, 12vw, 130px); }
-  .hero::before {
-    content: ''; position: absolute; inset: 0; z-index: -1;
-    background:
-      radial-gradient(60% 55% at 78% 12%, rgba(63,174,109,.18), transparent 60%),
-      radial-gradient(50% 50% at 15% 90%, rgba(217,164,65,.12), transparent 60%);
-  }
-  .hero-grid { display: grid; grid-template-columns: 1fr 1.05fr; gap: clamp(24px, 4vw, 52px); align-items: center; }
-  .hero-inner { max-width: 620px; }
-  .hero-media img {
-    width: 100%; height: auto; border-radius: var(--radius);
-    border: 1px solid var(--border); box-shadow: var(--shadow);
-  }
-  @media (max-width: 880px) {
-    .hero-grid { grid-template-columns: 1fr; }
-    .hero-media { order: 2; margin-top: 8px; }
-  }
-  .hero h1 { margin-block: 20px 18px; }
-  .grad { background: linear-gradient(90deg, var(--brand), var(--accent)); -webkit-background-clip: text; background-clip: text; color: transparent; }
-  .lead { font-size: clamp(1.05rem, 2vw, 1.25rem); color: var(--text-muted); max-width: 62ch; }
-  .hero-cta { display: flex; gap: 12px; margin-top: 30px; flex-wrap: wrap; }
-  .ig-cta {
-    text-align: center; background: var(--surface);
-    border: 1px solid var(--border); border-radius: var(--radius);
-    padding: clamp(36px, 6vw, 60px);
-    background-image: radial-gradient(50% 80% at 50% 0%, rgba(63,174,109,.1), transparent);
-  }
-  .ig-cta p { margin-block: 10px 24px; }
+  :global(body) { background:#202313; color:#f1e5c9; }
+  .magazine-shell{--paper:#ead9b5;--ink:#252919;--gold:#c39a4a;--rust:#b94d1e;padding-top:22px;padding-bottom:70px;max-width:1480px}
+  .lead-layout{display:grid;grid-template-columns:290px minmax(0,1fr);border:1px solid rgba(211,177,103,.38);border-radius:26px 26px 0 0;overflow:hidden;background:#2a2e1a;box-shadow:0 24px 70px rgba(0,0,0,.34)}
+  .news-rail{padding:26px 22px;background:linear-gradient(180deg,#282d19,#202412);border-inline-end:1px solid rgba(211,177,103,.3)}
+  .rail-title{display:flex;align-items:center;gap:12px;color:#f2dfb8;font-size:19px;font-weight:700;padding-bottom:16px;border-bottom:1px solid rgba(211,177,103,.35)}
+  .rail-title i{width:8px;height:8px;border-radius:50%;background:#b94d1e;box-shadow:0 0 0 5px rgba(185,77,30,.16)}
+  .rail-list{display:flex;flex-direction:column}.rail-item{display:grid;grid-template-columns:1fr 78px;gap:12px;align-items:center;padding:15px 0;border-bottom:1px dashed rgba(211,177,103,.28)}
+  .rail-item img{width:78px;height:58px;border-radius:10px;object-fit:cover}.rail-item b{font-size:13px;line-height:1.65;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.rail-item small{display:block;margin-top:5px;color:#bba87e;font-size:11px}
+  .text-link{display:inline-flex;margin-top:20px;padding:8px 15px;border:1px solid rgba(211,177,103,.38);border-radius:8px;font-size:13px;color:#e4c98f}
+  .hero-collage{min-height:510px;display:grid;grid-template-columns:1.05fr 1fr .88fr;position:relative;overflow:hidden;background:var(--paper);color:var(--ink)}
+  .hero-animal,.hero-stack{min-width:0}.hero-iguana img{width:100%;height:100%;object-fit:cover;filter:saturate(.9) contrast(1.05)}
+  .hero-copy{align-self:stretch;display:flex;flex-direction:column;justify-content:center;padding:50px 34px;position:relative;background:linear-gradient(105deg,#e7d3aa,#f2e3c3)}
+  .hero-copy:before,.hero-copy:after{content:"";position:absolute;width:90px;height:90px;border:1px solid rgba(65,74,40,.13);border-radius:50%}.hero-copy:before{top:25px;left:25px}.hero-copy:after{bottom:15px;right:30px}
+  .kicker{color:#9a692c;font-size:13px;font-weight:700;margin-bottom:14px}.hero-copy h1{font-size:clamp(2rem,3.5vw,4rem);line-height:1.25;letter-spacing:-.04em}.hero-copy p{color:#4f513f;font-size:15px;line-height:2;margin:20px 0 25px}
+  .rust-btn{align-self:flex-start;background:var(--rust);color:#fff5dc;padding:12px 18px;border-radius:9px;font-size:14px;font-weight:700;box-shadow:0 10px 25px rgba(130,45,16,.22)}
+  .hero-stack{display:grid;grid-template-rows:1fr .72fr}.hero-stack img{width:100%;height:100%;object-fit:cover}.hero-stack .macaw{object-position:50% 30%}.hero-stack .snake{object-position:center;border-top:7px solid var(--paper)}
+  .animal-nav{display:grid;grid-template-columns:repeat(4,1fr);background:#262b17;border:1px solid rgba(211,177,103,.35);border-top:0}.animal-nav a{display:flex;justify-content:center;align-items:center;gap:12px;padding:18px;color:#ead5a8;font-weight:700;border-inline-end:1px solid rgba(211,177,103,.23);transition:.2s}.animal-nav a:hover{background:#33391f;color:#fff0ca}.animal-nav span{color:var(--gold);font-size:22px}
+  .content-layout{display:grid;grid-template-columns:minmax(0,1fr) 360px;background:var(--paper);color:var(--ink);border:1px solid rgba(211,177,103,.35);border-top:0}.guides-panel{padding:34px 28px 36px;min-width:0}
+  .panel-head{display:flex;align-items:end;justify-content:space-between;gap:18px;margin-bottom:22px}.panel-head span{color:#9b692e;font-size:12px;font-weight:700}.panel-head h2{font-size:28px}.panel-head>a{color:#7e5426;font-size:13px;border-bottom:1px solid}
+  .guide-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}.guide-card{background:#252a18;color:#f4e7ca;border-radius:15px;overflow:hidden;box-shadow:0 8px 25px rgba(60,43,20,.16);transition:transform .2s}.guide-card:hover{transform:translateY(-5px)}
+  .guide-image{aspect-ratio:4/4.5;overflow:hidden;background:#30351f}.guide-image img{width:100%;height:100%;object-fit:cover;transition:transform .4s}.guide-card:hover img{transform:scale(1.05)}.fallback{height:100%;display:grid;place-items:center;font-size:40px}
+  .guide-body{padding:13px}.guide-body h3{font-size:14px;line-height:1.65;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.guide-body span{display:block;color:#c9a765;font-size:10px;margin-top:9px}
+  .action-stack{padding:22px;background:#242817;border-inline-start:1px solid rgba(211,177,103,.3);display:flex;flex-direction:column;gap:16px}.consult-card,.library-card{border-radius:16px;overflow:hidden;padding:25px}
+  .consult-card{background:linear-gradient(135deg,#087d7a,#176d6e);color:#f5ead2;display:grid;grid-template-columns:72px 1fr;gap:18px;align-items:center}.line-icon{font-size:64px;opacity:.8;border-inline-end:1px dashed rgba(255,255,255,.45)}
+  .action-stack small{opacity:.75;font-size:11px}.action-stack h2{font-size:21px;margin:3px 0 8px}.action-stack p{font-size:12px;line-height:1.8;color:inherit;opacity:.84}.action-stack a{display:inline-flex;background:#efe0bd;color:#34301e;padding:9px 14px;border-radius:8px;font-size:12px;font-weight:700;margin-top:14px}
+  .library-card{background:linear-gradient(135deg,#ad491f,#c4652e);color:#fff0d2;display:grid;grid-template-columns:1fr 95px;gap:12px;align-items:center;flex:1}.library-card img{width:90px;height:128px;object-fit:cover;border-radius:4px;transform:rotate(-5deg);box-shadow:8px 9px 0 rgba(68,36,17,.3)}.book-art{background:#28311e;color:#e8d5a5;height:130px;display:grid;place-items:center;text-align:center;border:5px solid #d9ba77;box-shadow:8px 9px 0 rgba(68,36,17,.3);transform:rotate(-4deg)}
+  .species-strip{display:grid;grid-template-columns:1.5fr repeat(4,1fr);gap:12px;padding:24px;background:#1e2212;border:1px solid rgba(211,177,103,.35);border-top:0;border-radius:0 0 26px 26px}.species-strip>div{display:flex;flex-direction:column;justify-content:center}.species-strip>div strong{color:#f1ddb4;font-size:20px}.species-strip>div span{color:#aa9b77;font-size:12px}.species-strip a{position:relative;height:105px;border-radius:14px;overflow:hidden}.species-strip img{width:100%;height:100%;object-fit:cover;filter:brightness(.7);transition:.3s}.species-strip a:hover img{transform:scale(1.06);filter:brightness(.85)}.species-strip a span{position:absolute;inset:auto 12px 10px;font-weight:700;color:#fff3d6}
+  @media(max-width:1100px){.lead-layout{grid-template-columns:240px 1fr}.hero-collage{grid-template-columns:1fr 1.1fr}.hero-iguana{display:none}.content-layout{grid-template-columns:1fr}.action-stack{border-inline-start:0;display:grid;grid-template-columns:1fr 1fr}.guide-grid{grid-template-columns:repeat(3,1fr)}.guide-card:nth-child(n+4){display:none}.species-strip{grid-template-columns:repeat(4,1fr)}.species-strip>div{grid-column:1/-1}}
+  @media(max-width:760px){.magazine-shell{padding-inline:12px;padding-top:12px}.lead-layout{display:flex;flex-direction:column}.hero-collage{min-height:0;display:flex;flex-direction:column}.hero-copy{order:1;padding:38px 25px}.hero-copy h1{font-size:2.35rem}.hero-stack{order:2;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:210px}.hero-stack .snake{border-top:0;border-inline-start:5px solid var(--paper)}.news-rail{order:3}.rail-list{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}.animal-nav{grid-template-columns:1fr 1fr}.guide-grid{grid-template-columns:1fr 1fr}.guide-card:nth-child(3){display:none}.guides-panel{padding:27px 18px}.action-stack{grid-template-columns:1fr;padding:16px}.species-strip{grid-template-columns:1fr 1fr}.species-strip>div{grid-column:1/-1}.species-strip a{height:120px}}
+  @media(max-width:480px){.rail-list{grid-template-columns:1fr}.guide-grid{gap:10px}.guide-body h3{font-size:12px}.animal-nav a{font-size:13px;padding:14px 8px}.consult-card{grid-template-columns:1fr}.line-icon{display:none}.library-card{grid-template-columns:1fr 80px}.species-strip{padding:15px;gap:9px}}
 </style>

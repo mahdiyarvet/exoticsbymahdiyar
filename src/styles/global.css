@@ -18,20 +18,20 @@
 }
 
 :root {
-  --bg: #0f1512;
-  --bg-soft: #16201b;
-  --surface: #1b271f;
-  --surface-2: #223026;
-  --border: #2c3a30;
-  --text: #eef3ee;
-  --text-muted: #9db0a0;
-  --brand: #3fae6d;
-  --brand-strong: #2f9159;
-  --accent: #d9a441;
+  --bg: #202313;
+  --bg-soft: #292d19;
+  --surface: #2b301b;
+  --surface-2: #343a21;
+  --border: #4b4d2d;
+  --text: #f3e8cd;
+  --text-muted: #b9ad8e;
+  --brand: #c49a4a;
+  --brand-strong: #ddaf55;
+  --accent: #d66a32;
   --radius: 16px;
   --radius-sm: 10px;
   --shadow: 0 10px 30px -12px rgba(0,0,0,.6);
-  --max: 1120px;
+  --max: 1320px;
   --font: 'Vazirmatn', system-ui, -apple-system, 'Segoe UI', Tahoma, sans-serif;
 }
 

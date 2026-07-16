@@ -21,8 +21,8 @@ const schema = {
   description: d.description,
   datePublished: d.pubDate.toISOString(),
   dateModified: (d.updatedDate ?? d.pubDate).toISOString(),
-  author: { '@type': 'Person', name: d.author },
-  publisher: { '@type': 'Person', name: 'دکتر مهدیار رمزگویان' },
+  author: { '@type': 'Person', name: d.author, url: new URL('/about', Astro.site).href },
+  publisher: { '@type': 'Person', name: 'دکتر مهدیار رمزگویان', url: new URL('/about', Astro.site).href },
   inLanguage: 'fa-IR',
   mainEntityOfPage: canonicalUrl,
   ...(d.cover && { image: new URL(d.cover, Astro.site).href }),
@@ -39,7 +39,10 @@ const breadcrumb = {
 };
 const related = allArticles
   .filter((a) => a.id !== article.id && a.data.category === d.category)
-  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
+  .sort((a, b) => {
+    const score = (item) => item.data.tags.filter((tag) => d.tags.includes(tag)).length;
+    return score(b) - score(a) || b.data.pubDate.getTime() - a.data.pubDate.getTime();
+  })
   .slice(0, 3);
 ---
 <Base title={d.title} description={d.description} image={d.cover} type="article" publishedTime={d.pubDate.toISOString()}>
@@ -48,9 +51,10 @@ const related = allArticles
     <span class="tag">{d.category}</span>
     <h1>{d.title}</h1>
     <div class="post-meta muted">
-      <span>{d.author}</span><span>•</span><span>{fa(d.pubDate)}</span>
+      <span>نویسنده: <a href="/about" rel="author">{d.author}</a></span><span>•</span><span>انتشار: {fa(d.pubDate)}</span>
+      {d.updatedDate && <><span>•</span><span>بازبینی: {fa(d.updatedDate)}</span></>}
     </div>
-    {d.cover && <img class="cover" src={d.cover} alt={d.title} />}
+    {d.cover && <img class="cover" src={d.cover} alt={d.title} loading="eager" decoding="async" fetchpriority="high" />}
     <div class="prose"><Content /></div>
 
     {d.sources.length > 0 && (
@@ -84,6 +88,8 @@ const related = allArticles
   .crumb a:hover { color: var(--brand); }
   .post h1 { margin-block: 14px 12px; }
   .post-meta { display: flex; gap: 10px; font-size: 14.5px; margin-bottom: 26px; }
+  .post-meta { flex-wrap: wrap; }
+  .post-meta a { color: var(--brand); font-weight: 700; }
   .cover { width: 100%; border-radius: var(--radius); margin-bottom: 30px; aspect-ratio: 16/9; object-fit: cover; }
   .sources { margin-top: 44px; padding: 22px 24px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
   .sources h3 { font-size: 18px; margin-bottom: 12px; }

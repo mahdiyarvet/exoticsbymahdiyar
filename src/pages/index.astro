@@ -1,14 +1,56 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
+import { getContentTopic, getNewsCover, isPhotographicCover, normalizeContentTitle } from '../contentImages';
 
 const fa = (d: Date) => d.toLocaleDateString('fa-IR', { year: 'numeric', month: 'long', day: 'numeric' });
 const articles = (await getCollection('articles', ({ data }) => !data.draft)).sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
 const news = (await getCollection('news', ({ data }) => !data.draft)).sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
 const books = await getCollection('books', ({ data }) => !data.draft);
 const guides = articles.slice(0, 5);
-const latestNews = news.slice(0, 5);
 const featuredBook = books[0];
+
+type RailItem = {
+  href: string;
+  title: string;
+  pubDate: Date;
+  cover: string;
+  kind: 'خبر' | 'راهنما';
+};
+
+const usedTopics = new Set<string>();
+const usedCovers = new Set<string>();
+const usedNewsTitles = new Set<string>();
+const selectedNews: RailItem[] = [];
+
+for (const item of news) {
+  const titleKey = normalizeContentTitle(item.data.title);
+  const topic = getContentTopic(item.data.title, item.data.cover);
+  if (usedNewsTitles.has(titleKey) || usedTopics.has(topic)) continue;
+
+  const cover = getNewsCover(item, usedCovers);
+  selectedNews.push({ href: `/news/${item.id}`, title: item.data.title, pubDate: item.data.pubDate, cover, kind: 'خبر' });
+  usedNewsTitles.add(titleKey);
+  usedTopics.add(topic);
+  if (selectedNews.length === 3) break;
+}
+
+const selectedArticles: RailItem[] = [];
+const usedArticleCategories = new Set<string>();
+for (const item of articles) {
+  if (!isPhotographicCover(item.data.cover)) continue;
+  const topic = getContentTopic(item.data.title, item.data.cover);
+  if (usedTopics.has(topic) || usedArticleCategories.has(item.data.category)) continue;
+
+  selectedArticles.push({ href: `/articles/${item.id}`, title: item.data.title, pubDate: item.data.pubDate, cover: item.data.cover, kind: 'راهنما' });
+  usedTopics.add(topic);
+  usedCovers.add(item.data.cover);
+  usedArticleCategories.add(item.data.category);
+  if (selectedArticles.length === 2) break;
+}
+
+const railItems = [selectedNews[0], selectedArticles[0], selectedNews[1], selectedArticles[1], selectedNews[2]]
+  .filter((item): item is RailItem => Boolean(item));
 ---
 
 <Base title="اگزوتیک با مهدیار" description="مرجع فارسی نگهداری و دامپزشکی حیوانات اگزوتیک؛ راهنمای خزندگان، پرندگان، پستانداران کوچک، اخبار، کتابخانه و ویزیت آنلاین با دکتر مهدیار رمزگویان.">
@@ -17,10 +59,10 @@ const featuredBook = books[0];
       <aside class="news-rail">
         <div class="rail-title"><span>اخبار و دانستنی‌ها</span><i></i></div>
         <div class="rail-list">
-          {latestNews.map((item) => (
-            <a href={`/news/${item.id}`} class="rail-item">
-              {item.data.cover && <img src={item.data.cover} alt="" loading="lazy" width="120" height="90" />}
-              <span><b>{item.data.title}</b><small>{fa(item.data.pubDate)}</small></span>
+          {railItems.map((item) => (
+            <a href={item.href} class="rail-item">
+              <img src={item.cover} alt={item.title} loading="lazy" width="120" height="90" />
+              <span><b>{item.title}</b><small><em>{item.kind}</em>{fa(item.pubDate)}</small></span>
             </a>
           ))}
         </div>
@@ -28,7 +70,7 @@ const featuredBook = books[0];
       </aside>
 
       <div class="hero-collage">
-        <div class="hero-animal hero-iguana"><img src="/images/photos/iguana-2.jpg" alt="نمای نزدیک ایگوانا" width="900" height="900" fetchpriority="high" /></div>
+        <div class="hero-animal hero-iguana"><img src="/images/photos/iguana-3.jpg" alt="نمای کامل صورت ایگوانا" width="900" height="900" fetchpriority="high" /></div>
         <div class="hero-copy">
           <span class="kicker">دانش، تجربه و احترام به طبیعت</span>
           <h1 id="hero-title">زندگی بهتر<br /><span>برای حیوانات اگزوتیک</span></h1>
@@ -75,10 +117,10 @@ const featuredBook = books[0];
   .rail-title{display:flex;align-items:center;gap:12px;color:#f2dfb8;font-size:20px;font-weight:700;padding-bottom:14px;border-bottom:1px solid rgba(211,177,103,.35)}
   .rail-title i{width:8px;height:8px;border-radius:50%;background:#b94d1e;box-shadow:0 0 0 5px rgba(185,77,30,.16)}
   .rail-list{display:flex;flex-direction:column}.rail-item{display:grid;grid-template-columns:1fr 76px;gap:12px;align-items:center;padding:10px 0;border-bottom:1px dashed rgba(211,177,103,.28)}
-  .rail-item img{width:76px;height:54px;border-radius:9px;object-fit:cover}.rail-item b{font-size:12.5px;line-height:1.65;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.rail-item small{display:block;margin-top:3px;color:#bba87e;font-size:10px}
+  .rail-item img{width:76px;height:54px;border-radius:9px;object-fit:cover}.rail-item b{font-size:12.5px;line-height:1.65;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.rail-item small{display:flex;align-items:center;gap:6px;margin-top:3px;color:#bba87e;font-size:10px}.rail-item small em{font-style:normal;color:#e5c47e;padding-inline-end:6px;border-inline-end:1px solid rgba(211,177,103,.35)}
   .text-link{display:inline-flex;margin-top:14px;padding:7px 14px;border:1px solid rgba(211,177,103,.38);border-radius:8px;font-size:12px;color:#e4c98f}
   .editorial-grid>.hero-collage{grid-area:hero;display:grid;grid-template-columns:32% 41% 27%;direction:ltr;position:relative;overflow:hidden;background:var(--paper);color:var(--ink)}
-  .hero-collage>*{direction:rtl;min-width:0}.hero-iguana{overflow:hidden}.hero-iguana img{width:100%;height:100%;object-fit:cover;object-position:55% center;filter:hue-rotate(25deg) saturate(.78) brightness(.72) contrast(1.12);transform:scale(1.04)}
+  .hero-collage>*{direction:rtl;min-width:0}.hero-iguana{overflow:hidden;background:#1b2114}.hero-iguana img{width:100%;height:100%;object-fit:cover;object-position:50% center;filter:saturate(.88) brightness(.78) contrast(1.08)}
   .hero-copy{z-index:2;margin-inline:-22px;clip-path:polygon(5% 0,96% 0,100% 12%,96% 24%,100% 38%,96% 51%,100% 66%,96% 81%,100% 100%,2% 100%,0 88%,4% 74%,0 60%,4% 46%,0 31%,4% 16%,0 0);display:flex;flex-direction:column;justify-content:center;padding:36px 48px;position:relative;background:linear-gradient(105deg,#dfc99d,#f0dfbd)}
   .hero-copy:before,.hero-copy:after{content:"";position:absolute;width:82px;height:82px;border:1px solid rgba(65,74,40,.12);border-radius:50%}.hero-copy:before{top:18px;left:38px}.hero-copy:after{bottom:10px;right:35px}
   .kicker{color:#8c602c;font-size:12px;font-weight:700;margin-bottom:10px}.hero-copy h1{font-size:clamp(2rem,3vw,3rem);line-height:1.28;letter-spacing:-.045em}.hero-copy h1 span{white-space:nowrap}.hero-copy p{color:#4f513f;font-size:13px;line-height:1.9;margin:14px 0 18px}.rust-btn{align-self:flex-start;background:var(--rust);color:#fff5dc;padding:10px 17px;border-radius:8px;font-size:13px;font-weight:700;box-shadow:0 10px 25px rgba(130,45,16,.22)}

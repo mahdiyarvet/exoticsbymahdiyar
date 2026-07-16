@@ -112,7 +112,9 @@ const websiteSchema = {
     <script>
       const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
       if (!mq.matches) {
-        const targets = document.querySelectorAll('main .section, main .hero-inner, main .card');
+        // Never hide an entire long section: its visible intersection can stay below
+        // the observer threshold forever (the news archive is a good example).
+        const targets = document.querySelectorAll('main .hero-inner, main .section-head, main .card');
         targets.forEach((el) => el.setAttribute('data-reveal', ''));
         // stagger cards within each grid
         document.querySelectorAll('main .grid').forEach((grid) => {

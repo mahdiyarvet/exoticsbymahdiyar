@@ -2,8 +2,20 @@
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Card from '../../components/Card.astro';
-const fa = (d) => d.toLocaleDateString('fa-IR', { year: 'numeric', month: 'long', day: 'numeric' });
-const items = (await getCollection('news', ({ data }) => !data.draft)).sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+import { getNewsCover, normalizeContentTitle } from '../../contentImages';
+
+const fa = (d: Date) => d.toLocaleDateString('fa-IR', { year: 'numeric', month: 'long', day: 'numeric' });
+const rawItems = (await getCollection('news', ({ data }) => !data.draft)).sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+const seenTitles = new Set<string>();
+const items = rawItems.filter((item) => {
+  const key = normalizeContentTitle(item.data.title);
+  if (seenTitles.has(key)) return false;
+  seenTitles.add(key);
+  return true;
+});
+const usedCovers = new Set<string>();
+const displayItems = items.map((item) => ({ item, cover: getNewsCover(item, usedCovers) }));
+const initialCount = 24;
 
 const listSchema = {
   '@context': 'https://schema.org',
@@ -22,14 +34,51 @@ const listSchema = {
 ---
 <Base title="اخبار" description="آخرین اخبار و رویدادهای دنیای دامپزشکی حیوانات اگزوتیک؛ تازه‌ترین یافته‌ها و پژوهش‌ها.">
   <script type="application/ld+json" set:html={JSON.stringify(listSchema)} />
-  <section class="section container">
-    <span class="eyebrow">اخبار</span>
-    <h1>اخبار دامپزشکی اگزوتیک</h1>
-    <p class="muted" style="max-width:60ch;margin-top:8px">تازه‌ترین خبرها و پیشرفت‌های علمی حوزه‌ی حیوانات اگزوتیک.</p>
+  <section class="section container news-archive">
+    <div class="archive-heading">
+      <div>
+        <span class="eyebrow">اخبار و دانستنی‌ها</span>
+        <h1>تازه‌های دنیای حیوانات اگزوتیک</h1>
+        <p class="muted">خبرهای منتخب درباره‌ی خزندگان، پرندگان و حیوانات خاص؛ با تصویر مرتبط و منبع اصلی.</p>
+      </div>
+      <span class="archive-count">{items.length.toLocaleString('fa-IR')} مطلب</span>
+    </div>
     {items.length === 0
       ? <p class="empty muted">هنوز خبری منتشر نشده. به‌زودی…</p>
-      : <div class="grid grid-3" style="margin-top:28px">{items.map((n) => (
-          <Card href={`/news/${n.id}`} title={n.data.title} description={n.data.description} cover={n.data.cover} tag="خبر" meta={fa(n.data.pubDate)} />))}</div>}
+      : <>
+          <div class="grid grid-3 news-grid">
+            {displayItems.map(({ item, cover }, index) => (
+              <div class="news-entry" hidden={index >= initialCount}>
+                <Card href={`/news/${item.id}`} title={item.data.title} description={item.data.description} cover={cover} tag="خبر" meta={fa(item.data.pubDate)} />
+              </div>
+            ))}
+          </div>
+          {items.length > initialCount && (
+            <button class="load-more" type="button" data-load-more data-batch={initialCount}>
+              نمایش خبرهای بیشتر
+            </button>
+          )}
+        </>}
   </section>
+
+  <script is:inline>
+    document.querySelector('[data-load-more]')?.addEventListener('click', (event) => {
+      const button = event.currentTarget;
+      const batch = Number(button.dataset.batch || 24);
+      const hiddenEntries = Array.from(document.querySelectorAll('.news-entry[hidden]'));
+      hiddenEntries.slice(0, batch).forEach((entry) => entry.removeAttribute('hidden'));
+      const remaining = document.querySelectorAll('.news-entry[hidden]').length;
+      if (remaining === 0) button.hidden = true;
+      else button.textContent = `نمایش ${Math.min(batch, remaining).toLocaleString('fa-IR')} خبر دیگر`;
+    });
+  </script>
 </Base>
-<style>.empty{padding:60px 0;text-align:center}</style>
+<style>
+  .news-archive{min-height:70vh}
+  .archive-heading{display:flex;align-items:end;justify-content:space-between;gap:24px;padding:28px;border:1px solid var(--border);border-radius:var(--radius);background:linear-gradient(135deg,var(--surface),var(--surface-2));box-shadow:var(--shadow)}
+  .archive-heading h1{font-size:clamp(2rem,5vw,3.6rem);margin-block:4px 10px}.archive-heading p{max-width:64ch;line-height:1.8}.archive-count{flex:none;padding:8px 14px;border:1px solid rgba(63,174,109,.3);border-radius:999px;color:var(--brand);font-size:13px}
+  .news-grid{margin-top:28px}.news-entry{min-width:0}.news-entry :global(.card){height:100%}
+  .load-more{display:block;margin:32px auto 0;padding:11px 24px;border:1px solid rgba(63,174,109,.45);border-radius:999px;background:var(--surface);color:var(--brand);font:inherit;font-weight:700;cursor:pointer;transition:.2s}.load-more:hover{background:var(--brand);color:#07110b;transform:translateY(-2px)}
+  .empty{padding:60px 0;text-align:center}
+  @media(max-width:620px){.archive-heading{align-items:start;flex-direction:column;padding:22px}.archive-heading h1{font-size:2.15rem}}
+</style>

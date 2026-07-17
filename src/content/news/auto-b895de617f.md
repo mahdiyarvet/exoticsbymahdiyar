@@ -1,0 +1,15 @@
+---
+title: "گونهای جدید مار در Xizang کشف شد که پازل خزندگان هیمالیا را تغییر می دهد | اخبار"
+description: "گونهای جدید مار در Xizang کشف شد که پازل خزندگان هیمالیا را تغییر می دهد | اخبار"
+pubDate: 2026-04-14
+cover: "/images/photos/ball-python-3.jpg"
+category: "خزندگان"
+source: "Newswise"
+sourceUrl: "https://news.google.com/rss/articles/CBMirAFBVV95cUxONmhaeUdNM09VcGlBX3V2OHdaUTFyZ1k3UkRTMkRmU2pzeGVwdkhnZEZiQzItYVlVVDAzdmFCNXVmUTZBN0ZQWHRqamdDcmNJQUdxNGEzdGFFS01nT0lfZ1VTR2ZudzFNSHlOSzhtbGZUWVNMVTU2dlpqdnRYNHJXQmxxOGlXbVhudmE3ZnhvMWwxdGUtT0ZSdUltMUd0WmxDa3N0Umpxay1zS2VD0gGsAUFVX3lxTE42aFp5R00zT1VwaUFfdXY4d1pRMXJnWTdSRFMyRGZTanN4ZXB2SGdkRmJDMi1hWVVUMDN2YUI1dWZRNkE3RlBYdGpqZ0NyY0lBR3E0YTN0YUVLTWdPSV9nVVNHZm53MU1IeU5LOG1sZlRZU0xVNTZ2Wmp2dFg0cldCbHE4aVdtWG52YTdmeG8xbDF0ZS1PRlJ1SW0xR3RabENrc3RSanFrLXNLZUM?oc=5"
+---
+
+گونهای جدید مار در Xizang کشف شد که پازل خزندگان هیمالیا را تغییر می دهد | اخبار
+
+برای مطالعه‌ی متن کامل، به منبع اصلی خبر مراجعه کنید:
+
+> منبع: [Newswise](https://news.google.com/rss/articles/CBMirAFBVV95cUxONmhaeUdNM09VcGlBX3V2OHdaUTFyZ1k3UkRTMkRmU2pzeGVwdkhnZEZiQzItYVlVVDAzdmFCNXVmUTZBN0ZQWHRqamdDcmNJQUdxNGEzdGFFS01nT0lfZ1VTR2ZudzFNSHlOSzhtbGZUWVNMVTU2dlpqdnRYNHJXQmxxOGlXbVhudmE3ZnhvMWwxdGUtT0ZSdUltMUd0WmxDa3N0Umpxay1zS2VD0gGsAUFVX3lxTE42aFp5R00zT1VwaUFfdXY4d1pRMXJnWTdSRFMyRGZTanN4ZXB2SGdkRmJDMi1hWVVUMDN2YUI1dWZRNkE3RlBYdGpqZ0NyY0lBR3E0YTN0YUVLTWdPSV9nVVNHZm53MU1IeU5LOG1sZlRZU0xVNTZ2Wmp2dFg0cldCbHE4aVdtWG52YTdmeG8xbDF0ZS1PRlJ1SW0xR3RabENrc3RSanFrLXNLZUM?oc=5)

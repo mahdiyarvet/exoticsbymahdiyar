@@ -5,7 +5,7 @@ pubDate: 2026-07-06
 updatedDate: 2026-07-14
 category: "خزندگان"
 tags: ["تراریوم", "گرادیان حرارتی", "بستر", "رطوبت", "زیستگاه"]
-cover: "/images/terrarium.svg"
+cover: "/images/photos/bearded-dragon-3.jpg"
 sources:
   - label: "ARAV — Reptile Housing and Environmental Guidelines"
   - label: "Girling SJ — Veterinary Nursing of Exotic Pets"

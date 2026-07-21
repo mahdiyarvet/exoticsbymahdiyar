@@ -5,7 +5,7 @@ pubDate: 2026-07-06
 updatedDate: 2026-07-16
 category: "عمومی"
 tags: ["نشانه بیماری", "اورژانس", "سلامت", "پیشگیری"]
-cover: "/images/vet-check.svg"
+cover: "/images/photos/macaw-1.jpg"
 sources:
   - label: "Association of Avian Veterinarians — Recognizing a Sick Bird"
   - label: "ARAV — Signs of Illness in Reptiles"

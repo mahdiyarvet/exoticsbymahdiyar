@@ -59,4 +59,4 @@ sources:
 
 هر تغییر عمده در رژیم بهتر است زیر نظر دامپزشک پرندگان و همراه با پایش وزن انجام شود؛ تغذیه‌ی درست، ساده‌ترین و مؤثرترین سرمایه‌گذاری برای عمر طولانی و سلامت طوطی شماست.
 
-برای تنظیم رژیم در کنار سایر نیازها، راهنماهای اختصاصی [کاسکو](/articles/african-grey-parrot-care/)، [کاکادو](/articles/cockatoo-care/)، [ماکائو](/articles/macaw-care/) و برای طوطی‌های کوچک‌تر [کانیور](/articles/conure-care/) و [کوآکر](/articles/quaker-parrot-care/) را هم بخوانید.
+برای تنظیم رژیم در کنار سایر نیازها، راهنماهای اختصاصی [کاسکو](/articles/african-grey-parrot-care/)، [کاکادو](/articles/cockatoo-care/)، [ماکائو](/articles/macaw-care/)، [آمازون](/articles/amazon-parrot-care/) و برای طوطی‌های کوچک‌تر [کانیور](/articles/conure-care/) و [کوآکر](/articles/quaker-parrot-care/) را هم بخوانید.

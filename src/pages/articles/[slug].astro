@@ -18,7 +18,7 @@ const fa = (x: Date) => x.toLocaleDateString('fa-IR', { year: 'numeric', month: 
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
 const schema = {
   '@context': 'https://schema.org',
-  '@type': 'MedicalWebPage',
+  '@type': ['MedicalWebPage', 'Article'],
   headline: d.title,
   description: d.description,
   datePublished: d.pubDate.toISOString(),

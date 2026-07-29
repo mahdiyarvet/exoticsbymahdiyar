@@ -1,0 +1,15 @@
+---
+title: "گونهای جدید گکو در کوکراجار در آسام کشف شد"
+description: "گونهای جدید گکو در کوکراجار در آسام کشف شد"
+pubDate: 2026-04-13
+cover: "/images/photos/crested-gecko-2.jpg"
+category: "خزندگان"
+source: "ETV Bharat"
+sourceUrl: "https://news.google.com/rss/articles/CBMiogFBVV95cUxOVWNrQ3VRR09YWUluNGw5a1Uzdkw1cS03V2hfVnVNY2x0dzJqSVVtN3VxLVExb21YLUdBZFpyalFGdThmTmRsN1N0OUN6VEYzMGh5SXhWSXJLMXVqRTFpZkpKYkFJeWpDZWlHR0RUbTZTZkpnbjhpcGxCV0hoQlVpZ2g3REV1SHFGc0hlQ0RBVUtEeVdDYlRkMEIzOXdvdW5sdkHSAacBQVVfeXFMTXJzX2JKSHdWLVNVaUNubTFPMElnNXppQlc0ME9VVWJubkhQVXNKdkM1VVhEek5tZzdPOXZOTEJDVnlEalJJNkZIeFU4dzJZUGNxNW5rOUlTWFF1QjFBenR4X25HN3h5Y2lvRjdvTTljZmloLXpsVmtGMEt6dXpJR21ud3JRYlVUQXQtTGZpaUl5VGZiLTQ1clQxcE94RV85SVc0NTlZSHM?oc=5"
+---
+
+گونهای جدید گکو در کوکراجار در آسام کشف شد
+
+برای مطالعه‌ی متن کامل، به منبع اصلی خبر مراجعه کنید:
+
+> منبع: [ETV Bharat](https://news.google.com/rss/articles/CBMiogFBVV95cUxOVWNrQ3VRR09YWUluNGw5a1Uzdkw1cS03V2hfVnVNY2x0dzJqSVVtN3VxLVExb21YLUdBZFpyalFGdThmTmRsN1N0OUN6VEYzMGh5SXhWSXJLMXVqRTFpZkpKYkFJeWpDZWlHR0RUbTZTZkpnbjhpcGxCV0hoQlVpZ2g3REV1SHFGc0hlQ0RBVUtEeVdDYlRkMEIzOXdvdW5sdkHSAacBQVVfeXFMTXJzX2JKSHdWLVNVaUNubTFPMElnNXppQlc0ME9VVWJubkhQVXNKdkM1VVhEek5tZzdPOXZOTEJDVnlEalJJNkZIeFU4dzJZUGNxNW5rOUlTWFF1QjFBenR4X25HN3h5Y2lvRjdvTTljZmloLXpsVmtGMEt6dXpJR21ud3JRYlVUQXQtTGZpaUl5VGZiLTQ1clQxcE94RV85SVc0NTlZSHM?oc=5)

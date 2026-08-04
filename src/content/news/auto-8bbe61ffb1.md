@@ -1,0 +1,15 @@
+---
+title: "تحقیقات نشان می دهد که ایگواناهای گالاپاگوس از طریق مجوزهای صادرات حیات وحشسته شده است - اخبار"
+description: "تحقیقات نشان می دهد که ایگواناهای گالاپاگوس از طریق مجوزهای صادرات حیات وحشسته شده است - اخبار"
+pubDate: 2025-08-21
+cover: "/images/photos/iguana-1.jpg"
+category: "خزندگان"
+source: "news - Mongabay"
+sourceUrl: "https://news.google.com/rss/articles/CBMiswFBVV95cUxOV1NITGZoTV9NSmJxRTZhRGFMS1hybHl3aEkyOFBXSFI4MnpsV0swTkJ2eVBIMjlMQ1pVaDRrWEV0M0x1c0Iwa3gyb2FzZTdTc1pBcG94M3BWc0JyVl9WUXJuNXJtQktsZFYxSTJkZVFRQTQ3bWpYYXBsc3ZWbm5nRTlraWpkbm5XLVM3eEFxYWVsMm5nbXRZTWUtSDV2Z3pTQlFKUGNNaTF4NUhhZDhvSWNKb9IBuAFBVV95cUxPVWY2YXZjRzVGcGV6cGFOdjNuaXUyVWd4SW04cmljc2FmWkhoRjNIdUgyWGpTOFhLV3ZqSDJvX1YxNGkwVUpkc3dnVmZILV9ETjRUeDRsZk1Tbm12dXJJM2NBbE5PWHFucGZhMWxLQWRDS3pWaDdSRmM5VXFIazlEX2JRY3QwUmNUa0NHNFg1dFZDRmlvUnNPQ3JrZUlSaVB2djFVenFTZ3V6WE8xYTJpZ1UtNmFjVF9Y?oc=5"
+---
+
+تحقیقات نشان می دهد که ایگواناهای گالاپاگوس از طریق مجوزهای صادرات حیات وحشسته شده است - اخبار
+
+برای مطالعه‌ی متن کامل، به منبع اصلی خبر مراجعه کنید:
+
+> منبع: [news - Mongabay](https://news.google.com/rss/articles/CBMiswFBVV95cUxOV1NITGZoTV9NSmJxRTZhRGFMS1hybHl3aEkyOFBXSFI4MnpsV0swTkJ2eVBIMjlMQ1pVaDRrWEV0M0x1c0Iwa3gyb2FzZTdTc1pBcG94M3BWc0JyVl9WUXJuNXJtQktsZFYxSTJkZVFRQTQ3bWpYYXBsc3ZWbm5nRTlraWpkbm5XLVM3eEFxYWVsMm5nbXRZTWUtSDV2Z3pTQlFKUGNNaTF4NUhhZDhvSWNKb9IBuAFBVV95cUxPVWY2YXZjRzVGcGV6cGFOdjNuaXUyVWd4SW04cmljc2FmWkhoRjNIdUgyWGpTOFhLV3ZqSDJvX1YxNGkwVUpkc3dnVmZILV9ETjRUeDRsZk1Tbm12dXJJM2NBbE5PWHFucGZhMWxLQWRDS3pWaDdSRmM5VXFIazlEX2JRY3QwUmNUa0NHNFg1dFZDRmlvUnNPQ3JrZUlSaVB2djFVenFTZ3V6WE8xYTJpZ1UtNmFjVF9Y?oc=5)

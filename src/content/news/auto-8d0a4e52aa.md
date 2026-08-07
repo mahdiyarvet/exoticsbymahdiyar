@@ -1,0 +1,15 @@
+---
+title: "لاک پشت گوفر، محافظ حیوانات فلوریدا"
+description: "لاک پشت گوفر، محافظ حیوانات فلوریدا"
+pubDate: 2025-11-01
+cover: "/images/photos/red-eared-slider-2.jpg"
+category: "خزندگان"
+source: "NBC 6 South Florida"
+sourceUrl: "https://news.google.com/rss/articles/CBMinAFBVV95cUxPM2R0aGpfektPOGpVRjBzekdnVzhub2lzaXZyckJndzNFUXVqQ1NBS1V6TlFGcm5DdS0yMm1ZTGNoSHNMSlJiTGhwZ2xwbjBiSUprbnV2QTZHcmsxU3luSzZzaDBiWEdlclpzckN5aVJHdU93QmNtV0RYNHI4eGV1MFptWXVidUZNYndUSFZWRml6aWRfOExEbjY1MzbSAaQBQVVfeXFMTzVaUkxaOWlGSktQY2o5RDFjTzJKX0tXeldYWnlJaXJJcFZHWWRJRFlQR1I0U2d5c20wQVVQVDFkdWp0aHRWUWsxY0hVaWc1VUZvZlo3cklnOUJEZGVQZUJzU2R3MXBaWGVfUnV2VzdOTUlmUmVDam44Zi1LMDE1T2djTHdRZkxkSnRrNTVKYVVtUk9zc2N2YnFucE15cDByMVRWb20?oc=5"
+---
+
+لاک پشت گوفر، محافظ حیوانات فلوریدا
+
+برای مطالعه‌ی متن کامل، به منبع اصلی خبر مراجعه کنید:
+
+> منبع: [NBC 6 South Florida](https://news.google.com/rss/articles/CBMinAFBVV95cUxPM2R0aGpfektPOGpVRjBzekdnVzhub2lzaXZyckJndzNFUXVqQ1NBS1V6TlFGcm5DdS0yMm1ZTGNoSHNMSlJiTGhwZ2xwbjBiSUprbnV2QTZHcmsxU3luSzZzaDBiWEdlclpzckN5aVJHdU93QmNtV0RYNHI4eGV1MFptWXVidUZNYndUSFZWRml6aWRfOExEbjY1MzbSAaQBQVVfeXFMTzVaUkxaOWlGSktQY2o5RDFjTzJKX0tXeldYWnlJaXJJcFZHWWRJRFlQR1I0U2d5c20wQVVQVDFkdWp0aHRWUWsxY0hVaWc1VUZvZlo3cklnOUJEZGVQZUJzU2R3MXBaWGVfUnV2VzdOTUlmUmVDam44Zi1LMDE1T2djTHdRZkxkSnRrNTVKYVVtUk9zc2N2YnFucE15cDByMVRWb20?oc=5)

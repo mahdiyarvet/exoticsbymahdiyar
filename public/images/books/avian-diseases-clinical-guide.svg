@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" role="img" aria-label="جلد راهنمای بالینی بیماری‌های پرندگان">
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0d3236"/><stop offset="1" stop-color="#156b6f"/></linearGradient></defs>
+  <rect width="600" height="800" rx="18" fill="url(#bg)"/>
+  <path d="M0 0h180v800H80C20 620 5 400 40 220 65 130 40 55 0 0Z" fill="#e8b93f" fill-opacity=".12"/>
+  <text x="550" y="98" fill="#e8b93f" font-family="Arial,sans-serif" font-size="18" font-weight="700" text-anchor="end">راهنمای بالینی کاربردی</text>
+  <text x="550" y="180" fill="#f3f0e4" font-family="Arial,sans-serif" font-size="46" font-weight="700" text-anchor="end">بیماری‌های</text>
+  <text x="550" y="240" fill="#f3f0e4" font-family="Arial,sans-serif" font-size="46" font-weight="700" text-anchor="end">شایع پرندگان</text>
+  <text x="550" y="288" fill="#67d0cf" font-family="Arial,sans-serif" font-size="22" text-anchor="end">علت، تشخیص و دوز دارویی دقیق</text>
+  <line x1="470" y1="312" x2="550" y2="312" stroke="#e8b93f" stroke-width="3"/>
+  <g fill="none" stroke="#f3f0e4" stroke-opacity=".85" stroke-width="7" stroke-linecap="round" transform="translate(150 430)">
+    <path d="M150 210C60 200 10 130 20 40c70 10 120 55 140 130"/>
+    <path d="M20 40C60 60 90 110 100 170" />
+    <circle cx="18" cy="36" r="7" fill="#f3f0e4" stroke="none"/>
+  </g>
+  <g transform="translate(60 700)" fill="#f3f0e4" font-family="Arial,sans-serif">
+    <rect x="0" y="-34" width="88" height="34" rx="8" fill="#e8b93f" fill-opacity=".18"/>
+    <text x="44" y="-11" font-size="16" font-weight="700" fill="#e8b93f" text-anchor="middle">۵ دسته</text>
+  </g>
+  <g transform="translate(160 700)" fill="#f3f0e4" font-family="Arial,sans-serif">
+    <rect x="0" y="-34" width="100" height="34" rx="8" fill="#67d0cf" fill-opacity=".18"/>
+    <text x="50" y="-11" font-size="16" font-weight="700" fill="#67d0cf" text-anchor="middle">۲۰+ پروتکل</text>
+  </g>
+  <line x1="50" y1="745" x2="550" y2="745" stroke="#67d0cf" stroke-opacity=".4"/>
+  <text x="550" y="775" fill="#f3f0e4" font-family="Arial,sans-serif" font-size="19" font-weight="700" text-anchor="end">دکتر مهدیار رمزگویان</text>
+</svg>

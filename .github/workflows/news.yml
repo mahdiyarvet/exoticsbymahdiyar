@@ -1,8 +1,10 @@
 name: Auto reptile news
 
+# Scheduled cron disabled: this bot only produced headline+link stubs with
+# no real content (see scripts/fetch-news.mjs comment). News is now written
+# by a Claude scheduled task that reads real sources and writes accurate
+# Persian summaries. Kept here for manual/workflow_dispatch use only.
 on:
-  schedule:
-    - cron: '0 */6 * * *'   # every 6 hours
   workflow_dispatch:
 
 permissions:

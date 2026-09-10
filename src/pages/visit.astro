@@ -39,50 +39,64 @@ const steps = [
     </div>
 
     <div class="grid-visit">
-      <!-- form -->
-      <form class="visit-form" action={`https://formsubmit.co/${CONTACT_EMAIL}`} method="POST" enctype="multipart/form-data">
-        <input type="hidden" name="_subject" value="ویزیت آنلاین جدید — exoticsbymahdiyar.ir" />
-        <input type="hidden" name="_captcha" value="true" />
-        <input type="hidden" name="_template" value="table" />
-        <input type="text" name="_honey" style="display:none" />
-
-        <h2>فرم ویزیت آنلاین</h2>
-
-        <label>نام و نام خانوادگی
-          <input type="text" name="نام" required placeholder="نام شما" />
-        </label>
-        <label>شماره تماس / واتساپ
-          <input type="tel" name="تلفن" required placeholder="۰۹..." />
-        </label>
-        <label>نوع حیوان
-          <input type="text" name="نوع حیوان" required placeholder="مثلاً بردد دراگون، کاسکو، همستر…" />
-        </label>
-        <label>سن حیوان
-          <input type="text" name="سن" placeholder="مثلاً ۸ ماه" />
-        </label>
-        <label>شرح مشکل و علائم
-          <textarea name="شرح مشکل" rows="5" required placeholder="علائم، مدت آن، تغذیه و شرایط نگهداری را بنویسید…"></textarea>
-        </label>
-        <label>عکس حیوان (چند عکس مجاز است)
-          <input type="file" name="attachment" accept="image/*" multiple />
-          <span class="hint">فقط عکس. برای فیلم از دکمه‌ی واتساپ استفاده کن.</span>
-        </label>
-
-        <button type="submit" class="btn">ارسال درخواست ویزیت</button>
-        <p class="hint">بعد از ارسال، یک ایمیل تأیید برای فعال‌سازی ارسال می‌شود (فقط بار اول).</p>
-      </form>
-
-      <!-- media / direct -->
+      <!-- media / direct: primary path, shown first -->
       <aside class="visit-side">
-        <h2>ارسال فیلم و عکس مستقیم</h2>
-        <p class="muted">فیلم‌ها حجم بالایی دارند؛ بهترین راه ارسال مستقیم در واتساپ یا تلگرام است:</p>
+        <h2>ارسال عکس و فیلم مستقیم</h2>
+        <p class="muted">سریع‌ترین راه: توضیح، عکس و فیلم حیوانت را مستقیم در واتساپ یا تلگرام بفرست:</p>
         <a class="btn btn-wa" href={`https://wa.me/${WHATSAPP_NUMBER}?text=${waText}`} target="_blank" rel="noopener">ارسال در واتساپ</a>
         <a class="btn btn-ghost" href={`https://t.me/${TELEGRAM_USER}`} target="_blank" rel="noopener">ارسال در تلگرام</a>
         <a class="btn btn-ghost" href="https://instagram.com/exoticsbymahdiyar" target="_blank" rel="noopener">پیام در اینستاگرام</a>
         <p class="hint">لطفاً همراه فیلم، نام و شرح کوتاه مشکل را هم بنویس.</p>
       </aside>
+
+      <!-- form: collapsed behind a toggle -->
+      <div class="visit-form-wrap">
+        <button type="button" id="toggleFormBtn" class="btn btn-ghost toggle-form-btn">
+          یا فرم ویزیت آنلاین را پر کن <span>←</span>
+        </button>
+        <form class="visit-form" id="visitForm" hidden action={`https://formsubmit.co/${CONTACT_EMAIL}`} method="POST" enctype="multipart/form-data">
+          <input type="hidden" name="_subject" value="ویزیت آنلاین جدید — exoticsbymahdiyar.ir" />
+          <input type="hidden" name="_captcha" value="true" />
+          <input type="hidden" name="_template" value="table" />
+          <input type="text" name="_honey" style="display:none" />
+
+          <h2>فرم ویزیت آنلاین</h2>
+
+          <label>نام و نام خانوادگی
+            <input type="text" name="نام" required placeholder="نام شما" />
+          </label>
+          <label>شماره تماس / واتساپ
+            <input type="tel" name="تلفن" required placeholder="۰۹..." />
+          </label>
+          <label>نوع حیوان
+            <input type="text" name="نوع حیوان" required placeholder="مثلاً بردد دراگون، کاسکو، همستر…" />
+          </label>
+          <label>سن حیوان
+            <input type="text" name="سن" placeholder="مثلاً ۸ ماه" />
+          </label>
+          <label>شرح مشکل و علائم
+            <textarea name="شرح مشکل" rows="5" required placeholder="علائم، مدت آن، تغذیه و شرایط نگهداری را بنویسید…"></textarea>
+          </label>
+          <label>عکس حیوان (چند عکس مجاز است)
+            <input type="file" name="attachment" accept="image/*" multiple />
+            <span class="hint">فقط عکس. برای فیلم از دکمه‌ی واتساپ استفاده کن.</span>
+          </label>
+
+          <button type="submit" class="btn">ارسال درخواست ویزیت</button>
+          <p class="hint">بعد از ارسال، یک ایمیل تأیید برای فعال‌سازی ارسال می‌شود (فقط بار اول).</p>
+        </form>
+      </div>
     </div>
   </section>
+
+  <script>
+    const toggleBtn = document.getElementById('toggleFormBtn');
+    const form = document.getElementById('visitForm');
+    toggleBtn?.addEventListener('click', () => {
+      form?.toggleAttribute('hidden');
+      toggleBtn.classList.toggle('is-open');
+    });
+  </script>
 </Base>
 
 <style>
@@ -100,7 +114,7 @@ const steps = [
   .step h3 { font-size: 16px; margin-bottom: 6px; }
   .step p { font-size: 14px; line-height: 1.7; }
 
-  .grid-visit { display: grid; grid-template-columns: 1.4fr 1fr; gap: 24px; margin-top: 34px; align-items: start; }
+  .grid-visit { display: grid; grid-template-columns: 1fr 1.4fr; gap: 24px; margin-top: 34px; align-items: start; }
   .visit-form, .visit-side {
     background: var(--surface); border: 1px solid var(--border);
     border-radius: var(--radius); padding: 28px;
@@ -118,6 +132,13 @@ const steps = [
   .visit-side .btn { width: 100%; justify-content: center; margin-bottom: 12px; }
   .btn-wa { background: #25D366; color: #06110b; }
   .btn-wa:hover { background: #1eb457; }
+  .toggle-form-btn {
+    width: 100%; justify-content: center; gap: 8px; background: transparent;
+    border: 1px dashed var(--border); color: var(--text-muted); font-weight: 600;
+  }
+  .toggle-form-btn:hover { border-color: var(--brand); color: var(--text); }
+  .toggle-form-btn.is-open span { transform: rotate(90deg); display: inline-block; }
+  .visit-form-wrap .visit-form { margin-top: 16px; }
   @media (max-width: 820px) {
     .steps { grid-template-columns: repeat(2, 1fr); }
     .grid-visit { grid-template-columns: 1fr; }

@@ -110,9 +110,14 @@ import Base from '../layouts/Base.astro';
   const form = document.getElementById('login-form') as HTMLFormElement;
   const errorBox = document.getElementById('login-error') as HTMLParagraphElement;
 
-  // If already logged in, skip straight to the portal.
+  async function redirectByRole() {
+    const { data: isAdmin } = await supabase.rpc('is_admin');
+    window.location.href = isAdmin ? '/admin' : '/portal';
+  }
+
+  // If already logged in, skip straight to the right destination.
   supabase.auth.getSession().then(({ data }) => {
-    if (data.session) window.location.href = '/portal';
+    if (data.session) redirectByRole();
   });
 
   form.addEventListener('submit', async (e) => {
@@ -135,6 +140,6 @@ import Base from '../layouts/Base.astro';
       return;
     }
 
-    window.location.href = '/portal';
+    redirectByRole();
   });
 </script>

@@ -1,0 +1,204 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base
+  title="پنل مدیریت"
+  description="افزودن پرونده مشتری جدید"
+  noindex={true}
+>
+  <section class="portal-auth">
+    <div class="auth-card admin-card">
+      <div id="admin-loading" class="auth-sub">در حال بررسی دسترسی...</div>
+      <div id="admin-denied" class="auth-sub" hidden>
+        این حساب دسترسی مدیریت ندارد. <a href="/login">بازگشت به ورود</a>
+      </div>
+
+      <form id="new-client-form" hidden>
+        <h1>افزودن پرونده جدید</h1>
+        <p class="auth-sub">یک ایمیل دعوت برای ورود کلاینت ارسال می‌شود.</p>
+
+        <label>
+          نام و نام خانوادگی *
+          <input type="text" name="full_name" required />
+        </label>
+        <label>
+          شماره تماس *
+          <input type="text" name="phone" required />
+        </label>
+        <label>
+          ایمیل ورود کلاینت * <span class="hint">(برای دعوت‌نامه استفاده می‌شود)</span>
+          <input type="email" name="login_email" required />
+        </label>
+        <label>
+          ایمیل تماس (اختیاری، اگر متفاوت است)
+          <input type="email" name="email" />
+        </label>
+        <label>
+          کد ملی
+          <input type="text" name="national_id" />
+        </label>
+        <label>
+          آدرس
+          <input type="text" name="address" />
+        </label>
+        <label>
+          موضوع پرونده
+          <input type="text" name="subject" placeholder="مثلاً نوع حیوان یا موضوع همکاری" />
+        </label>
+
+        <button type="submit">ثبت پرونده و ارسال دعوت‌نامه</button>
+        <p id="form-msg" class="auth-error" hidden></p>
+      </form>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .portal-auth {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 20px;
+  }
+  .auth-card {
+    width: 100%;
+    max-width: 460px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 32px 28px;
+  }
+  .auth-card h1 {
+    font-size: 20px;
+    margin-bottom: 4px;
+  }
+  .auth-sub {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+  .hint {
+    font-weight: 400;
+    font-size: 12px;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+  input {
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 15px;
+  }
+  input:focus {
+    outline: 2px solid var(--brand);
+    outline-offset: 1px;
+  }
+  button {
+    margin-top: 8px;
+    background: var(--brand);
+    color: #06110b;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    font-family: var(--font);
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+  }
+  button:hover { background: var(--brand-strong); }
+  button:disabled { opacity: 0.6; cursor: default; }
+  .auth-error {
+    font-size: 14px;
+    text-align: center;
+  }
+  .auth-error.ok { color: #8fd6a8; }
+  .auth-error.err { color: #e88a6a; }
+</style>
+
+<script>
+  import { supabase } from '../lib/supabase.js';
+
+  const FUNCTION_URL = 'https://vyqubahucjzinpwgptxi.supabase.co/functions/v1/create-client';
+
+  const loadingBox = document.getElementById('admin-loading') as HTMLElement;
+  const deniedBox = document.getElementById('admin-denied') as HTMLElement;
+  const form = document.getElementById('new-client-form') as HTMLFormElement;
+  const msgBox = document.getElementById('form-msg') as HTMLParagraphElement;
+
+  async function init() {
+    const { data: sessionData } = await supabase.auth.getSession();
+    if (!sessionData.session) {
+      window.location.href = '/login';
+      return;
+    }
+
+    const { data: isAdmin } = await supabase.rpc('is_admin');
+    loadingBox.hidden = true;
+
+    if (!isAdmin) {
+      deniedBox.hidden = false;
+      return;
+    }
+
+    form.hidden = false;
+  }
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    msgBox.hidden = true;
+    const submitBtn = form.querySelector('button') as HTMLButtonElement;
+    submitBtn.disabled = true;
+
+    const { data: sessionData } = await supabase.auth.getSession();
+    const token = sessionData.session?.access_token;
+
+    const formData = new FormData(form);
+    const payload = Object.fromEntries(formData.entries());
+
+    try {
+      const res = await fetch(FUNCTION_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+      const result = await res.json();
+
+      if (!res.ok) {
+        msgBox.textContent = result.error || 'خطایی رخ داد.';
+        msgBox.className = 'auth-error err';
+        msgBox.hidden = false;
+      } else {
+        msgBox.textContent = 'پرونده ثبت شد و دعوت‌نامه به ایمیل کلاینت ارسال شد.';
+        msgBox.className = 'auth-error ok';
+        msgBox.hidden = false;
+        form.reset();
+      }
+    } catch (err) {
+      msgBox.textContent = 'ارتباط با سرور برقرار نشد.';
+      msgBox.className = 'auth-error err';
+      msgBox.hidden = false;
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
+
+  init();
+</script>

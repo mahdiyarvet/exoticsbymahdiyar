@@ -23,12 +23,12 @@ import Base from '../layouts/Base.astro';
             <span class="record-kicker">پرونده دامپزشکی</span>
             <h1 id="portal-name"></h1>
             <dl class="fact-list">
-              <div class="fact-row" id="fact-pet-name" hidden>
+              <div class="fact-row">
                 <dt>پت</dt>
-                <dd id="portal-pet-name"></dd>
+                <dd id="portal-pet-name" class="fact-empty">ثبت نشده</dd>
               </div>
               <div class="fact-row" id="fact-subject" hidden>
-                <dt>موضوع</dt>
+                <dt>گونه/نژاد</dt>
                 <dd id="portal-subject"></dd>
               </div>
               <div class="fact-row">
@@ -73,18 +73,11 @@ import Base from '../layouts/Base.astro';
           </div>
         </section>
 
-        <section class="record-section">
-          <h2>حیوانات تحت نگهداری من</h2>
-          <div id="pets-list" class="notes-list">
-            <p class="portal-empty-item">حیوانی ثبت نشده است.</p>
-          </div>
-        </section>
-
         <section class="record-section record-section-muted">
           <h2>اسم پت</h2>
           <form id="pet-name-form" class="inline-form">
             <label class="span-2">اسم پت اگزوتیک
-              <input type="text" name="pet_name" placeholder="مثلاً باربی" />
+              <input type="text" name="pet_name" />
             </label>
             <button type="submit" class="span-2">ذخیره</button>
           </form>
@@ -408,28 +401,6 @@ import Base from '../layouts/Base.astro';
     `).join('');
   }
 
-  async function loadPets() {
-    const { data: pets } = await supabase
-      .from('client_pets')
-      .select('*')
-      .eq('client_id', currentClient.id)
-      .order('created_at', { ascending: false });
-
-    const wrap = el('pets-list');
-    if (!pets || !pets.length) {
-      wrap.innerHTML = '<p class="portal-empty-item">هنوز حیوانی ثبت نکرده‌اید.</p>';
-      return;
-    }
-    wrap.innerHTML = pets.map((p: any) => `
-      <div class="note-item">
-        <div>
-          <div><strong>${esc(p.species)}</strong>${p.name ? ' - ' + esc(p.name) : ''}</div>
-          <div class="item-meta">${p.birth_date ? formatDate(p.birth_date) : ''} ${esc(p.notes ?? '')}</div>
-        </div>
-      </div>
-    `).join('');
-  }
-
   async function init() {
     const { data: sessionData } = await supabase.auth.getSession();
     if (!sessionData.session) {
@@ -457,7 +428,7 @@ import Base from '../layouts/Base.astro';
 
     if (client.pet_name) {
       el('portal-pet-name').textContent = client.pet_name;
-      el('fact-pet-name').hidden = false;
+      el('portal-pet-name').classList.remove('fact-empty');
     }
     if (client.subject) {
       el('portal-subject').textContent = client.subject;
@@ -519,7 +490,7 @@ import Base from '../layouts/Base.astro';
       }
     }
 
-    await Promise.all([loadPets(), loadMedical()]);
+    await loadMedical();
   }
 
   el('pet-name-form')?.addEventListener('submit', async (e) => {
@@ -546,9 +517,10 @@ import Base from '../layouts/Base.astro';
       msg.className = 'form-msg ok';
       if (petName) {
         el('portal-pet-name').textContent = petName;
-        el('fact-pet-name').hidden = false;
+        el('portal-pet-name').classList.remove('fact-empty');
       } else {
-        el('fact-pet-name').hidden = true;
+        el('portal-pet-name').textContent = 'ثبت نشده';
+        el('portal-pet-name').classList.add('fact-empty');
       }
     }
     btn.disabled = false;

@@ -76,6 +76,29 @@ import Base from '../layouts/Base.astro';
             <button type="submit">افزودن یادداشت</button>
           </form>
         </section>
+
+        <section class="record-section">
+          <h2>سوابق پزشکی و علمی</h2>
+          <div id="medical-list" class="manage-list"></div>
+          <form id="medical-form" class="stack-form">
+            <select id="medical-type" name="record_type">
+              <option value="weight">وزن</option>
+              <option value="injection">تزریق / واکسن</option>
+              <option value="prescription">نسخه</option>
+              <option value="other">سایر</option>
+            </select>
+            <input type="date" name="record_date" required />
+            <input type="text" id="medical-title" name="title" placeholder="نام واکسن یا دارو (اختیاری)" />
+            <input type="text" id="medical-value" name="value" placeholder="وزن (گرم)" />
+            <textarea name="note" rows="2" placeholder="یادداشت (اختیاری)"></textarea>
+            <label class="checkbox-row">
+              <input type="checkbox" name="visible" checked />
+              قابل مشاهده برای مشتری
+            </label>
+            <button type="submit">افزودن رکورد</button>
+          </form>
+          <p id="medical-msg" class="form-msg" hidden></p>
+        </section>
       </div>
     </div>
   </section>
@@ -204,6 +227,7 @@ import Base from '../layouts/Base.astro';
   }
   .badge-visible { background: #2f5d3a; color: #cdeed8; }
   .badge-hidden { background: #444; color: #ccc; }
+  .badge-type { background: var(--bg-soft); border: 1px solid var(--border); color: var(--brand); margin-inline-end: 6px; }
   .row-actions { display: flex; gap: 6px; flex: none; }
   .icon-btn {
     background: transparent;
@@ -224,7 +248,9 @@ import Base from '../layouts/Base.astro';
     gap: 10px;
   }
   .stack-form input[type="text"],
+  .stack-form input[type="date"],
   .stack-form input[type="file"],
+  .stack-form select,
   .stack-form textarea {
     background: var(--bg-soft);
     border: 1px solid var(--border);
@@ -284,6 +310,25 @@ import Base from '../layouts/Base.astro';
   function formatDate(iso: string) {
     return new Date(iso).toLocaleDateString('fa-IR');
   }
+
+  const MEDICAL_TYPE_LABELS: Record<string, string> = {
+    weight: 'وزن',
+    injection: 'تزریق / واکسن',
+    prescription: 'نسخه',
+    other: 'سایر',
+  };
+  const MEDICAL_TITLE_PLACEHOLDER: Record<string, string> = {
+    weight: 'یادداشت وزن (اختیاری)',
+    injection: 'نام واکسن یا دارو',
+    prescription: 'نام دارو',
+    other: 'عنوان',
+  };
+  const MEDICAL_VALUE_PLACEHOLDER: Record<string, string> = {
+    weight: 'وزن (گرم)',
+    injection: 'دوز',
+    prescription: 'دوز / دستور مصرف',
+    other: 'مقدار',
+  };
 
   let client: any = null;
 
@@ -401,6 +446,59 @@ import Base from '../layouts/Base.astro';
     });
   }
 
+  async function loadMedical() {
+    const { data: records } = await supabase
+      .from('client_medical_records')
+      .select('*')
+      .eq('client_id', client.id)
+      .order('record_date', { ascending: false })
+      .order('id', { ascending: false });
+
+    const wrap = el('medical-list');
+    if (!records || !records.length) {
+      wrap.innerHTML = '<p class="manage-empty-item">رکوردی ثبت نشده است.</p>';
+      return;
+    }
+    wrap.innerHTML = '';
+    for (const r of records) {
+      const div = document.createElement('div');
+      div.className = 'note-item';
+      const parts = [r.title, r.value].filter(Boolean).map(esc).join(' — ');
+      div.innerHTML = `
+        <div>
+          <div>
+            <span class="badge badge-type">${esc(MEDICAL_TYPE_LABELS[r.record_type] ?? r.record_type)}</span>
+            ${formatDate(r.record_date)}${parts ? ' - ' + parts : ''}
+          </div>
+          ${r.note ? `<div class="item-meta">${esc(r.note)}</div>` : ''}
+          <div class="item-meta">
+            <span class="badge ${r.is_visible_to_client ? 'badge-visible' : 'badge-hidden'}">${r.is_visible_to_client ? 'قابل مشاهده برای مشتری' : 'مخفی از مشتری'}</span>
+          </div>
+        </div>
+        <div class="row-actions">
+          <button class="icon-btn" data-toggle-medical="${r.id}" data-visible="${r.is_visible_to_client}">${r.is_visible_to_client ? 'مخفی کن' : 'نمایش بده'}</button>
+          <button class="icon-btn danger" data-delete-medical="${r.id}">حذف</button>
+        </div>
+      `;
+      wrap.appendChild(div);
+    }
+    wrap.querySelectorAll('[data-toggle-medical]').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const id = (btn as HTMLElement).dataset.toggleMedical;
+        const current = (btn as HTMLElement).dataset.visible === 'true';
+        await supabase.from('client_medical_records').update({ is_visible_to_client: !current }).eq('id', id);
+        await loadMedical();
+      });
+    });
+    wrap.querySelectorAll('[data-delete-medical]').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const id = (btn as HTMLElement).dataset.deleteMedical;
+        await supabase.from('client_medical_records').delete().eq('id', id);
+        await loadMedical();
+      });
+    });
+  }
+
   async function init() {
     if (!clientId) {
       el('manage-loading').hidden = true;
@@ -443,7 +541,17 @@ import Base from '../layouts/Base.astro';
     const visitDateForm = el('visit-date-form') as HTMLFormElement;
     (visitDateForm.elements.namedItem('next_visit_date') as HTMLInputElement).value = client.next_visit_date ?? '';
 
-    await Promise.all([loadPhoto(), loadFiles(), loadNotes()]);
+    const medicalForm = el('medical-form') as HTMLFormElement;
+    (medicalForm.elements.namedItem('record_date') as HTMLInputElement).value = new Date().toISOString().slice(0, 10);
+    updateMedicalPlaceholders();
+
+    await Promise.all([loadPhoto(), loadFiles(), loadNotes(), loadMedical()]);
+  }
+
+  function updateMedicalPlaceholders() {
+    const type = (el('medical-type') as HTMLSelectElement).value;
+    (el('medical-title') as HTMLInputElement).placeholder = MEDICAL_TITLE_PLACEHOLDER[type] ?? 'عنوان';
+    (el('medical-value') as HTMLInputElement).placeholder = MEDICAL_VALUE_PLACEHOLDER[type] ?? 'مقدار';
   }
 
   el('visit-date-form')?.addEventListener('submit', async (e) => {
@@ -567,6 +675,43 @@ import Base from '../layouts/Base.astro';
     (form.elements.namedItem('visible') as HTMLInputElement).checked = true;
     btn.disabled = false;
     await loadNotes();
+  });
+
+  el('medical-type')?.addEventListener('change', updateMedicalPlaceholders);
+
+  el('medical-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const btn = form.querySelector('button') as HTMLButtonElement;
+    const msg = el('medical-msg') as HTMLParagraphElement;
+    btn.disabled = true;
+    msg.hidden = true;
+
+    const formData = new FormData(form);
+    const { error } = await supabase.from('client_medical_records').insert({
+      client_id: client.id,
+      record_type: String(formData.get('record_type') || 'other'),
+      record_date: String(formData.get('record_date') || '') || new Date().toISOString().slice(0, 10),
+      title: String(formData.get('title') || '').trim() || null,
+      value: String(formData.get('value') || '').trim() || null,
+      note: String(formData.get('note') || '').trim() || null,
+      is_visible_to_client: formData.get('visible') === 'on',
+    });
+
+    msg.hidden = false;
+    if (error) {
+      msg.textContent = 'خطا در ثبت رکورد: ' + error.message;
+      msg.className = 'form-msg err';
+    } else {
+      msg.textContent = 'رکورد ثبت شد.';
+      msg.className = 'form-msg ok';
+      form.reset();
+      (form.elements.namedItem('visible') as HTMLInputElement).checked = true;
+      (form.elements.namedItem('record_date') as HTMLInputElement).value = new Date().toISOString().slice(0, 10);
+      updateMedicalPlaceholders();
+      await loadMedical();
+    }
+    btn.disabled = false;
   });
 
   init();

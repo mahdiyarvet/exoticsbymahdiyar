@@ -1,0 +1,505 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base
+  title="مدیریت پرونده مشتری"
+  description="مدیریت فایل‌ها، عکس و یادداشت‌های پرونده"
+  noindex={true}
+>
+  <section class="manage">
+    <div id="manage-loading" class="manage-status">در حال بررسی دسترسی...</div>
+    <div id="manage-denied" class="manage-status" hidden>
+      این حساب دسترسی مدیریت ندارد. <a href="/login">بازگشت به ورود</a>
+    </div>
+    <div id="manage-notfound" class="manage-status" hidden>
+      پرونده‌ای پیدا نشد. <a href="/client-admin">بازگشت</a>
+    </div>
+
+    <div id="manage-area" hidden>
+      <a href="/client-admin" class="back-link">&rarr; بازگشت به لیست مشتریان</a>
+
+      <div class="manage-head">
+        <div class="pet-photo-wrap">
+          <img id="pet-photo" class="pet-photo" alt="عکس پت" hidden />
+          <div id="pet-photo-placeholder" class="pet-photo-placeholder">بدون عکس</div>
+        </div>
+        <div>
+          <h1 id="client-name"></h1>
+          <p id="client-meta" class="manage-sub"></p>
+        </div>
+      </div>
+
+      <div class="manage-grid">
+        <div class="manage-card">
+          <h2>عکس پت</h2>
+          <p class="manage-hint">این عکس در بالای پرونده و در پنل مشتری نمایش داده می‌شود.</p>
+          <form id="photo-form" class="stack-form">
+            <input type="file" name="photo" accept="image/*" required />
+            <button type="submit">آپلود / جایگزینی عکس</button>
+          </form>
+          <p id="photo-msg" class="form-msg" hidden></p>
+        </div>
+
+        <div class="manage-card">
+          <h2>مدارک و فایل‌ها</h2>
+          <ul id="files-list" class="manage-list">
+            <li class="manage-empty-item">فایلی آپلود نشده است.</li>
+          </ul>
+          <form id="file-form" class="stack-form">
+            <input type="file" name="file" required />
+            <input type="text" name="description" placeholder="توضیح فایل (اختیاری)" />
+            <button type="submit">آپلود فایل</button>
+          </form>
+          <p id="file-msg" class="form-msg" hidden></p>
+        </div>
+
+        <div class="manage-card manage-card-wide">
+          <h2>یادداشت‌های پیگیری</h2>
+          <div id="notes-list" class="manage-list"></div>
+          <form id="note-form" class="stack-form">
+            <textarea name="note" rows="3" placeholder="متن یادداشت" required></textarea>
+            <label class="checkbox-row">
+              <input type="checkbox" name="visible" checked />
+              قابل مشاهده برای مشتری
+            </label>
+            <button type="submit">افزودن یادداشت</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .manage {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 48px 20px 80px;
+    min-height: 60vh;
+  }
+  .manage-status {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 60px 0;
+  }
+  .back-link {
+    display: inline-block;
+    color: var(--text-muted);
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+  .back-link:hover { color: var(--brand); }
+  .manage-head {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .pet-photo-wrap {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .pet-photo { width: 100%; height: 100%; object-fit: cover; }
+  .pet-photo-placeholder { font-size: 11px; color: var(--text-muted); text-align: center; padding: 4px; }
+  .manage-head h1 { font-size: 24px; }
+  .manage-sub { color: var(--text-muted); margin-top: 4px; font-size: 14px; }
+  .manage-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .manage-card-wide { grid-column: 1 / -1; }
+  @media (max-width: 720px) {
+    .manage-grid { grid-template-columns: 1fr; }
+  }
+  .manage-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+  }
+  .manage-card h2 { font-size: 17px; margin-bottom: 8px; }
+  .manage-hint { color: var(--text-muted); font-size: 13px; margin-bottom: 14px; }
+  .manage-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .manage-list li, .manage-list > div {
+    background: var(--bg-soft);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+  }
+  .manage-empty-item {
+    color: var(--text-muted);
+    font-size: 14px;
+    background: transparent !important;
+    padding: 0 !important;
+  }
+  .file-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+  .file-row a { color: var(--brand-strong); font-weight: 600; }
+  .file-meta, .item-meta { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+  .note-item {
+    background: var(--bg-soft);
+    border-radius: var(--radius-sm);
+    border-right: 3px solid var(--brand);
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .badge {
+    display: inline-block;
+    border-radius: 999px;
+    padding: 2px 10px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .badge-visible { background: #2f5d3a; color: #cdeed8; }
+  .badge-hidden { background: #444; color: #ccc; }
+  .row-actions { display: flex; gap: 6px; flex: none; }
+  .icon-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    border-radius: var(--radius-sm);
+    padding: 4px 10px;
+    font-size: 12px;
+    font-family: var(--font);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .icon-btn:hover { border-color: var(--brand); color: var(--brand); }
+  .icon-btn.danger:hover { border-color: #e88a6a; color: #e88a6a; }
+  .stack-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .stack-form input[type="text"],
+  .stack-form input[type="file"],
+  .stack-form textarea {
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 9px 12px;
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 14px;
+  }
+  .stack-form textarea { resize: vertical; }
+  .checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .stack-form button {
+    background: var(--brand);
+    color: #06110b;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 10px;
+    font-family: var(--font);
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .stack-form button:hover { background: var(--brand-strong); }
+  .stack-form button:disabled { opacity: 0.6; cursor: default; }
+  .form-msg { font-size: 13px; }
+  .form-msg.ok { color: #8fd6a8; }
+  .form-msg.err { color: #e88a6a; }
+</style>
+
+<script>
+  import { supabase } from '../lib/supabase.js';
+
+  const el = (id: string) => document.getElementById(id) as HTMLElement;
+  const clientId = new URLSearchParams(window.location.search).get('id');
+
+  function esc(value: unknown): string {
+    return String(value ?? '').replace(/[&<>"']/g, (c) => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+    }[c] as string));
+  }
+  function formatDate(iso: string) {
+    return new Date(iso).toLocaleDateString('fa-IR');
+  }
+
+  let client: any = null;
+
+  async function loadPhoto() {
+    const { data: files } = await supabase
+      .from('client_files')
+      .select('*')
+      .eq('client_id', client.id)
+      .eq('is_pet_photo', true)
+      .order('uploaded_at', { ascending: false })
+      .limit(1);
+
+    const photo = files?.[0];
+    const img = el('pet-photo') as HTMLImageElement;
+    const placeholder = el('pet-photo-placeholder');
+    if (!photo) {
+      img.hidden = true;
+      placeholder.hidden = false;
+      return;
+    }
+    const { data: signed } = await supabase.storage
+      .from('client-files')
+      .createSignedUrl(photo.storage_path, 60 * 30);
+    if (signed?.signedUrl) {
+      img.src = signed.signedUrl;
+      img.hidden = false;
+      placeholder.hidden = true;
+    }
+  }
+
+  async function loadFiles() {
+    const { data: files } = await supabase
+      .from('client_files')
+      .select('*')
+      .eq('client_id', client.id)
+      .eq('is_pet_photo', false)
+      .order('uploaded_at', { ascending: false });
+
+    const list = el('files-list');
+    if (!files || !files.length) {
+      list.innerHTML = '<li class="manage-empty-item">فایلی آپلود نشده است.</li>';
+      return;
+    }
+    list.innerHTML = '';
+    for (const f of files) {
+      const li = document.createElement('li');
+      const { data: signed } = await supabase.storage
+        .from('client-files')
+        .createSignedUrl(f.storage_path, 60 * 5);
+      li.innerHTML = `
+        <div class="file-row">
+          <a href="${signed?.signedUrl ?? '#'}" target="_blank" rel="noopener">${esc(f.original_filename)}</a>
+          <button class="icon-btn danger" data-delete-file="${f.id}" data-path="${esc(f.storage_path)}">حذف</button>
+        </div>
+        <div class="file-meta">${esc(f.description ?? '')} ${formatDate(f.uploaded_at)}</div>
+      `;
+      list.appendChild(li);
+    }
+    list.querySelectorAll('[data-delete-file]').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const id = (btn as HTMLElement).dataset.deleteFile;
+        const path = (btn as HTMLElement).dataset.path;
+        if (path) await supabase.storage.from('client-files').remove([path]);
+        await supabase.from('client_files').delete().eq('id', id);
+        await loadFiles();
+      });
+    });
+  }
+
+  async function loadNotes() {
+    const { data: notes } = await supabase
+      .from('client_notes')
+      .select('*')
+      .eq('client_id', client.id)
+      .order('created_at', { ascending: false });
+
+    const wrap = el('notes-list');
+    if (!notes || !notes.length) {
+      wrap.innerHTML = '<p class="manage-empty-item">یادداشتی ثبت نشده است.</p>';
+      return;
+    }
+    wrap.innerHTML = '';
+    for (const n of notes) {
+      const div = document.createElement('div');
+      div.className = 'note-item';
+      div.innerHTML = `
+        <div>
+          <div>${esc(n.note)}</div>
+          <div class="item-meta">
+            ${formatDate(n.created_at)}
+            <span class="badge ${n.is_visible_to_client ? 'badge-visible' : 'badge-hidden'}">${n.is_visible_to_client ? 'قابل مشاهده برای مشتری' : 'مخفی از مشتری'}</span>
+          </div>
+        </div>
+        <div class="row-actions">
+          <button class="icon-btn" data-toggle-note="${n.id}" data-visible="${n.is_visible_to_client}">${n.is_visible_to_client ? 'مخفی کن' : 'نمایش بده'}</button>
+          <button class="icon-btn danger" data-delete-note="${n.id}">حذف</button>
+        </div>
+      `;
+      wrap.appendChild(div);
+    }
+    wrap.querySelectorAll('[data-toggle-note]').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const id = (btn as HTMLElement).dataset.toggleNote;
+        const current = (btn as HTMLElement).dataset.visible === 'true';
+        await supabase.from('client_notes').update({ is_visible_to_client: !current }).eq('id', id);
+        await loadNotes();
+      });
+    });
+    wrap.querySelectorAll('[data-delete-note]').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const id = (btn as HTMLElement).dataset.deleteNote;
+        await supabase.from('client_notes').delete().eq('id', id);
+        await loadNotes();
+      });
+    });
+  }
+
+  async function init() {
+    if (!clientId) {
+      el('manage-loading').hidden = true;
+      el('manage-notfound').hidden = false;
+      return;
+    }
+
+    const { data: sessionData } = await supabase.auth.getSession();
+    if (!sessionData.session) {
+      window.location.href = '/login';
+      return;
+    }
+
+    const { data: isAdmin } = await supabase.rpc('is_admin');
+    if (!isAdmin) {
+      el('manage-loading').hidden = true;
+      el('manage-denied').hidden = false;
+      return;
+    }
+
+    const { data: clientRow, error } = await supabase
+      .from('clients')
+      .select('*')
+      .eq('id', clientId)
+      .single();
+
+    el('manage-loading').hidden = true;
+
+    if (error || !clientRow) {
+      el('manage-notfound').hidden = false;
+      return;
+    }
+
+    client = clientRow;
+    el('manage-area').hidden = false;
+    el('client-name').textContent = client.full_name;
+    const metaParts = [client.phone, client.pet_name ? `پت: ${client.pet_name}` : '', client.subject ?? ''].filter(Boolean);
+    el('client-meta').textContent = metaParts.join(' - ');
+
+    await Promise.all([loadPhoto(), loadFiles(), loadNotes()]);
+  }
+
+  el('photo-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const btn = form.querySelector('button') as HTMLButtonElement;
+    const msg = el('photo-msg') as HTMLParagraphElement;
+    const fileInput = form.elements.namedItem('photo') as HTMLInputElement;
+    const file = fileInput.files?.[0];
+    if (!file) return;
+    btn.disabled = true;
+    msg.hidden = true;
+
+    try {
+      const path = `${client.id}/${Date.now()}-${file.name}`;
+      const { error: uploadError } = await supabase.storage.from('client-files').upload(path, file);
+      if (uploadError) throw uploadError;
+
+      await supabase.from('client_files').update({ is_pet_photo: false }).eq('client_id', client.id).eq('is_pet_photo', true);
+      const { error: insertError } = await supabase.from('client_files').insert({
+        client_id: client.id,
+        storage_path: path,
+        original_filename: file.name,
+        is_pet_photo: true,
+      });
+      if (insertError) throw insertError;
+
+      msg.textContent = 'عکس با موفقیت آپلود شد.';
+      msg.className = 'form-msg ok';
+      msg.hidden = false;
+      form.reset();
+      await loadPhoto();
+    } catch {
+      msg.textContent = 'خطا در آپلود عکس.';
+      msg.className = 'form-msg err';
+      msg.hidden = false;
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  el('file-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const btn = form.querySelector('button') as HTMLButtonElement;
+    const msg = el('file-msg') as HTMLParagraphElement;
+    const fileInput = form.elements.namedItem('file') as HTMLInputElement;
+    const file = fileInput.files?.[0];
+    if (!file) return;
+    btn.disabled = true;
+    msg.hidden = true;
+
+    const formData = new FormData(form);
+    try {
+      const path = `${client.id}/${Date.now()}-${file.name}`;
+      const { error: uploadError } = await supabase.storage.from('client-files').upload(path, file);
+      if (uploadError) throw uploadError;
+
+      const { error: insertError } = await supabase.from('client_files').insert({
+        client_id: client.id,
+        storage_path: path,
+        original_filename: file.name,
+        description: String(formData.get('description') || '').trim() || null,
+        is_pet_photo: false,
+      });
+      if (insertError) throw insertError;
+
+      msg.textContent = 'فایل با موفقیت آپلود شد.';
+      msg.className = 'form-msg ok';
+      msg.hidden = false;
+      form.reset();
+      await loadFiles();
+    } catch {
+      msg.textContent = 'خطا در آپلود فایل.';
+      msg.className = 'form-msg err';
+      msg.hidden = false;
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  el('note-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const btn = form.querySelector('button') as HTMLButtonElement;
+    btn.disabled = true;
+
+    const formData = new FormData(form);
+    await supabase.from('client_notes').insert({
+      client_id: client.id,
+      note: String(formData.get('note') || '').trim(),
+      is_visible_to_client: formData.get('visible') === 'on',
+    });
+
+    form.reset();
+    (form.elements.namedItem('visible') as HTMLInputElement).checked = true;
+    btn.disabled = false;
+    await loadNotes();
+  });
+
+  init();
+</script>

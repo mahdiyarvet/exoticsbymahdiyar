@@ -1,0 +1,140 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base
+  title="ورود مشتریان"
+  description="ورود به پرونده شخصی شما"
+  noindex={true}
+>
+  <section class="portal-auth">
+    <div class="auth-card">
+      <h1>ورود به پرونده من</h1>
+      <p class="auth-sub">با ایمیل و رمز عبوری که دریافت کرده‌اید وارد شوید.</p>
+
+      <form id="login-form">
+        <label>
+          ایمیل
+          <input type="email" name="email" required autocomplete="username" />
+        </label>
+        <label>
+          رمز عبور
+          <input type="password" name="password" required autocomplete="current-password" />
+        </label>
+        <button type="submit">ورود</button>
+        <p id="login-error" class="auth-error" hidden></p>
+      </form>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .portal-auth {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 20px;
+  }
+  .auth-card {
+    width: 100%;
+    max-width: 380px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 32px 28px;
+  }
+  .auth-card h1 {
+    font-size: 22px;
+    margin-bottom: 8px;
+  }
+  .auth-sub {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+  input {
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 15px;
+  }
+  input:focus {
+    outline: 2px solid var(--brand);
+    outline-offset: 1px;
+  }
+  button {
+    margin-top: 8px;
+    background: var(--brand);
+    color: #06110b;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    font-family: var(--font);
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+  }
+  button:hover {
+    background: var(--brand-strong);
+  }
+  button:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+  .auth-error {
+    color: #e88a6a;
+    font-size: 14px;
+    text-align: center;
+  }
+</style>
+
+<script>
+  import { supabase } from '../lib/supabase.js';
+
+  const form = document.getElementById('login-form') as HTMLFormElement;
+  const errorBox = document.getElementById('login-error') as HTMLParagraphElement;
+
+  // If already logged in, skip straight to the portal.
+  supabase.auth.getSession().then(({ data }) => {
+    if (data.session) window.location.href = '/portal';
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errorBox.hidden = true;
+
+    const submitBtn = form.querySelector('button') as HTMLButtonElement;
+    submitBtn.disabled = true;
+
+    const formData = new FormData(form);
+    const email = String(formData.get('email') || '').trim();
+    const password = String(formData.get('password') || '');
+
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+    if (error) {
+      errorBox.textContent = 'ایمیل یا رمز عبور اشتباه است.';
+      errorBox.hidden = false;
+      submitBtn.disabled = false;
+      return;
+    }
+
+    window.location.href = '/portal';
+  });
+</script>

@@ -1,0 +1,256 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base
+  title="پرونده من"
+  description="پرونده شخصی مشتری"
+  noindex={true}
+>
+  <section class="portal">
+    <div id="portal-loading" class="portal-status">در حال بارگذاری...</div>
+    <div id="portal-empty" class="portal-status" hidden>
+      این حساب به هیچ پرونده‌ای متصل نیست. لطفاً با ما تماس بگیرید.
+    </div>
+
+    <div id="portal-content" hidden>
+      <div class="portal-head">
+        <div>
+          <h1 id="portal-name"></h1>
+          <p id="portal-subject" class="portal-subject"></p>
+        </div>
+        <button id="logout-btn" class="logout-btn">خروج</button>
+      </div>
+
+      <div class="portal-grid">
+        <div class="portal-card">
+          <h2>مدارک و فایل‌های من</h2>
+          <ul id="files-list" class="portal-list">
+            <li class="portal-empty-item">فایلی آپلود نشده است.</li>
+          </ul>
+        </div>
+
+        <div class="portal-card">
+          <h2>اطلاعات مالی</h2>
+          <ul id="payments-list" class="portal-list">
+            <li class="portal-empty-item">تراکنشی ثبت نشده است.</li>
+          </ul>
+        </div>
+
+        <div class="portal-card portal-card-wide">
+          <h2>یادداشت‌های پیگیری</h2>
+          <div id="notes-list" class="notes-list">
+            <p class="portal-empty-item">یادداشتی برای نمایش وجود ندارد.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .portal {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 48px 20px 80px;
+    min-height: 60vh;
+  }
+  .portal-status {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 60px 0;
+  }
+  .portal-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+  .portal-head h1 {
+    font-size: 26px;
+  }
+  .portal-subject {
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+  .logout-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: var(--radius-sm);
+    padding: 8px 18px;
+    font-family: var(--font);
+    cursor: pointer;
+  }
+  .logout-btn:hover {
+    border-color: var(--brand);
+    color: var(--brand);
+  }
+  .portal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .portal-card-wide {
+    grid-column: 1 / -1;
+  }
+  @media (max-width: 720px) {
+    .portal-grid { grid-template-columns: 1fr; }
+  }
+  .portal-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+  }
+  .portal-card h2 {
+    font-size: 17px;
+    margin-bottom: 16px;
+  }
+  .portal-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .portal-list li {
+    background: var(--bg-soft);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+  }
+  .portal-empty-item {
+    color: var(--text-muted);
+    font-size: 14px;
+    background: transparent !important;
+    padding: 0 !important;
+  }
+  .file-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+  .file-row a {
+    color: var(--brand-strong);
+    font-weight: 600;
+  }
+  .file-meta, .item-meta {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+  .badge {
+    display: inline-block;
+    border-radius: 999px;
+    padding: 2px 10px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .badge-paid { background: #2f5d3a; color: #cdeed8; }
+  .badge-pending { background: #6a2f2f; color: #f3d3d3; }
+  .badge-partial { background: #6a5228; color: #f3e0b0; }
+  .note-item {
+    background: var(--bg-soft);
+    border-radius: var(--radius-sm);
+    border-right: 3px solid var(--brand);
+    padding: 12px 14px;
+    margin-bottom: 12px;
+  }
+</style>
+
+<script>
+  import { supabase } from '../lib/supabase.js';
+
+  const el = (id: string) => document.getElementById(id) as HTMLElement;
+  const statusLabels: Record<string, string> = { paid: 'پرداخت‌شده', pending: 'در انتظار', partial: 'پرداخت جزئی' };
+
+  function formatToman(amount: number) {
+    return new Intl.NumberFormat('fa-IR').format(amount) + ' تومان';
+  }
+  function formatDate(iso: string) {
+    return new Date(iso).toLocaleDateString('fa-IR');
+  }
+
+  async function init() {
+    const { data: sessionData } = await supabase.auth.getSession();
+    if (!sessionData.session) {
+      window.location.href = '/login';
+      return;
+    }
+    const userId = sessionData.session.user.id;
+
+    const { data: client, error: clientError } = await supabase
+      .from('clients')
+      .select('*')
+      .eq('auth_user_id', userId)
+      .single();
+
+    el('portal-loading').hidden = true;
+
+    if (clientError || !client) {
+      el('portal-empty').hidden = false;
+      return;
+    }
+
+    el('portal-content').hidden = false;
+    el('portal-name').textContent = client.full_name;
+    el('portal-subject').textContent = client.subject ? `موضوع: ${client.subject}` : '';
+
+    const [{ data: files }, { data: payments }, { data: notes }] = await Promise.all([
+      supabase.from('client_files').select('*').eq('client_id', client.id).order('uploaded_at', { ascending: false }),
+      supabase.from('client_payments').select('*').eq('client_id', client.id).order('created_at', { ascending: false }),
+      supabase.from('client_notes').select('*').eq('client_id', client.id).eq('is_visible_to_client', true).order('created_at', { ascending: false }),
+    ]);
+
+    if (files && files.length) {
+      const list = el('files-list');
+      list.innerHTML = '';
+      for (const f of files) {
+        const li = document.createElement('li');
+        const { data: signed } = await supabase.storage
+          .from('client-files')
+          .createSignedUrl(f.storage_path, 60 * 5);
+        li.innerHTML = `
+          <div class="file-row">
+            <a href="${signed?.signedUrl ?? '#'}" target="_blank" rel="noopener">${f.original_filename}</a>
+          </div>
+          <div class="file-meta">${f.description ?? ''} ${formatDate(f.uploaded_at)}</div>
+        `;
+        list.appendChild(li);
+      }
+    }
+
+    if (payments && payments.length) {
+      const list = el('payments-list');
+      list.innerHTML = '';
+      for (const p of payments) {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          ${formatToman(p.amount)}
+          <span class="badge badge-${p.status}">${statusLabels[p.status] ?? p.status}</span>
+          <div class="item-meta">${p.description ?? ''} ${p.payment_date ? formatDate(p.payment_date) : ''}</div>
+        `;
+        list.appendChild(li);
+      }
+    }
+
+    if (notes && notes.length) {
+      const wrap = el('notes-list');
+      wrap.innerHTML = '';
+      for (const n of notes) {
+        const div = document.createElement('div');
+        div.className = 'note-item';
+        div.innerHTML = `<div>${n.note}</div><div class="item-meta">${formatDate(n.created_at)}</div>`;
+        wrap.appendChild(div);
+      }
+    }
+  }
+
+  el('logout-btn')?.addEventListener('click', async () => {
+    await supabase.auth.signOut();
+    window.location.href = '/login';
+  });
+
+  init();
+</script>

@@ -112,7 +112,7 @@ import Base from '../layouts/Base.astro';
 
   async function redirectByRole() {
     const { data: isAdmin } = await supabase.rpc('is_admin');
-    window.location.href = isAdmin ? '/admin' : '/portal';
+    window.location.href = isAdmin ? '/client-admin' : '/portal';
   }
 
   // If already logged in, skip straight to the right destination.

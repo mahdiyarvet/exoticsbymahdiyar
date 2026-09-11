@@ -27,8 +27,8 @@ import Base from '../layouts/Base.astro';
             <input type="text" name="phone" required />
           </label>
           <label>
-            ایمیل ورود کلاینت * <span class="hint">(نام کاربری ورود؛ لازم نیست ایمیل واقعی باشد)</span>
-            <input type="email" name="login_email" required />
+            نام کاربری کلاینت * <span class="hint">(فقط حروف/عدد انگلیسی، مثلاً sara_m)</span>
+            <input type="text" name="username" required />
           </label>
           <label>
             ایمیل تماس (اختیاری، اگر متفاوت است)
@@ -170,7 +170,7 @@ import Base from '../layouts/Base.astro';
 </style>
 
 <script>
-  import { supabase } from '../lib/supabase.js';
+  import { supabase, usernameToEmail } from '../lib/supabase.js';
 
   const FUNCTION_URL = 'https://vyqubahucjzinpwgptxi.supabase.co/functions/v1/create-client';
 
@@ -212,7 +212,10 @@ import Base from '../layouts/Base.astro';
     const token = sessionData.session?.access_token;
 
     const formData = new FormData(form);
+    const rawUsername = String(formData.get('username') || '').trim();
     const payload = Object.fromEntries(formData.entries());
+    payload.login_email = usernameToEmail(rawUsername);
+    delete payload.username;
 
     try {
       const res = await fetch(FUNCTION_URL, {
@@ -233,7 +236,7 @@ import Base from '../layouts/Base.astro';
         msgBox.textContent = 'پرونده با موفقیت ثبت شد.';
         msgBox.className = 'auth-error ok';
         msgBox.hidden = false;
-        credUsername.textContent = result.username;
+        credUsername.textContent = rawUsername;
         credPassword.textContent = result.password;
         credBox.hidden = false;
         form.reset();

@@ -9,12 +9,12 @@ import Base from '../layouts/Base.astro';
   <section class="portal-auth">
     <div class="auth-card">
       <h1>ورود به پرونده من</h1>
-      <p class="auth-sub">با ایمیل و رمز عبوری که دریافت کرده‌اید وارد شوید.</p>
+      <p class="auth-sub">با نام کاربری و رمز عبوری که دریافت کرده‌اید وارد شوید.</p>
 
       <form id="login-form">
         <label>
-          ایمیل
-          <input type="email" name="email" required autocomplete="username" />
+          نام کاربری
+          <input type="text" name="username" required autocomplete="username" />
         </label>
         <label>
           رمز عبور
@@ -105,7 +105,7 @@ import Base from '../layouts/Base.astro';
 </style>
 
 <script>
-  import { supabase } from '../lib/supabase.js';
+  import { supabase, usernameToEmail } from '../lib/supabase.js';
 
   const form = document.getElementById('login-form') as HTMLFormElement;
   const errorBox = document.getElementById('login-error') as HTMLParagraphElement;
@@ -128,13 +128,13 @@ import Base from '../layouts/Base.astro';
     submitBtn.disabled = true;
 
     const formData = new FormData(form);
-    const email = String(formData.get('email') || '').trim();
+    const email = usernameToEmail(String(formData.get('username') || ''));
     const password = String(formData.get('password') || '');
 
     const { error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
-      errorBox.textContent = 'ایمیل یا رمز عبور اشتباه است.';
+      errorBox.textContent = 'نام کاربری یا رمز عبور اشتباه است.';
       errorBox.hidden = false;
       submitBtn.disabled = false;
       return;

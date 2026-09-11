@@ -6,6 +6,7 @@ const nav = [
   { href: '/news', label: 'اخبار' },
   { href: '/books', label: 'کتابخانه' },
   { href: '/visit', label: 'ویزیت آنلاین' },
+  { href: '/login', label: 'پرونده حیوانات', highlight: true },
 ];
 const path = Astro.url.pathname;
 const isActive = (item: { href: string; activePrefix?: string }) => {
@@ -25,7 +26,7 @@ const isActive = (item: { href: string; activePrefix?: string }) => {
 
     <nav class="nav" aria-label="ناوبری اصلی">
       {nav.map((item) => (
-        <a href={item.href} class:list={['nav-link', { active: isActive(item) }]}>{item.label}</a>
+        <a href={item.href} class:list={['nav-link', { active: isActive(item), 'nav-link--highlight': item.highlight }]}>{item.label}</a>
       ))}
     </nav>
 
@@ -53,7 +54,7 @@ const isActive = (item: { href: string; activePrefix?: string }) => {
   </div>
 
   <nav class="mobile-nav" aria-label="ناوبری موبایل">
-    {nav.map((item) => <a href={item.href} class:list={['nav-link', { active: isActive(item) }]}>{item.label}</a>)}
+    {nav.map((item) => <a href={item.href} class:list={['nav-link', { active: isActive(item), 'nav-link--highlight': item.highlight }]}>{item.label}</a>)}
   </nav>
 </header>
 
@@ -131,6 +132,9 @@ const isActive = (item: { href: string; activePrefix?: string }) => {
   }
   .site-header .nav-link:hover { color: var(--text); background: var(--surface); }
   .site-header .nav-link.active { color: #e5bd70; background: transparent; box-shadow: inset 0 -2px #c18f3a; }
+  .site-header .nav-link--highlight { color: #fff5dc; background: var(--rust, #b94d1e); font-weight: 700; }
+  .site-header .nav-link--highlight:hover { background: #cf5a22; color: #fff5dc; }
+  .site-header .nav-link--highlight.active { background: #cf5a22; color: #fff5dc; box-shadow: none; }
   .site-header .header-tools { display: flex; gap: 9px; direction: ltr; flex: none; }
   .site-header .tool-button {
     display: grid; place-items: center; width: 38px; height: 38px; padding: 0;

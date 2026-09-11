@@ -79,25 +79,71 @@ import Base from '../layouts/Base.astro';
 
         <section class="record-section">
           <h2>سوابق پزشکی و علمی</h2>
-          <div id="medical-list" class="manage-list"></div>
-          <form id="medical-form" class="stack-form">
-            <select id="medical-type" name="record_type">
-              <option value="weight">وزن</option>
-              <option value="injection">تزریق / واکسن</option>
-              <option value="prescription">نسخه</option>
-              <option value="other">سایر</option>
-            </select>
-            <input type="date" name="record_date" required />
-            <input type="text" id="medical-title" name="title" placeholder="نام واکسن یا دارو (اختیاری)" />
-            <input type="text" id="medical-value" name="value" placeholder="وزن (گرم)" />
-            <textarea name="note" rows="2" placeholder="یادداشت (اختیاری)"></textarea>
-            <label class="checkbox-row">
-              <input type="checkbox" name="visible" checked />
-              قابل مشاهده برای مشتری
-            </label>
-            <button type="submit">افزودن رکورد</button>
-          </form>
           <p id="medical-msg" class="form-msg" hidden></p>
+          <div class="medical-grid">
+            <div class="medical-box">
+              <h3>وزن</h3>
+              <div id="medical-list-weight" class="manage-list"></div>
+              <form class="stack-form medical-subform" data-record-type="weight">
+                <input type="date" name="record_date" required />
+                <input type="text" name="value" placeholder="وزن (گرم)" required />
+                <input type="text" name="note" placeholder="یادداشت (اختیاری)" />
+                <label class="checkbox-row">
+                  <input type="checkbox" name="visible" checked />
+                  قابل مشاهده برای مشتری
+                </label>
+                <button type="submit">ثبت وزن</button>
+              </form>
+            </div>
+
+            <div class="medical-box">
+              <h3>تزریق / واکسن</h3>
+              <div id="medical-list-injection" class="manage-list"></div>
+              <form class="stack-form medical-subform" data-record-type="injection">
+                <input type="date" name="record_date" required />
+                <input type="text" name="title" placeholder="نام واکسن یا دارو" required />
+                <input type="text" name="value" placeholder="دوز و روش تزریق" />
+                <input type="text" name="note" placeholder="یادداشت (اختیاری)" />
+                <label class="checkbox-row">
+                  <input type="checkbox" name="visible" checked />
+                  قابل مشاهده برای مشتری
+                </label>
+                <button type="submit">ثبت تزریق</button>
+              </form>
+            </div>
+
+            <div class="medical-box">
+              <h3>نسخه</h3>
+              <div id="medical-list-prescription" class="manage-list"></div>
+              <form class="stack-form medical-subform" data-record-type="prescription">
+                <input type="date" name="record_date" required />
+                <input type="text" name="title" placeholder="نام دارو" required />
+                <input type="text" name="value" placeholder="دوز و دستور مصرف" />
+                <input type="text" name="note" placeholder="یادداشت (اختیاری)" />
+                <label class="checkbox-row">
+                  <input type="checkbox" name="visible" checked />
+                  قابل مشاهده برای مشتری
+                </label>
+                <button type="submit">ثبت نسخه</button>
+              </form>
+            </div>
+
+            <div class="medical-box">
+              <h3>سایر موارد علمی</h3>
+              <div id="medical-list-other" class="manage-list"></div>
+              <form class="stack-form medical-subform" data-record-type="other">
+                <input type="date" name="record_date" required />
+                <input type="text" name="title" placeholder="عنوان" required />
+                <input type="text" name="value" placeholder="توضیح" />
+                <input type="text" name="note" placeholder="یادداشت (اختیاری)" />
+                <label class="checkbox-row">
+                  <input type="checkbox" name="visible" checked />
+                  قابل مشاهده برای مشتری
+                </label>
+                <button type="submit">ثبت</button>
+              </form>
+            </div>
+          </div>
         </section>
       </div>
     </div>
@@ -181,6 +227,28 @@ import Base from '../layouts/Base.astro';
     margin-bottom: 6px;
   }
   .manage-hint { color: var(--text-muted); font-size: 13px; margin-bottom: 12px; }
+  .medical-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  @media (max-width: 560px) {
+    .medical-grid { grid-template-columns: 1fr; }
+  }
+  .medical-box {
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+  }
+  .medical-box h3 {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--brand);
+    margin-bottom: 10px;
+  }
+  .medical-box .manage-list { margin-bottom: 10px; }
+  .medical-box .manage-list:empty { margin-bottom: 0; }
   .manage-list {
     list-style: none;
     display: flex;
@@ -311,24 +379,7 @@ import Base from '../layouts/Base.astro';
     return new Date(iso).toLocaleDateString('fa-IR');
   }
 
-  const MEDICAL_TYPE_LABELS: Record<string, string> = {
-    weight: 'وزن',
-    injection: 'تزریق / واکسن',
-    prescription: 'نسخه',
-    other: 'سایر',
-  };
-  const MEDICAL_TITLE_PLACEHOLDER: Record<string, string> = {
-    weight: 'یادداشت وزن (اختیاری)',
-    injection: 'نام واکسن یا دارو',
-    prescription: 'نام دارو',
-    other: 'عنوان',
-  };
-  const MEDICAL_VALUE_PLACEHOLDER: Record<string, string> = {
-    weight: 'وزن (گرم)',
-    injection: 'دوز',
-    prescription: 'دوز / دستور مصرف',
-    other: 'مقدار',
-  };
+  const MEDICAL_TYPES = ['weight', 'injection', 'prescription', 'other'] as const;
 
   let client: any = null;
 
@@ -454,35 +505,35 @@ import Base from '../layouts/Base.astro';
       .order('record_date', { ascending: false })
       .order('id', { ascending: false });
 
-    const wrap = el('medical-list');
-    if (!records || !records.length) {
-      wrap.innerHTML = '<p class="manage-empty-item">رکوردی ثبت نشده است.</p>';
-      return;
-    }
-    wrap.innerHTML = '';
-    for (const r of records) {
-      const div = document.createElement('div');
-      div.className = 'note-item';
-      const parts = [r.title, r.value].filter(Boolean).map(esc).join(' — ');
-      div.innerHTML = `
-        <div>
+    for (const type of MEDICAL_TYPES) {
+      const wrap = el(`medical-list-${type}`);
+      const typeRecords = (records ?? []).filter((r: any) => r.record_type === type);
+      if (!typeRecords.length) {
+        wrap.innerHTML = '<p class="manage-empty-item">ثبت نشده است.</p>';
+        continue;
+      }
+      wrap.innerHTML = '';
+      for (const r of typeRecords) {
+        const div = document.createElement('div');
+        div.className = 'note-item';
+        const parts = [r.title, r.value].filter(Boolean).map(esc).join(' — ');
+        div.innerHTML = `
           <div>
-            <span class="badge badge-type">${esc(MEDICAL_TYPE_LABELS[r.record_type] ?? r.record_type)}</span>
-            ${formatDate(r.record_date)}${parts ? ' - ' + parts : ''}
+            <div>${formatDate(r.record_date)}${parts ? ' - ' + parts : ''}</div>
+            ${r.note ? `<div class="item-meta">${esc(r.note)}</div>` : ''}
+            <div class="item-meta">
+              <span class="badge ${r.is_visible_to_client ? 'badge-visible' : 'badge-hidden'}">${r.is_visible_to_client ? 'قابل مشاهده برای مشتری' : 'مخفی از مشتری'}</span>
+            </div>
           </div>
-          ${r.note ? `<div class="item-meta">${esc(r.note)}</div>` : ''}
-          <div class="item-meta">
-            <span class="badge ${r.is_visible_to_client ? 'badge-visible' : 'badge-hidden'}">${r.is_visible_to_client ? 'قابل مشاهده برای مشتری' : 'مخفی از مشتری'}</span>
+          <div class="row-actions">
+            <button class="icon-btn" data-toggle-medical="${r.id}" data-visible="${r.is_visible_to_client}">${r.is_visible_to_client ? 'مخفی کن' : 'نمایش بده'}</button>
+            <button class="icon-btn danger" data-delete-medical="${r.id}">حذف</button>
           </div>
-        </div>
-        <div class="row-actions">
-          <button class="icon-btn" data-toggle-medical="${r.id}" data-visible="${r.is_visible_to_client}">${r.is_visible_to_client ? 'مخفی کن' : 'نمایش بده'}</button>
-          <button class="icon-btn danger" data-delete-medical="${r.id}">حذف</button>
-        </div>
-      `;
-      wrap.appendChild(div);
+        `;
+        wrap.appendChild(div);
+      }
     }
-    wrap.querySelectorAll('[data-toggle-medical]').forEach((btn) => {
+    document.querySelectorAll('[data-toggle-medical]').forEach((btn) => {
       btn.addEventListener('click', async () => {
         const id = (btn as HTMLElement).dataset.toggleMedical;
         const current = (btn as HTMLElement).dataset.visible === 'true';
@@ -490,7 +541,7 @@ import Base from '../layouts/Base.astro';
         await loadMedical();
       });
     });
-    wrap.querySelectorAll('[data-delete-medical]').forEach((btn) => {
+    document.querySelectorAll('[data-delete-medical]').forEach((btn) => {
       btn.addEventListener('click', async () => {
         const id = (btn as HTMLElement).dataset.deleteMedical;
         await supabase.from('client_medical_records').delete().eq('id', id);
@@ -541,17 +592,13 @@ import Base from '../layouts/Base.astro';
     const visitDateForm = el('visit-date-form') as HTMLFormElement;
     (visitDateForm.elements.namedItem('next_visit_date') as HTMLInputElement).value = client.next_visit_date ?? '';
 
-    const medicalForm = el('medical-form') as HTMLFormElement;
-    (medicalForm.elements.namedItem('record_date') as HTMLInputElement).value = new Date().toISOString().slice(0, 10);
-    updateMedicalPlaceholders();
+    const today = new Date().toISOString().slice(0, 10);
+    document.querySelectorAll('.medical-subform').forEach((form) => {
+      const dateInput = (form as HTMLFormElement).elements.namedItem('record_date') as HTMLInputElement;
+      if (dateInput) dateInput.value = today;
+    });
 
     await Promise.all([loadPhoto(), loadFiles(), loadNotes(), loadMedical()]);
-  }
-
-  function updateMedicalPlaceholders() {
-    const type = (el('medical-type') as HTMLSelectElement).value;
-    (el('medical-title') as HTMLInputElement).placeholder = MEDICAL_TITLE_PLACEHOLDER[type] ?? 'عنوان';
-    (el('medical-value') as HTMLInputElement).placeholder = MEDICAL_VALUE_PLACEHOLDER[type] ?? 'مقدار';
   }
 
   el('visit-date-form')?.addEventListener('submit', async (e) => {
@@ -677,41 +724,42 @@ import Base from '../layouts/Base.astro';
     await loadNotes();
   });
 
-  el('medical-type')?.addEventListener('change', updateMedicalPlaceholders);
+  document.querySelectorAll('.medical-subform').forEach((formEl) => {
+    formEl.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target as HTMLFormElement;
+      const recordType = form.dataset.recordType || 'other';
+      const btn = form.querySelector('button') as HTMLButtonElement;
+      const msg = el('medical-msg') as HTMLParagraphElement;
+      btn.disabled = true;
+      msg.hidden = true;
 
-  el('medical-form')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const form = e.target as HTMLFormElement;
-    const btn = form.querySelector('button') as HTMLButtonElement;
-    const msg = el('medical-msg') as HTMLParagraphElement;
-    btn.disabled = true;
-    msg.hidden = true;
+      const formData = new FormData(form);
+      const { error } = await supabase.from('client_medical_records').insert({
+        client_id: client.id,
+        record_type: recordType,
+        record_date: String(formData.get('record_date') || '') || new Date().toISOString().slice(0, 10),
+        title: String(formData.get('title') || '').trim() || null,
+        value: String(formData.get('value') || '').trim() || null,
+        note: String(formData.get('note') || '').trim() || null,
+        is_visible_to_client: formData.get('visible') === 'on',
+      });
 
-    const formData = new FormData(form);
-    const { error } = await supabase.from('client_medical_records').insert({
-      client_id: client.id,
-      record_type: String(formData.get('record_type') || 'other'),
-      record_date: String(formData.get('record_date') || '') || new Date().toISOString().slice(0, 10),
-      title: String(formData.get('title') || '').trim() || null,
-      value: String(formData.get('value') || '').trim() || null,
-      note: String(formData.get('note') || '').trim() || null,
-      is_visible_to_client: formData.get('visible') === 'on',
+      msg.hidden = false;
+      if (error) {
+        msg.textContent = 'خطا در ثبت رکورد: ' + error.message;
+        msg.className = 'form-msg err';
+      } else {
+        msg.textContent = 'رکورد ثبت شد.';
+        msg.className = 'form-msg ok';
+        const today = new Date().toISOString().slice(0, 10);
+        form.reset();
+        (form.elements.namedItem('visible') as HTMLInputElement).checked = true;
+        (form.elements.namedItem('record_date') as HTMLInputElement).value = today;
+        await loadMedical();
+      }
+      btn.disabled = false;
     });
-
-    msg.hidden = false;
-    if (error) {
-      msg.textContent = 'خطا در ثبت رکورد: ' + error.message;
-      msg.className = 'form-msg err';
-    } else {
-      msg.textContent = 'رکورد ثبت شد.';
-      msg.className = 'form-msg ok';
-      form.reset();
-      (form.elements.namedItem('visible') as HTMLInputElement).checked = true;
-      (form.elements.namedItem('record_date') as HTMLInputElement).value = new Date().toISOString().slice(0, 10);
-      updateMedicalPlaceholders();
-      await loadMedical();
-    }
-    btn.disabled = false;
   });
 
   init();

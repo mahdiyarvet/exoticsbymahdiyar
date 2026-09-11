@@ -64,43 +64,19 @@ import Base from '../layouts/Base.astro';
         <section class="record-section">
           <h2>حیوانات تحت نگهداری من</h2>
           <div id="pets-list" class="notes-list">
-            <p class="portal-empty-item">هنوز حیوانی ثبت نکرده‌اید.</p>
+            <p class="portal-empty-item">حیوانی ثبت نشده است.</p>
           </div>
-          <form id="pet-form" class="inline-form">
-            <label>نوع حیوان
-              <input type="text" name="species" placeholder="مثلاً طوطی، مار، لاک‌پشت..." required />
-            </label>
-            <label>نام
-              <input type="text" name="name" />
-            </label>
-            <label>تاریخ تولد (تقریبی)
-              <input type="date" name="birth_date" />
-            </label>
-            <label class="span-2">توضیحات
-              <input type="text" name="notes" />
-            </label>
-            <button type="submit" class="span-2">افزودن حیوان</button>
-          </form>
         </section>
 
         <section class="record-section record-section-muted">
-          <h2>تکمیل اطلاعات من</h2>
-          <form id="profile-form" class="inline-form profile-form">
-            <label>نام و نام خانوادگی
-              <input type="text" name="full_name" required />
-            </label>
-            <label>شماره تماس
-              <input type="text" name="phone" required />
-            </label>
-            <label>ایمیل
-              <input type="email" name="email" />
-            </label>
-            <label>اسم پت اگزوتیک
+          <h2>اسم پت</h2>
+          <form id="pet-name-form" class="inline-form">
+            <label class="span-2">اسم پت اگزوتیک
               <input type="text" name="pet_name" placeholder="مثلاً باربی" />
             </label>
-            <button type="submit" class="span-2">ذخیره اطلاعات</button>
+            <button type="submit" class="span-2">ذخیره</button>
           </form>
-          <p id="profile-msg" class="form-msg" hidden></p>
+          <p id="pet-name-msg" class="form-msg" hidden></p>
         </section>
       </div>
     </div>
@@ -460,11 +436,8 @@ import Base from '../layouts/Base.astro';
       el('visit-date').classList.remove('fact-empty');
     }
 
-    const profileForm = el('profile-form') as HTMLFormElement;
-    (profileForm.elements.namedItem('full_name') as HTMLInputElement).value = client.full_name ?? '';
-    (profileForm.elements.namedItem('phone') as HTMLInputElement).value = client.phone ?? '';
-    (profileForm.elements.namedItem('email') as HTMLInputElement).value = client.email ?? '';
-    (profileForm.elements.namedItem('pet_name') as HTMLInputElement).value = client.pet_name ?? '';
+    const petNameForm = el('pet-name-form') as HTMLFormElement;
+    (petNameForm.elements.namedItem('pet_name') as HTMLInputElement).value = client.pet_name ?? '';
 
     const [{ data: files }, { data: notes }] = await Promise.all([
       supabase.from('client_files').select('*').eq('client_id', client.id).order('uploaded_at', { ascending: false }),
@@ -517,34 +490,28 @@ import Base from '../layouts/Base.astro';
     await Promise.all([loadPets(), loadMedical()]);
   }
 
-  el('profile-form')?.addEventListener('submit', async (e) => {
+  el('pet-name-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
     const btn = form.querySelector('button') as HTMLButtonElement;
-    const msg = el('profile-msg') as HTMLParagraphElement;
+    const msg = el('pet-name-msg') as HTMLParagraphElement;
     btn.disabled = true;
     msg.hidden = true;
 
     const formData = new FormData(form);
+    const petName = String(formData.get('pet_name') || '').trim();
     const { error } = await supabase
       .from('clients')
-      .update({
-        full_name: String(formData.get('full_name') || '').trim(),
-        phone: String(formData.get('phone') || '').trim(),
-        email: String(formData.get('email') || '').trim() || null,
-        pet_name: String(formData.get('pet_name') || '').trim() || null,
-      })
+      .update({ pet_name: petName || null })
       .eq('id', currentClient.id);
 
     msg.hidden = false;
     if (error) {
-      msg.textContent = 'خطا در ذخیره اطلاعات.';
+      msg.textContent = 'خطا در ذخیره اسم پت.';
       msg.className = 'form-msg err';
     } else {
-      msg.textContent = 'اطلاعات ذخیره شد.';
+      msg.textContent = 'ذخیره شد.';
       msg.className = 'form-msg ok';
-      el('portal-name').textContent = String(formData.get('full_name') || '');
-      const petName = String(formData.get('pet_name') || '').trim();
       if (petName) {
         el('portal-pet-name').textContent = petName;
         el('fact-pet-name').hidden = false;
@@ -553,26 +520,6 @@ import Base from '../layouts/Base.astro';
       }
     }
     btn.disabled = false;
-  });
-
-  el('pet-form')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const form = e.target as HTMLFormElement;
-    const btn = form.querySelector('button') as HTMLButtonElement;
-    btn.disabled = true;
-
-    const formData = new FormData(form);
-    await supabase.from('client_pets').insert({
-      client_id: currentClient.id,
-      species: String(formData.get('species') || '').trim(),
-      name: String(formData.get('name') || '').trim() || null,
-      birth_date: String(formData.get('birth_date') || '') || null,
-      notes: String(formData.get('notes') || '').trim() || null,
-    });
-
-    form.reset();
-    btn.disabled = false;
-    await loadPets();
   });
 
   el('logout-btn')?.addEventListener('click', async () => {

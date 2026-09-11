@@ -471,8 +471,8 @@ import Base from '../layouts/Base.astro';
       msg.hidden = false;
       form.reset();
       await loadPhoto();
-    } catch {
-      msg.textContent = 'خطا در آپلود عکس.';
+    } catch (err) {
+      msg.textContent = 'خطا در آپلود عکس: ' + (err instanceof Error ? err.message : String(err));
       msg.className = 'form-msg err';
       msg.hidden = false;
     } finally {
@@ -511,8 +511,8 @@ import Base from '../layouts/Base.astro';
       msg.hidden = false;
       form.reset();
       await loadFiles();
-    } catch {
-      msg.textContent = 'خطا در آپلود فایل.';
+    } catch (err) {
+      msg.textContent = 'خطا در آپلود فایل: ' + (err instanceof Error ? err.message : String(err));
       msg.className = 'form-msg err';
       msg.hidden = false;
     } finally {

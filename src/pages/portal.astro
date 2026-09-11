@@ -56,8 +56,20 @@ import Base from '../layouts/Base.astro';
 
         <section class="record-section">
           <h2>سوابق پزشکی و علمی</h2>
-          <div id="medical-list" class="notes-list">
-            <p class="portal-empty-item">رکوردی برای نمایش وجود ندارد.</p>
+          <p id="medical-empty" class="portal-empty-item">رکوردی برای نمایش وجود ندارد.</p>
+          <div class="table-wrap">
+            <table id="medical-table" class="medical-table" hidden>
+              <thead>
+                <tr>
+                  <th>تاریخ</th>
+                  <th>نوع</th>
+                  <th>عنوان</th>
+                  <th>مقدار</th>
+                  <th>یادداشت</th>
+                </tr>
+              </thead>
+              <tbody id="medical-list"></tbody>
+            </table>
           </div>
         </section>
 
@@ -277,8 +289,31 @@ import Base from '../layouts/Base.astro';
     background: var(--bg-soft);
     border: 1px solid var(--border);
     color: var(--brand);
-    margin-inline-end: 6px;
+    white-space: nowrap;
   }
+  .table-wrap { overflow-x: auto; }
+  .medical-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .medical-table th,
+  .medical-table td {
+    padding: 8px 10px;
+    text-align: right;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .medical-table th {
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+  .medical-table td { color: var(--text); }
+  .medical-table td:first-child,
+  .medical-table th:first-child { white-space: nowrap; }
+  .medical-table tbody tr:last-child td { border-bottom: none; }
   .inline-form {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -359,21 +394,18 @@ import Base from '../layouts/Base.astro';
       .order('id', { ascending: false });
 
     if (!records || !records.length) return;
+    el('medical-empty').hidden = true;
+    (el('medical-table') as HTMLElement).hidden = false;
     const wrap = el('medical-list');
-    wrap.innerHTML = records.map((r: any) => {
-      const parts = [r.title, r.value].filter(Boolean).map(esc).join(' — ');
-      return `
-        <div class="note-item">
-          <div>
-            <div>
-              <span class="badge">${esc(MEDICAL_TYPE_LABELS[r.record_type] ?? r.record_type)}</span>
-              ${formatDate(r.record_date)}${parts ? ' - ' + parts : ''}
-            </div>
-            ${r.note ? `<div class="item-meta">${esc(r.note)}</div>` : ''}
-          </div>
-        </div>
-      `;
-    }).join('');
+    wrap.innerHTML = records.map((r: any) => `
+      <tr>
+        <td>${formatDate(r.record_date)}</td>
+        <td><span class="badge">${esc(MEDICAL_TYPE_LABELS[r.record_type] ?? r.record_type)}</span></td>
+        <td>${esc(r.title ?? '')}</td>
+        <td>${esc(r.value ?? '')}</td>
+        <td>${esc(r.note ?? '')}</td>
+      </tr>
+    `).join('');
   }
 
   async function loadPets() {

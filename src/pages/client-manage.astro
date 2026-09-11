@@ -31,6 +31,16 @@ import Base from '../layouts/Base.astro';
 
       <div class="manage-grid">
         <div class="manage-card">
+          <h2>تاریخ مراجعه</h2>
+          <p class="manage-hint">تاریخ مراجعه بعدی مشتری را ثبت کنید تا در پرونده نمایش داده شود.</p>
+          <form id="visit-date-form" class="stack-form">
+            <input type="date" name="next_visit_date" />
+            <button type="submit">ذخیره تاریخ</button>
+          </form>
+          <p id="visit-date-msg" class="form-msg" hidden></p>
+        </div>
+
+        <div class="manage-card">
           <h2>عکس پت</h2>
           <p class="manage-hint">این عکس در بالای پرونده و در پنل مشتری نمایش داده می‌شود.</p>
           <form id="photo-form" class="stack-form">
@@ -400,8 +410,36 @@ import Base from '../layouts/Base.astro';
     const metaParts = [client.phone, client.pet_name ? `پت: ${client.pet_name}` : '', client.subject ?? ''].filter(Boolean);
     el('client-meta').textContent = metaParts.join(' - ');
 
+    const visitDateForm = el('visit-date-form') as HTMLFormElement;
+    (visitDateForm.elements.namedItem('next_visit_date') as HTMLInputElement).value = client.next_visit_date ?? '';
+
     await Promise.all([loadPhoto(), loadFiles(), loadNotes()]);
   }
+
+  el('visit-date-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const btn = form.querySelector('button') as HTMLButtonElement;
+    const msg = el('visit-date-msg') as HTMLParagraphElement;
+    btn.disabled = true;
+    msg.hidden = true;
+
+    const formData = new FormData(form);
+    const { error } = await supabase
+      .from('clients')
+      .update({ next_visit_date: String(formData.get('next_visit_date') || '') || null })
+      .eq('id', client.id);
+
+    msg.hidden = false;
+    if (error) {
+      msg.textContent = 'خطا در ذخیره تاریخ.';
+      msg.className = 'form-msg err';
+    } else {
+      msg.textContent = 'تاریخ ذخیره شد.';
+      msg.className = 'form-msg ok';
+    }
+    btn.disabled = false;
+  });
 
   el('photo-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();

@@ -243,7 +243,7 @@ import Base from '../layouts/Base.astro';
     const listEl = document.getElementById('clients-list') as HTMLElement;
     const { data: clients } = await supabase
       .from('clients')
-      .select('id, full_name, phone, pet_name, subject')
+      .select('id, full_name, phone, pet_name, subject, next_visit_date')
       .order('created_at', { ascending: false });
 
     if (!clients || !clients.length) {
@@ -254,7 +254,7 @@ import Base from '../layouts/Base.astro';
       <div class="client-row">
         <div class="client-row-info">
           <div>${esc(c.full_name)}</div>
-          <div class="client-meta">${[c.phone, c.pet_name ? 'پت: ' + c.pet_name : '', c.subject ?? ''].filter(Boolean).map(esc).join(' - ')}</div>
+          <div class="client-meta">${[c.phone, c.pet_name ? 'پت: ' + c.pet_name : '', c.subject ?? '', c.next_visit_date ? 'مراجعه: ' + new Date(c.next_visit_date).toLocaleDateString('fa-IR') : ''].filter(Boolean).map(esc).join(' - ')}</div>
         </div>
         <a class="manage-link" href="/client-manage?id=${c.id}">مدیریت پرونده</a>
       </div>

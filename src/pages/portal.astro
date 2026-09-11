@@ -30,6 +30,11 @@ import Base from '../layouts/Base.astro';
 
       <div class="portal-grid">
         <div class="portal-card">
+          <h2>تاریخ مراجعه</h2>
+          <p id="visit-date" class="portal-empty-item">تاریخی ثبت نشده است.</p>
+        </div>
+
+        <div class="portal-card">
           <h2>مدارک و فایل‌های من</h2>
           <ul id="files-list" class="portal-list">
             <li class="portal-empty-item">فایلی آپلود نشده است.</li>
@@ -335,6 +340,10 @@ import Base from '../layouts/Base.astro';
     if (client.pet_name) {
       el('portal-pet-name').textContent = `پت: ${client.pet_name}`;
       el('portal-pet-name').hidden = false;
+    }
+    if (client.next_visit_date) {
+      el('visit-date').textContent = formatDate(client.next_visit_date);
+      el('visit-date').classList.remove('portal-empty-item');
     }
 
     const profileForm = el('profile-form') as HTMLFormElement;

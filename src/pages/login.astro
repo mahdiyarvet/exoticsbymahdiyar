@@ -115,11 +115,6 @@ import Base from '../layouts/Base.astro';
     window.location.href = isAdmin ? '/client-admin' : '/portal';
   }
 
-  // If already logged in, skip straight to the right destination.
-  supabase.auth.getSession().then(({ data }) => {
-    if (data.session) redirectByRole();
-  });
-
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     errorBox.hidden = true;
@@ -130,6 +125,10 @@ import Base from '../layouts/Base.astro';
     const formData = new FormData(form);
     const email = usernameToEmail(String(formData.get('username') || ''));
     const password = String(formData.get('password') || '');
+
+    // Always sign out any existing session first, so a stale/other-account
+    // session in this browser never silently carries the login through.
+    await supabase.auth.signOut();
 
     const { error } = await supabase.auth.signInWithPassword({ email, password });
 

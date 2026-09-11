@@ -42,6 +42,67 @@ import Base from '../layouts/Base.astro';
             <p class="portal-empty-item">یادداشتی برای نمایش وجود ندارد.</p>
           </div>
         </div>
+
+        <div class="portal-card portal-card-wide">
+          <h2>تکمیل اطلاعات من</h2>
+          <form id="profile-form" class="inline-form profile-form">
+            <label>نام و نام خانوادگی
+              <input type="text" name="full_name" required />
+            </label>
+            <label>شماره تماس
+              <input type="text" name="phone" required />
+            </label>
+            <label>ایمیل
+              <input type="email" name="email" />
+            </label>
+            <label>کد ملی
+              <input type="text" name="national_id" />
+            </label>
+            <label class="span-2">آدرس
+              <input type="text" name="address" />
+            </label>
+            <button type="submit" class="span-2">ذخیره اطلاعات</button>
+          </form>
+          <p id="profile-msg" class="form-msg" hidden></p>
+        </div>
+
+        <div class="portal-card portal-card-wide">
+          <h2>حیوانات تحت نگهداری من</h2>
+          <div id="pets-list" class="notes-list">
+            <p class="portal-empty-item">هنوز حیوانی ثبت نکرده‌اید.</p>
+          </div>
+          <form id="pet-form" class="inline-form">
+            <label>نوع حیوان
+              <input type="text" name="species" placeholder="مثلاً طوطی، مار، لاک‌پشت..." required />
+            </label>
+            <label>نام
+              <input type="text" name="name" />
+            </label>
+            <label>تاریخ تولد (تقریبی)
+              <input type="date" name="birth_date" />
+            </label>
+            <label class="span-2">توضیحات
+              <input type="text" name="notes" />
+            </label>
+            <button type="submit" class="span-2">افزودن حیوان</button>
+          </form>
+        </div>
+
+        <div class="portal-card portal-card-wide">
+          <h2>درخواست نوبت جدید</h2>
+          <div id="appointments-list" class="notes-list">
+            <p class="portal-empty-item">درخواستی ثبت نشده است.</p>
+          </div>
+          <form id="appointment-form" class="inline-form">
+            <label>تاریخ پیشنهادی
+              <input type="date" name="requested_date" required />
+            </label>
+            <label class="span-2">موضوع / توضیح
+              <input type="text" name="reason" placeholder="دلیل مراجعه یا نوع مشکل" required />
+            </label>
+            <button type="submit" class="span-2">ثبت درخواست</button>
+          </form>
+        </div>
       </div>
     </div>
   </section>
@@ -150,13 +211,77 @@ import Base from '../layouts/Base.astro';
   .badge-paid { background: #2f5d3a; color: #cdeed8; }
   .badge-pending { background: #6a2f2f; color: #f3d3d3; }
   .badge-partial { background: #6a5228; color: #f3e0b0; }
+  .badge-confirmed { background: #2f5d3a; color: #cdeed8; }
+  .badge-declined { background: #6a2f2f; color: #f3d3d3; }
   .note-item {
     background: var(--bg-soft);
     border-radius: var(--radius-sm);
     border-right: 3px solid var(--brand);
     padding: 12px 14px;
     margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
   }
+  .inline-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .inline-form label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .inline-form .span-2 { grid-column: 1 / -1; }
+  .inline-form input {
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 9px 12px;
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 14px;
+  }
+  .inline-form input:focus {
+    outline: 2px solid var(--brand);
+    outline-offset: 1px;
+  }
+  .inline-form button {
+    background: var(--brand);
+    color: #06110b;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 10px;
+    font-family: var(--font);
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .inline-form button:hover { background: var(--brand-strong); }
+  .inline-form button:disabled { opacity: 0.6; cursor: default; }
+  .form-msg {
+    font-size: 13px;
+    margin-top: 10px;
+  }
+  .form-msg.ok { color: #8fd6a8; }
+  .form-msg.err { color: #e88a6a; }
+  .cancel-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    border-radius: var(--radius-sm);
+    padding: 4px 10px;
+    font-size: 12px;
+    font-family: var(--font);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .cancel-btn:hover { border-color: #e88a6a; color: #e88a6a; }
 </style>
 
 <script>
@@ -164,12 +289,73 @@ import Base from '../layouts/Base.astro';
 
   const el = (id: string) => document.getElementById(id) as HTMLElement;
   const statusLabels: Record<string, string> = { paid: 'پرداخت‌شده', pending: 'در انتظار', partial: 'پرداخت جزئی' };
+  const apptStatusLabels: Record<string, string> = { pending: 'در انتظار بررسی', confirmed: 'تأیید شده', declined: 'رد شده' };
 
+  function esc(value: unknown): string {
+    return String(value ?? '').replace(/[&<>"']/g, (c) => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+    }[c] as string));
+  }
   function formatToman(amount: number) {
     return new Intl.NumberFormat('fa-IR').format(amount) + ' تومان';
   }
   function formatDate(iso: string) {
     return new Date(iso).toLocaleDateString('fa-IR');
+  }
+
+  let currentClient: any = null;
+
+  async function loadPets() {
+    const { data: pets } = await supabase
+      .from('client_pets')
+      .select('*')
+      .eq('client_id', currentClient.id)
+      .order('created_at', { ascending: false });
+
+    const wrap = el('pets-list');
+    if (!pets || !pets.length) {
+      wrap.innerHTML = '<p class="portal-empty-item">هنوز حیوانی ثبت نکرده‌اید.</p>';
+      return;
+    }
+    wrap.innerHTML = pets.map((p: any) => `
+      <div class="note-item">
+        <div>
+          <div><strong>${esc(p.species)}</strong>${p.name ? ' - ' + esc(p.name) : ''}</div>
+          <div class="item-meta">${p.birth_date ? formatDate(p.birth_date) : ''} ${esc(p.notes ?? '')}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  async function loadAppointments() {
+    const { data: appts } = await supabase
+      .from('appointment_requests')
+      .select('*')
+      .eq('client_id', currentClient.id)
+      .order('created_at', { ascending: false });
+
+    const wrap = el('appointments-list');
+    if (!appts || !appts.length) {
+      wrap.innerHTML = '<p class="portal-empty-item">درخواستی ثبت نشده است.</p>';
+      return;
+    }
+    wrap.innerHTML = appts.map((a: any) => `
+      <div class="note-item">
+        <div>
+          <div>${a.requested_date ? formatDate(a.requested_date) : ''} <span class="badge badge-${a.status}">${apptStatusLabels[a.status] ?? a.status}</span></div>
+          <div class="item-meta">${esc(a.reason ?? '')}${a.admin_note ? ' - پاسخ: ' + esc(a.admin_note) : ''}</div>
+        </div>
+        ${a.status === 'pending' ? `<button class="cancel-btn" data-cancel-appt="${a.id}">لغو</button>` : ''}
+      </div>
+    `).join('');
+
+    wrap.querySelectorAll('[data-cancel-appt]').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const id = (btn as HTMLElement).dataset.cancelAppt;
+        await supabase.from('appointment_requests').delete().eq('id', id);
+        loadAppointments();
+      });
+    });
   }
 
   async function init() {
@@ -193,9 +379,17 @@ import Base from '../layouts/Base.astro';
       return;
     }
 
+    currentClient = client;
     el('portal-content').hidden = false;
     el('portal-name').textContent = client.full_name;
     el('portal-subject').textContent = client.subject ? `موضوع: ${client.subject}` : '';
+
+    const profileForm = el('profile-form') as HTMLFormElement;
+    (profileForm.elements.namedItem('full_name') as HTMLInputElement).value = client.full_name ?? '';
+    (profileForm.elements.namedItem('phone') as HTMLInputElement).value = client.phone ?? '';
+    (profileForm.elements.namedItem('email') as HTMLInputElement).value = client.email ?? '';
+    (profileForm.elements.namedItem('national_id') as HTMLInputElement).value = client.national_id ?? '';
+    (profileForm.elements.namedItem('address') as HTMLInputElement).value = client.address ?? '';
 
     const [{ data: files }, { data: payments }, { data: notes }] = await Promise.all([
       supabase.from('client_files').select('*').eq('client_id', client.id).order('uploaded_at', { ascending: false }),
@@ -213,9 +407,9 @@ import Base from '../layouts/Base.astro';
           .createSignedUrl(f.storage_path, 60 * 5);
         li.innerHTML = `
           <div class="file-row">
-            <a href="${signed?.signedUrl ?? '#'}" target="_blank" rel="noopener">${f.original_filename}</a>
+            <a href="${signed?.signedUrl ?? '#'}" target="_blank" rel="noopener">${esc(f.original_filename)}</a>
           </div>
-          <div class="file-meta">${f.description ?? ''} ${formatDate(f.uploaded_at)}</div>
+          <div class="file-meta">${esc(f.description ?? '')} ${formatDate(f.uploaded_at)}</div>
         `;
         list.appendChild(li);
       }
@@ -229,7 +423,7 @@ import Base from '../layouts/Base.astro';
         li.innerHTML = `
           ${formatToman(p.amount)}
           <span class="badge badge-${p.status}">${statusLabels[p.status] ?? p.status}</span>
-          <div class="item-meta">${p.description ?? ''} ${p.payment_date ? formatDate(p.payment_date) : ''}</div>
+          <div class="item-meta">${esc(p.description ?? '')} ${p.payment_date ? formatDate(p.payment_date) : ''}</div>
         `;
         list.appendChild(li);
       }
@@ -241,11 +435,84 @@ import Base from '../layouts/Base.astro';
       for (const n of notes) {
         const div = document.createElement('div');
         div.className = 'note-item';
-        div.innerHTML = `<div>${n.note}</div><div class="item-meta">${formatDate(n.created_at)}</div>`;
+        div.innerHTML = `<div><div>${esc(n.note)}</div><div class="item-meta">${formatDate(n.created_at)}</div></div>`;
         wrap.appendChild(div);
       }
     }
+
+    await loadPets();
+    await loadAppointments();
   }
+
+  el('profile-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const btn = form.querySelector('button') as HTMLButtonElement;
+    const msg = el('profile-msg') as HTMLParagraphElement;
+    btn.disabled = true;
+    msg.hidden = true;
+
+    const formData = new FormData(form);
+    const { error } = await supabase
+      .from('clients')
+      .update({
+        full_name: String(formData.get('full_name') || '').trim(),
+        phone: String(formData.get('phone') || '').trim(),
+        email: String(formData.get('email') || '').trim() || null,
+        national_id: String(formData.get('national_id') || '').trim() || null,
+        address: String(formData.get('address') || '').trim() || null,
+      })
+      .eq('id', currentClient.id);
+
+    msg.hidden = false;
+    if (error) {
+      msg.textContent = 'خطا در ذخیره اطلاعات.';
+      msg.className = 'form-msg err';
+    } else {
+      msg.textContent = 'اطلاعات ذخیره شد.';
+      msg.className = 'form-msg ok';
+      el('portal-name').textContent = String(formData.get('full_name') || '');
+    }
+    btn.disabled = false;
+  });
+
+  el('pet-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const btn = form.querySelector('button') as HTMLButtonElement;
+    btn.disabled = true;
+
+    const formData = new FormData(form);
+    await supabase.from('client_pets').insert({
+      client_id: currentClient.id,
+      species: String(formData.get('species') || '').trim(),
+      name: String(formData.get('name') || '').trim() || null,
+      birth_date: String(formData.get('birth_date') || '') || null,
+      notes: String(formData.get('notes') || '').trim() || null,
+    });
+
+    form.reset();
+    btn.disabled = false;
+    await loadPets();
+  });
+
+  el('appointment-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const btn = form.querySelector('button') as HTMLButtonElement;
+    btn.disabled = true;
+
+    const formData = new FormData(form);
+    await supabase.from('appointment_requests').insert({
+      client_id: currentClient.id,
+      requested_date: String(formData.get('requested_date') || '') || null,
+      reason: String(formData.get('reason') || '').trim(),
+    });
+
+    form.reset();
+    btn.disabled = false;
+    await loadAppointments();
+  });
 
   el('logout-btn')?.addEventListener('click', async () => {
     await supabase.auth.signOut();

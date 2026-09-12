@@ -14,7 +14,14 @@ import Base from '../layouts/Base.astro';
 
     <div id="portal-content" hidden>
       <div class="client-header">
-        <h1 id="portal-name"></h1>
+        <div class="viewer-identity">
+          <div id="viewer-avatar" class="viewer-avatar" aria-hidden="true">م</div>
+          <div>
+            <span class="record-kicker">صاحب حیوان</span>
+            <h1 id="portal-name"></h1>
+            <p class="viewer-subtitle">پرونده دامپزشکی حیوانات من</p>
+          </div>
+        </div>
         <button id="logout-btn" class="logout-btn">خروج</button>
       </div>
 
@@ -29,7 +36,13 @@ import Base from '../layouts/Base.astro';
           <div class="record-header-info">
             <span class="record-kicker">پرونده دامپزشکی</span>
             <h2 id="pet-title"></h2>
-            <dl class="fact-list" id="pet-fact-list"></dl>
+            <p id="pet-species" class="pet-species">گونه یا نژاد ثبت نشده</p>
+            <dl class="pet-facts">
+              <div><dt>جنسیت</dt><dd id="summary-sex">—</dd></div>
+              <div><dt>سن</dt><dd id="summary-age">—</dd></div>
+              <div><dt>شناسه</dt><dd id="summary-chip">—</dd></div>
+              <div><dt>آخرین وزن</dt><dd id="summary-weight">—</dd></div>
+            </dl>
           </div>
         </div>
 
@@ -37,8 +50,35 @@ import Base from '../layouts/Base.astro';
           ⚠️ هشدار آلرژی/حساسیت دارویی: <strong id="allergy-text"></strong>
         </div>
 
-        <section class="record-section">
+        <section class="overview-grid" aria-label="خلاصه پرونده">
+          <article class="overview-card next-visit-card">
+            <div class="card-heading"><span class="card-icon">◷</span><h3>مراجعه بعدی</h3></div>
+            <strong id="summary-next-visit">تعیین نشده</strong>
+            <span id="summary-next-visit-relative" class="card-caption">زمان مراجعه بعدی هنوز ثبت نشده است</span>
+          </article>
+          <article class="overview-card status-card">
+            <div class="card-heading"><span class="card-icon">✓</span><h3>وضعیت پرونده</h3></div>
+            <strong id="summary-status">پرونده فعال</strong>
+            <span id="summary-status-caption" class="card-caption">اطلاعات ثبت‌شده توسط دامپزشک</span>
+          </article>
+          <article class="overview-card weight-card">
+            <div class="card-heading"><span class="card-icon">↗</span><h3>روند وزن</h3></div>
+            <div id="weight-chart" class="weight-chart" aria-label="نمودار تغییرات وزن">
+              <span class="chart-empty">هنوز وزنی ثبت نشده است</span>
+            </div>
+          </article>
+        </section>
+
+        <nav class="record-tabs" aria-label="بخش‌های پرونده">
+          <a href="#timeline" class="active">نمای کلی</a>
+          <a href="#timeline">سوابق پزشکی</a>
+          <a href="#timeline">نسخه‌ها</a>
+          <a href="#timeline">فایل‌ها</a>
+        </nav>
+
+        <section class="record-section timeline-section" id="timeline">
           <h2>جدول زمانی پرونده</h2>
+          <p class="section-hint">آخرین ویزیت‌ها، نسخه‌ها، نتایج و فایل‌هایی که دامپزشک با شما به اشتراک گذاشته است.</p>
           <div id="timeline-list" class="notes-list">
             <p class="portal-empty-item">هنوز چیزی ثبت نشده است.</p>
           </div>
@@ -313,6 +353,148 @@ import Base from '../layouts/Base.astro';
   }
   .form-msg.ok { color: #8fd6a8; }
   .form-msg.err { color: #e88a6a; }
+
+  /* Premium read-only client portal */
+  .portal {
+    --dash-bg: #f4f1e9;
+    --dash-surface: #fffefb;
+    --dash-soft: #f8f7f2;
+    --dash-border: #deddd4;
+    --dash-text: #18342d;
+    --dash-muted: #6c7974;
+    --dash-green: #174b3d;
+    --dash-green-2: #236653;
+    --dash-sage: #dfece4;
+    max-width: 1240px;
+    color: var(--dash-text);
+    background: var(--dash-bg);
+    border: 1px solid #383d28;
+    border-radius: 24px;
+    margin: 32px auto 72px;
+    padding: 26px;
+    box-shadow: 0 28px 70px rgba(0,0,0,.28);
+  }
+  .portal p { color: inherit; }
+  .portal-status { color: var(--dash-muted); }
+  .client-header {
+    padding: 15px 18px;
+    background: var(--dash-surface);
+    border: 1px solid var(--dash-border);
+    border-radius: 16px;
+    box-shadow: 0 10px 28px rgba(26,63,52,.06);
+  }
+  .viewer-identity { display: flex; align-items: center; gap: 13px; }
+  .viewer-avatar {
+    width: 48px; height: 48px; display: grid; place-items: center; flex: none;
+    border-radius: 14px; color: #fff; background: linear-gradient(145deg, var(--dash-green-2), var(--dash-green)); font-weight: 700;
+  }
+  .client-header h1 { color: var(--dash-text); font-size: 19px; }
+  .viewer-subtitle { color: var(--dash-muted) !important; font-size: 11px; }
+  .portal .record-kicker { color: var(--dash-green-2); }
+  .logout-btn { color: var(--dash-muted); border-color: var(--dash-border); }
+  .logout-btn:hover { color: var(--dash-green); border-color: var(--dash-green); }
+  .pets-bar { margin: 14px 0; }
+  .pets-bar :global(.pet-chip) {
+    background: rgba(255,255,255,.78); border: 1px solid var(--dash-border); color: var(--dash-text);
+    border-radius: 999px; padding: 8px 16px; font: 500 13px var(--font); cursor: pointer;
+  }
+  .pets-bar :global(.pet-chip.active) { color: #fff; background: var(--dash-green); border-color: var(--dash-green); font-weight: 700; }
+  .record { background: transparent; border: none; border-radius: 0; overflow: visible; }
+  .record-header {
+    min-height: 206px; gap: 28px; padding: 28px;
+    background: var(--dash-surface); border: 1px solid var(--dash-border); border-radius: 18px;
+    box-shadow: 0 14px 34px rgba(26,63,52,.07);
+  }
+  .pet-photo-wrap {
+    width: 158px; height: 158px; border-radius: 50%; border: 6px solid #fff;
+    outline: 1px solid var(--dash-border); background: var(--dash-sage);
+    box-shadow: 0 10px 26px rgba(26,63,52,.13);
+  }
+  .pet-photo-placeholder { color: var(--dash-muted); }
+  .record-header h2 { color: var(--dash-text); font-size: clamp(26px,3vw,34px); margin-bottom: 0; }
+  .pet-species { color: var(--dash-muted) !important; font-size: 14px; margin-top: 3px; }
+  .pet-facts { display: grid; grid-template-columns: repeat(4,minmax(95px,1fr)); margin-top: 22px; max-width: 700px; }
+  .pet-facts > div { padding: 0 16px; border-inline-start: 1px solid var(--dash-border); }
+  .pet-facts > div:first-child { padding-inline-start: 0; border-inline-start: none; }
+  .pet-facts dt { color: var(--dash-muted); font-size: 11px; }
+  .pet-facts dd { color: var(--dash-text); font-size: 14px; font-weight: 700; margin-top: 2px; }
+  .allergy-banner { margin: 14px 0 0; color: #9e382b; background: #fff0ed; border-color: #efc0b6; border-radius: 13px; padding: 12px 16px; }
+  .overview-grid { display: grid; grid-template-columns: 1fr 1fr 1.65fr; gap: 14px; margin-top: 14px; }
+  .overview-card {
+    min-height: 146px; padding: 18px; overflow: hidden;
+    background: var(--dash-surface); border: 1px solid var(--dash-border); border-radius: 16px;
+    box-shadow: 0 10px 26px rgba(26,63,52,.05);
+  }
+  .card-heading { display: flex; align-items: center; gap: 9px; margin-bottom: 15px; }
+  .card-heading h3 { color: var(--dash-text); font-size: 13px; }
+  .card-icon { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 8px; color: var(--dash-green); background: var(--dash-sage); font-weight: 700; }
+  .overview-card > strong { display: block; color: var(--dash-text); font-size: 18px; }
+  .card-caption { color: var(--dash-muted); font-size: 11px; }
+  .weight-chart {
+    height: 76px; position: relative; overflow: hidden; padding: 8px 10px 6px;
+    border: 1px solid #e3e7df; border-radius: 11px; background: linear-gradient(180deg,#fbfdf9,#f5f8f3);
+  }
+  .weight-chart svg { display: block; width: 100%; height: 100%; overflow: hidden; }
+  .weight-chart :global(svg) { display: block; width: 100%; height: 100%; overflow: hidden; }
+  .weight-chart :global(.chart-grid) { stroke: #e6e7df; stroke-width: 1; }
+  .weight-chart :global(.chart-area) { fill: url(#portal-weight-fill); }
+  .weight-chart :global(.chart-line) { fill: none; stroke: var(--dash-green-2); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+  .weight-chart :global(.chart-point) { fill: var(--dash-green-2); stroke: #fff; stroke-width: 2; }
+  .chart-grid { stroke: #e6e7df; stroke-width: 1; }
+  .chart-area { fill: url(#portal-weight-fill); }
+  .chart-line { fill: none; stroke: var(--dash-green-2); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+  .chart-point { fill: var(--dash-green-2); stroke: #fff; stroke-width: 2; }
+  .chart-empty { display: grid; place-items: center; height: 100%; color: var(--dash-muted); font-size: 12px; }
+  .record-tabs {
+    display: flex; gap: 4px; margin-top: 14px; padding: 5px; overflow-x: auto;
+    background: var(--dash-surface); border: 1px solid var(--dash-border); border-radius: 13px;
+  }
+  .record-tabs a { color: var(--dash-muted); padding: 8px 17px; border-radius: 9px; font-size: 12px; white-space: nowrap; }
+  .record-tabs a:hover, .record-tabs a.active { color: var(--dash-green); background: var(--dash-sage); font-weight: 700; }
+  .record-section {
+    margin-top: 14px; padding: 22px; background: var(--dash-surface);
+    border: 1px solid var(--dash-border) !important; border-radius: 16px;
+    box-shadow: 0 10px 26px rgba(26,63,52,.045);
+  }
+  .record-section h2 { color: var(--dash-text); font-size: 15px; margin-bottom: 4px; }
+  .section-hint { color: var(--dash-muted) !important; font-size: 12px; margin-bottom: 14px; }
+  .notes-list :global(.note-item) {
+    position: relative; margin: 0; padding: 15px 30px 15px 14px;
+    background: transparent; border: 0; border-bottom: 1px solid #e9e9e2; color: var(--dash-text);
+  }
+  .notes-list :global(.note-item:last-child) { border-bottom: 0; }
+  .notes-list :global(.note-item::before) {
+    content: ''; position: absolute; top: 20px; right: 7px; width: 8px; height: 8px;
+    border: 3px solid var(--dash-surface); border-radius: 50%; background: var(--dash-green-2); box-shadow: 0 0 0 1px var(--dash-green-2);
+  }
+  .notes-list :global(.note-item::after) { content: ''; position: absolute; top: 31px; bottom: -10px; right: 12px; width: 1px; background: #cddbd3; }
+  .notes-list :global(.note-item:last-child::after) { display: none; }
+  .notes-list :global(.badge) { color: var(--dash-green); background: var(--dash-sage); border: 0; }
+  .notes-list :global(.item-meta) { color: var(--dash-muted); font-size: 12px; margin-top: 5px; }
+  .notes-list :global(a) { color: var(--dash-green-2); font-weight: 700; }
+  .viewer-notice { color: var(--dash-text); background: #eef4ef; }
+  .viewer-notice > span { background: var(--dash-sage); }
+  .viewer-notice h2 { color: var(--dash-text); }
+  .viewer-notice p { color: var(--dash-muted); }
+  .portal-empty-item { color: var(--dash-muted); }
+
+  @media (max-width: 900px) {
+    .portal { margin: 18px 12px 50px; padding: 18px; }
+    .overview-grid { grid-template-columns: 1fr 1fr; }
+    .weight-card { grid-column: 1/-1; }
+    .pet-facts { grid-template-columns: 1fr 1fr; gap: 12px 0; }
+  }
+  @media (max-width: 600px) {
+    .portal { margin: 10px 8px 40px; padding: 12px; border-radius: 18px; }
+    .client-header { align-items: flex-start; }
+    .record-header { align-items: center; text-align: center; padding: 24px 18px; }
+    .record-header-info { width: 100%; }
+    .pet-photo-wrap { width: 142px; height: 142px; }
+    .pet-facts { text-align: right; }
+    .overview-grid { grid-template-columns: 1fr; }
+    .weight-card { grid-column: auto; }
+    .record-section { padding: 17px 14px; }
+  }
 </style>
 
 <script>
@@ -360,17 +542,14 @@ import Base from '../layouts/Base.astro';
 
   function renderPetHeader(pet: any) {
     el('pet-title').textContent = pet.name || pet.species_breed || 'پت بدون نام';
-
-    const facts: Array<[string, string]> = [];
-    if (pet.species_breed) facts.push(['گونه/نژاد', pet.species_breed]);
-    if (pet.sex) facts.push(['جنسیت', SEX_LABELS[pet.sex] ?? pet.sex]);
-    if (pet.birth_date) facts.push(['تاریخ تولد', formatDate(pet.birth_date)]);
-    if (pet.color_markings) facts.push(['رنگ‌بندی/نشانه‌ها', pet.color_markings]);
-    if (pet.microchip_band) facts.push(['میکروچیپ/بند پا', pet.microchip_band]);
-    facts.push(['مراجعه بعدی', pet.next_visit_date ? formatDate(pet.next_visit_date) : 'ثبت نشده']);
-    el('pet-fact-list').innerHTML = facts.map(([k, v]) => `
-      <div class="fact-row"><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>
-    `).join('');
+    el('pet-species').textContent = pet.species_breed || 'گونه یا نژاد ثبت نشده';
+    el('summary-sex').textContent = SEX_LABELS[pet.sex] ?? 'نامشخص';
+    el('summary-age').textContent = formatAge(pet.birth_date);
+    el('summary-chip').textContent = pet.microchip_band || 'ثبت نشده';
+    el('summary-next-visit').textContent = pet.next_visit_date ? formatDate(pet.next_visit_date) : 'تعیین نشده';
+    el('summary-next-visit-relative').textContent = pet.next_visit_date
+      ? relativeVisitDate(pet.next_visit_date)
+      : 'زمان مراجعه بعدی هنوز ثبت نشده است';
 
     if (pet.allergies) {
       el('allergy-text').textContent = pet.allergies;
@@ -379,6 +558,65 @@ import Base from '../layouts/Base.astro';
       el('allergy-banner').hidden = true;
     }
 
+  }
+
+  function formatAge(birthDate?: string) {
+    if (!birthDate) return 'ثبت نشده';
+    const born = new Date(birthDate);
+    const now = new Date();
+    let months = (now.getFullYear() - born.getFullYear()) * 12 + now.getMonth() - born.getMonth();
+    if (now.getDate() < born.getDate()) months--;
+    if (months < 0) return 'ثبت نشده';
+    if (months < 12) return `${months.toLocaleString('fa-IR')} ماه`;
+    const years = Math.floor(months / 12);
+    const remainder = months % 12;
+    return remainder
+      ? `${years.toLocaleString('fa-IR')} سال و ${remainder.toLocaleString('fa-IR')} ماه`
+      : `${years.toLocaleString('fa-IR')} سال`;
+  }
+
+  function relativeVisitDate(iso: string) {
+    const target = new Date(`${iso}T12:00:00`);
+    const today = new Date();
+    today.setHours(12, 0, 0, 0);
+    const days = Math.round((target.getTime() - today.getTime()) / 86400000);
+    if (days === 0) return 'امروز';
+    if (days === 1) return 'فردا';
+    if (days > 1) return `${days.toLocaleString('fa-IR')} روز دیگر`;
+    return `${Math.abs(days).toLocaleString('fa-IR')} روز گذشته`;
+  }
+
+  function renderWeightChart(records: any[]) {
+    const weights = records
+      .filter((record) => record.record_type === 'weight')
+      .map((record) => ({ date: record.record_date, value: Number.parseFloat(String(record.value).replace(/[^0-9.\-]/g, '')) }))
+      .filter((record) => Number.isFinite(record.value))
+      .sort((a, b) => a.date.localeCompare(b.date))
+      .slice(-8);
+    const chart = el('weight-chart');
+    if (!weights.length) {
+      chart.innerHTML = '<span class="chart-empty">هنوز وزنی ثبت نشده است</span>';
+      el('summary-weight').textContent = 'ثبت نشده';
+      return;
+    }
+    const latest = weights[weights.length - 1];
+    el('summary-weight').textContent = `${latest.value.toLocaleString('fa-IR')} گرم`;
+    const min = Math.min(...weights.map((point) => point.value));
+    const max = Math.max(...weights.map((point) => point.value));
+    const range = Math.max(max - min, max * .08, 1);
+    const coords = weights.map((point, index) => ({
+      x: weights.length === 1 ? 50 : 6 + (index / (weights.length - 1)) * 88,
+      y: 50 - ((point.value - min) / range) * 36,
+    }));
+    const line = coords.map((point) => `${point.x},${point.y}`).join(' ');
+    chart.innerHTML = `
+      <svg viewBox="0 0 100 58" preserveAspectRatio="none" role="img" aria-label="روند وزن حیوان">
+        <defs><linearGradient id="portal-weight-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4f8b73" stop-opacity=".28"/><stop offset="1" stop-color="#4f8b73" stop-opacity="0"/></linearGradient></defs>
+        <line class="chart-grid" x1="4" y1="53" x2="96" y2="53"/>
+        <polygon class="chart-area" points="6,54 ${line} 94,54"/>
+        <polyline class="chart-line" points="${line}"/>
+        ${coords.map((point) => `<circle class="chart-point" cx="${point.x}" cy="${point.y}" r="2.4"/>`).join('')}
+      </svg>`;
   }
 
   async function loadPhoto(petId: number) {
@@ -416,6 +654,12 @@ import Base from '../layouts/Base.astro';
 
     type Entry = { sortKey: string; html: string };
     const entries: Entry[] = [];
+    renderWeightChart(medical ?? []);
+    const visibleRecords = (visits?.length ?? 0) + (notes?.length ?? 0) + (medical?.length ?? 0) + (files?.length ?? 0);
+    el('summary-status').textContent = visibleRecords ? 'در حال پیگیری' : 'پرونده فعال';
+    el('summary-status-caption').textContent = visibleRecords
+      ? `${visibleRecords.toLocaleString('fa-IR')} مورد با شما به اشتراک گذاشته شده است`
+      : 'هنوز سابقه‌ای برای نمایش ثبت نشده است';
 
     for (const v of visits ?? []) {
       const parts = [
@@ -484,7 +728,48 @@ import Base from '../layouts/Base.astro';
     }
   }
 
+  function renderLocalPreview() {
+    currentClient = { id: 0, full_name: 'سارا احمدی' };
+    const pet = {
+      id: 0, name: 'آریو', species_breed: 'اژدهای ریش‌دار', sex: 'male',
+      birth_date: '2024-05-10', microchip_band: 'EX-1402-031',
+      allergies: 'حساسیت احتمالی به انروفلوکساسین',
+      next_visit_date: new Date(Date.now() + 9 * 86400000).toISOString().slice(0, 10),
+    };
+    pets = [pet];
+    activePetId = pet.id;
+    el('portal-loading').hidden = true;
+    el('portal-content').hidden = false;
+    el('portal-name').textContent = currentClient.full_name;
+    el('viewer-avatar').textContent = 'س';
+    renderPetsBar();
+    el('pet-record').hidden = false;
+    renderPetHeader(pet);
+    const img = el('pet-photo') as HTMLImageElement;
+    img.src = '/images/photos/bearded-dragon-1.jpg';
+    img.hidden = false;
+    el('pet-photo-placeholder').hidden = true;
+    const weights = [365, 382, 401, 418, 425, 420].map((value, index) => ({
+      record_type: 'weight', record_date: `2026-${String(index + 4).padStart(2, '0')}-12`, value: String(value),
+    }));
+    renderWeightChart(weights);
+    el('summary-status').textContent = 'در حال پیگیری';
+    el('summary-status-caption').textContent = '۴ مورد با شما به اشتراک گذاشته شده است';
+    el('timeline-list').innerHTML = [
+      '<div class="note-item"><div><span class="badge">ویزیت</span> ۱۴۰۵/۶/۲۰</div><div class="item-meta"><b>معاینه عمومی</b><br>وضعیت عمومی پایدار؛ اشتها و فعالیت طبیعی</div></div>',
+      '<div class="note-item"><div><span class="badge">تشخیص</span> ۱۴۰۵/۶/۲۰</div><div class="item-meta"><b>درماتیت خفیف</b><br>اصلاح شرایط محیطی و پایش پوست</div></div>',
+      '<div class="note-item"><div><span class="badge">وزن</span> ۱۴۰۵/۶/۱۸</div><div class="item-meta"><b>۴۲۰ گرم</b><br>در محدوده مورد انتظار</div></div>',
+      '<div class="note-item"><div><span class="badge">نسخه</span> ۱۴۰۵/۵/۲۱</div><div class="item-meta"><b>مکمل کلسیم و ویتامین D3</b><br>طبق دستور دامپزشک</div></div>',
+    ].join('');
+    (el('logout-btn') as HTMLButtonElement).disabled = true;
+    el('logout-btn').setAttribute('title', 'حالت پیش‌نمایش محلی');
+  }
+
   async function init() {
+    if (location.hostname === 'localhost' && new URLSearchParams(location.search).get('preview') === '1') {
+      renderLocalPreview();
+      return;
+    }
     const { data: sessionData } = await supabase.auth.getSession();
     if (!sessionData.session) {
       window.location.href = '/login';
@@ -508,6 +793,7 @@ import Base from '../layouts/Base.astro';
     currentClient = client;
     el('portal-content').hidden = false;
     el('portal-name').textContent = client.full_name;
+    el('viewer-avatar').textContent = String(client.full_name || 'م').trim().charAt(0) || 'م';
 
     await loadPets();
   }

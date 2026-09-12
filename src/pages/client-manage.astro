@@ -742,6 +742,11 @@ import Base from '../layouts/Base.astro';
   }
   .weight-card { overflow: hidden; }
   .weight-chart svg { display: block; width: 100%; height: 100%; overflow: hidden; }
+  .weight-chart :global(svg) { display: block; width: 100%; height: 100%; overflow: hidden; }
+  .weight-chart :global(.chart-grid) { stroke: #e6e7df; stroke-width: 1; }
+  .weight-chart :global(.chart-area) { fill: url(#weight-fill); }
+  .weight-chart :global(.chart-line) { fill: none; stroke: var(--dash-green-2); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+  .weight-chart :global(.chart-point) { fill: var(--dash-green-2); stroke: #fff; stroke-width: 2; }
   .chart-grid { stroke: #e6e7df; stroke-width: 1; }
   .chart-area { fill: url(#weight-fill); }
   .chart-line { fill: none; stroke: var(--dash-green-2); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }

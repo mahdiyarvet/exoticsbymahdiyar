@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 ---
 <Base
   title="مدیریت پرونده مشتری"
-  description="مدیریت فایل‌ها، عکس و یادداشت‌های پرونده"
+  description="مدیریت پرونده دامپزشکی مشتری و پت‌های او"
   noindex={true}
 >
   <section class="manage">
@@ -18,7 +18,25 @@ import Base from '../layouts/Base.astro';
     <div id="manage-area" hidden>
       <a href="/client-admin" class="back-link">&rarr; بازگشت به لیست مشتریان</a>
 
-      <div class="record">
+      <div class="client-bar">
+        <div>
+          <span class="record-kicker">مشتری</span>
+          <h1 id="client-name"></h1>
+          <p id="client-meta" class="manage-sub"></p>
+        </div>
+      </div>
+
+      <div class="pets-bar" id="pets-bar"></div>
+      <div id="add-pet-wrap" class="add-pet-wrap" hidden>
+        <form id="add-pet-form" class="stack-form-row">
+          <input type="text" name="name" placeholder="نام پت (اختیاری)" />
+          <input type="text" name="species_breed" placeholder="گونه/نژاد" />
+          <button type="submit">افزودن پت</button>
+        </form>
+        <p id="add-pet-msg" class="form-msg" hidden></p>
+      </div>
+
+      <div id="pet-record" class="record" hidden>
         <div class="record-header">
           <div class="pet-photo-wrap">
             <img id="pet-photo" class="pet-photo" alt="عکس پت" hidden />
@@ -26,25 +44,52 @@ import Base from '../layouts/Base.astro';
           </div>
           <div class="record-header-info">
             <span class="record-kicker">پرونده دامپزشکی</span>
-            <h1 id="client-name"></h1>
-            <p id="client-meta" class="manage-sub"></p>
+            <h2 id="pet-title">—</h2>
+            <dl class="fact-list" id="pet-fact-list"></dl>
           </div>
+          <button type="button" id="delete-pet-btn" class="danger-link">حذف این پت</button>
+        </div>
+
+        <div id="allergy-banner" class="allergy-banner" hidden>
+          ⚠️ هشدار آلرژی/حساسیت دارویی: <strong id="allergy-text"></strong>
         </div>
 
         <section class="record-section">
-          <h2>تاریخ مراجعه</h2>
-          <p class="manage-hint">تاریخ مراجعه بعدی مشتری را ثبت کنید تا در پرونده نمایش داده شود.</p>
-          <form id="visit-date-form" class="stack-form">
-            <input type="date" name="next_visit_date" />
-            <button type="submit">ذخیره تاریخ</button>
+          <h2>مشخصات پت</h2>
+          <form id="pet-details-form" class="inline-form">
+            <label>نام پت
+              <input type="text" name="name" />
+            </label>
+            <label>گونه/نژاد
+              <input type="text" name="species_breed" />
+            </label>
+            <label>جنسیت
+              <select name="sex">
+                <option value="">نامشخص</option>
+                <option value="male">نر</option>
+                <option value="female">ماده</option>
+              </select>
+            </label>
+            <label>تاریخ تولد (تقریبی)
+              <input type="date" name="birth_date" />
+            </label>
+            <label>رنگ‌بندی / نشانه‌ها
+              <input type="text" name="color_markings" />
+            </label>
+            <label>شماره میکروچیپ / بند پا
+              <input type="text" name="microchip_band" />
+            </label>
+            <label class="span-2">آلرژی / حساسیت دارویی
+              <input type="text" name="allergies" placeholder="در صورت وجود بنویسید — در بالای پرونده به‌صورت هشدار نمایش داده می‌شود" />
+            </label>
+            <button type="submit" class="span-2">ذخیره مشخصات</button>
           </form>
-          <p id="visit-date-msg" class="form-msg" hidden></p>
+          <p id="pet-details-msg" class="form-msg" hidden></p>
         </section>
 
         <section class="record-section">
           <h2>عکس پت</h2>
-          <p class="manage-hint">این عکس در بالای پرونده و در پنل مشتری نمایش داده می‌شود.</p>
-          <form id="photo-form" class="stack-form">
+          <form id="photo-form" class="stack-form-row">
             <input type="file" name="photo" accept="image/*" required />
             <button type="submit">آپلود / جایگزینی عکس</button>
           </form>
@@ -52,21 +97,39 @@ import Base from '../layouts/Base.astro';
         </section>
 
         <section class="record-section">
-          <h2>مدارک و فایل‌ها</h2>
-          <ul id="files-list" class="manage-list">
-            <li class="manage-empty-item">فایلی آپلود نشده است.</li>
-          </ul>
-          <form id="file-form" class="stack-form">
-            <input type="file" name="file" required />
-            <input type="text" name="description" placeholder="توضیح فایل (اختیاری)" />
-            <button type="submit">آپلود فایل</button>
+          <h2>تاریخ مراجعه بعدی</h2>
+          <form id="visit-date-form" class="stack-form-row">
+            <input type="date" name="next_visit_date" />
+            <button type="submit">ذخیره تاریخ</button>
           </form>
-          <p id="file-msg" class="form-msg" hidden></p>
+          <p id="visit-date-msg" class="form-msg" hidden></p>
         </section>
 
         <section class="record-section">
-          <h2>یادداشت‌های پیگیری</h2>
-          <div id="notes-list" class="manage-list"></div>
+          <h2>جدول زمانی پرونده</h2>
+          <p class="manage-hint">همه‌ی ویزیت‌ها، یادداشت‌ها، سوابق پزشکی و فایل‌ها به ترتیب تاریخ.</p>
+          <div id="timeline-list" class="manage-list"></div>
+        </section>
+
+        <section class="record-section">
+          <h2>ثبت ویزیت جدید (SOAP)</h2>
+          <form id="visit-form" class="stack-form">
+            <input type="date" name="visit_date" required />
+            <textarea name="subjective" rows="2" placeholder="S — شرح صاحب حیوان از وضعیت"></textarea>
+            <textarea name="objective" rows="2" placeholder="O — یافته‌های معاینه"></textarea>
+            <textarea name="assessment" rows="2" placeholder="A — تشخیص"></textarea>
+            <textarea name="plan" rows="2" placeholder="P — برنامه درمان"></textarea>
+            <label class="checkbox-row">
+              <input type="checkbox" name="visible" checked />
+              قابل مشاهده برای مشتری
+            </label>
+            <button type="submit">ثبت ویزیت</button>
+          </form>
+          <p id="visit-msg" class="form-msg" hidden></p>
+        </section>
+
+        <section class="record-section">
+          <h2>افزودن یادداشت پیگیری</h2>
           <form id="note-form" class="stack-form">
             <textarea name="note" rows="3" placeholder="متن یادداشت" required></textarea>
             <label class="checkbox-row">
@@ -78,12 +141,21 @@ import Base from '../layouts/Base.astro';
         </section>
 
         <section class="record-section">
-          <h2>سوابق پزشکی و علمی</h2>
+          <h2>آپلود مدرک/فایل</h2>
+          <form id="file-form" class="stack-form">
+            <input type="file" name="file" required />
+            <input type="text" name="description" placeholder="توضیح فایل (اختیاری)" />
+            <button type="submit">آپلود فایل</button>
+          </form>
+          <p id="file-msg" class="form-msg" hidden></p>
+        </section>
+
+        <section class="record-section">
+          <h2>ثبت سوابق پزشکی و علمی</h2>
           <p id="medical-msg" class="form-msg" hidden></p>
           <div class="medical-grid">
             <div class="medical-box">
               <h3>وزن</h3>
-              <div id="medical-list-weight" class="manage-list"></div>
               <form class="stack-form medical-subform" data-record-type="weight">
                 <input type="date" name="record_date" required />
                 <input type="text" name="value" placeholder="وزن (گرم)" required />
@@ -98,7 +170,6 @@ import Base from '../layouts/Base.astro';
 
             <div class="medical-box">
               <h3>تزریق / واکسن</h3>
-              <div id="medical-list-injection" class="manage-list"></div>
               <form class="stack-form medical-subform" data-record-type="injection">
                 <input type="date" name="record_date" required />
                 <input type="text" name="title" placeholder="نام واکسن یا دارو" required />
@@ -114,7 +185,6 @@ import Base from '../layouts/Base.astro';
 
             <div class="medical-box">
               <h3>نسخه</h3>
-              <div id="medical-list-prescription" class="manage-list"></div>
               <form class="stack-form medical-subform" data-record-type="prescription">
                 <input type="date" name="record_date" required />
                 <input type="text" name="title" placeholder="نام دارو" required />
@@ -130,7 +200,6 @@ import Base from '../layouts/Base.astro';
 
             <div class="medical-box">
               <h3>سایر موارد علمی</h3>
-              <div id="medical-list-other" class="manage-list"></div>
               <form class="stack-form medical-subform" data-record-type="other">
                 <input type="date" name="record_date" required />
                 <input type="text" name="title" placeholder="عنوان" required />
@@ -152,7 +221,7 @@ import Base from '../layouts/Base.astro';
 
 <style>
   .manage {
-    max-width: 760px;
+    max-width: 780px;
     margin: 0 auto;
     padding: 32px 20px 80px;
     min-height: 60vh;
@@ -170,6 +239,43 @@ import Base from '../layouts/Base.astro';
   }
   .back-link:hover { color: var(--brand); }
 
+  .client-bar {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-bottom: 14px;
+  }
+  .client-bar h1 { font-size: 19px; }
+  .manage-sub { color: var(--text-muted); margin-top: 4px; font-size: 13px; }
+
+  .pets-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .pet-chip {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 999px;
+    padding: 7px 16px;
+    font-size: 13px;
+    font-family: var(--font);
+    cursor: pointer;
+  }
+  .pet-chip:hover { border-color: var(--brand); }
+  .pet-chip.active { background: var(--brand); border-color: var(--brand); color: #06110b; font-weight: 700; }
+  .pet-chip.add-chip { border-style: dashed; color: var(--text-muted); }
+  .add-pet-wrap {
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    margin-bottom: 16px;
+  }
+
   .record {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -182,6 +288,7 @@ import Base from '../layouts/Base.astro';
     gap: 20px;
     padding: 22px;
     border-bottom: 1px solid var(--border);
+    position: relative;
   }
   .record-header-info { flex: 1; min-width: 0; }
   .record-kicker {
@@ -206,12 +313,40 @@ import Base from '../layouts/Base.astro';
   }
   .pet-photo { width: 100%; height: 100%; object-fit: cover; }
   .pet-photo-placeholder { font-size: 12px; color: var(--text-muted); text-align: center; padding: 4px; }
-  .record-header h1 { font-size: 22px; line-height: 1.3; }
-  .manage-sub { color: var(--text-muted); margin-top: 6px; font-size: 14px; }
+  .record-header h2 { font-size: 21px; line-height: 1.3; margin-bottom: 8px; }
+  .fact-list { display: flex; flex-direction: column; gap: 3px; }
+  .fact-row { display: flex; gap: 8px; font-size: 12.5px; }
+  .fact-row dt { color: var(--text-muted); flex: none; width: 130px; }
+  .fact-row dd { color: var(--text); }
+  .danger-link {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    border-radius: var(--radius-sm);
+    padding: 5px 12px;
+    font-size: 12px;
+    font-family: var(--font);
+    cursor: pointer;
+  }
+  .danger-link:hover { border-color: #e88a6a; color: #e88a6a; }
 
   @media (max-width: 560px) {
-    .record-header { flex-direction: column; align-items: flex-start; }
+    .record-header { flex-direction: column; align-items: flex-start; padding-top: 50px; }
     .pet-photo-wrap { width: 100%; height: 180px; border-radius: var(--radius-sm); }
+  }
+
+  .allergy-banner {
+    margin: 0 22px;
+    margin-top: 16px;
+    background: #4a1f1f;
+    border: 1px solid #7a3030;
+    color: #f3d3d3;
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    font-size: 13px;
   }
 
   .record-section {
@@ -224,9 +359,45 @@ import Base from '../layouts/Base.astro';
     font-weight: 700;
     color: var(--text-muted);
     letter-spacing: 0.02em;
-    margin-bottom: 6px;
+    margin-bottom: 10px;
   }
-  .manage-hint { color: var(--text-muted); font-size: 13px; margin-bottom: 12px; }
+  .manage-hint { color: var(--text-muted); font-size: 12.5px; margin-top: -4px; margin-bottom: 12px; }
+
+  .inline-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .inline-form label {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .inline-form .span-2 { grid-column: 1 / -1; }
+  .inline-form input, .inline-form select {
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 8px 11px;
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 14px;
+  }
+  .inline-form button {
+    background: var(--brand);
+    color: #06110b;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 9px;
+    font-family: var(--font);
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .inline-form button:hover { background: var(--brand-strong); }
+
   .medical-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -247,14 +418,11 @@ import Base from '../layouts/Base.astro';
     color: var(--brand);
     margin-bottom: 10px;
   }
-  .medical-box .manage-list { margin-bottom: 10px; }
-  .medical-box .manage-list:empty { margin-bottom: 0; }
   .manage-list {
     list-style: none;
     display: flex;
     flex-direction: column;
     gap: 10px;
-    margin-bottom: 16px;
   }
   .manage-list li, .manage-list > div {
     background: var(--bg-soft);
@@ -280,7 +448,6 @@ import Base from '../layouts/Base.astro';
     border-radius: var(--radius-sm);
     border-right: 3px solid var(--brand);
     padding: 12px 14px;
-    margin-bottom: 10px;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -295,7 +462,7 @@ import Base from '../layouts/Base.astro';
   }
   .badge-visible { background: #2f5d3a; color: #cdeed8; }
   .badge-hidden { background: #444; color: #ccc; }
-  .badge-type { background: var(--bg-soft); border: 1px solid var(--border); color: var(--brand); margin-inline-end: 6px; }
+  .badge-type { background: var(--surface); border: 1px solid var(--border); color: var(--brand); margin-inline-end: 6px; }
   .row-actions { display: flex; gap: 6px; flex: none; }
   .icon-btn {
     background: transparent;
@@ -310,16 +477,21 @@ import Base from '../layouts/Base.astro';
   }
   .icon-btn:hover { border-color: var(--brand); color: var(--brand); }
   .icon-btn.danger:hover { border-color: #e88a6a; color: #e88a6a; }
-  .stack-form {
+  .stack-form, .stack-form-row {
     display: flex;
     flex-direction: column;
     gap: 10px;
   }
+  .stack-form-row { flex-direction: row; flex-wrap: wrap; align-items: center; }
+  .stack-form-row input { flex: 1; min-width: 140px; }
   .stack-form input[type="text"],
   .stack-form input[type="date"],
   .stack-form input[type="file"],
   .stack-form select,
-  .stack-form textarea {
+  .stack-form textarea,
+  .stack-form-row input[type="text"],
+  .stack-form-row input[type="date"],
+  .stack-form-row input[type="file"] {
     background: var(--bg-soft);
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
@@ -336,7 +508,7 @@ import Base from '../layouts/Base.astro';
     font-size: 13px;
     color: var(--text-muted);
   }
-  .stack-form button {
+  .stack-form button, .stack-form-row button {
     background: var(--brand);
     color: #06110b;
     border: none;
@@ -346,9 +518,10 @@ import Base from '../layouts/Base.astro';
     font-weight: 700;
     font-size: 14px;
     cursor: pointer;
+    white-space: nowrap;
   }
-  .stack-form button:hover { background: var(--brand-strong); }
-  .stack-form button:disabled { opacity: 0.6; cursor: default; }
+  .stack-form button:hover, .stack-form-row button:hover { background: var(--brand-strong); }
+  .stack-form button:disabled, .stack-form-row button:disabled { opacity: 0.6; cursor: default; }
   .form-msg { font-size: 13px; }
   .form-msg.ok { color: #8fd6a8; }
   .form-msg.err { color: #e88a6a; }
@@ -359,10 +532,8 @@ import Base from '../layouts/Base.astro';
 
   const el = (id: string) => document.getElementById(id) as HTMLElement;
   const clientId = new URLSearchParams(window.location.search).get('id');
+  const PET_FUNCTION_URL = 'https://vyqubahucjzinpwgptxi.supabase.co/functions/v1/admin-manage-pet';
 
-  // Storage keys must be ASCII-safe (Supabase Storage rejects non-Latin
-  // filenames, e.g. Persian, with "Invalid key") — use an opaque random
-  // name for the storage path and keep the real name only in the DB.
   function safeStoragePath(clientId: number, filename: string): string {
     const match = filename.match(/\.[a-zA-Z0-9]{1,10}$/);
     const ext = match ? match[0] : '';
@@ -379,15 +550,85 @@ import Base from '../layouts/Base.astro';
     return new Date(iso).toLocaleDateString('fa-IR');
   }
 
-  const MEDICAL_TYPES = ['weight', 'injection', 'prescription', 'other'] as const;
+  const MEDICAL_TYPE_LABELS: Record<string, string> = {
+    weight: 'وزن',
+    injection: 'تزریق / واکسن',
+    prescription: 'نسخه',
+    other: 'سایر',
+  };
+  const SEX_LABELS: Record<string, string> = { male: 'نر', female: 'ماده' };
 
   let client: any = null;
+  let pets: any[] = [];
+  let activePetId: number | null = null;
 
-  async function loadPhoto() {
+  async function callPetFunction(payload: Record<string, unknown>) {
+    const { data: sessionData } = await supabase.auth.getSession();
+    const token = sessionData.session?.access_token;
+    const res = await fetch(PET_FUNCTION_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify(payload),
+    });
+    return res.json();
+  }
+
+  function renderPetsBar() {
+    const bar = el('pets-bar');
+    bar.innerHTML = pets.map((p) => `
+      <button class="pet-chip ${p.id === activePetId ? 'active' : ''}" data-pet-id="${p.id}">
+        ${esc(p.name || p.species_breed || 'پت بدون نام')}
+      </button>
+    `).join('') + `<button class="pet-chip add-chip" id="add-pet-chip" type="button">+ افزودن پت</button>`;
+
+    bar.querySelectorAll<HTMLButtonElement>('[data-pet-id]').forEach((btn) => {
+      btn.addEventListener('click', () => selectPet(Number(btn.dataset.petId)));
+    });
+    el('add-pet-chip')?.addEventListener('click', () => {
+      const wrap = el('add-pet-wrap');
+      wrap.hidden = !wrap.hidden;
+    });
+  }
+
+  function renderPetHeader(pet: any) {
+    el('pet-title').textContent = pet.name || pet.species_breed || 'پت بدون نام';
+
+    const facts: Array<[string, string]> = [];
+    if (pet.species_breed) facts.push(['گونه/نژاد', pet.species_breed]);
+    if (pet.sex) facts.push(['جنسیت', SEX_LABELS[pet.sex] ?? pet.sex]);
+    if (pet.birth_date) facts.push(['تاریخ تولد', formatDate(pet.birth_date)]);
+    if (pet.color_markings) facts.push(['رنگ‌بندی/نشانه‌ها', pet.color_markings]);
+    if (pet.microchip_band) facts.push(['میکروچیپ/بند پا', pet.microchip_band]);
+    if (pet.next_visit_date) facts.push(['مراجعه بعدی', formatDate(pet.next_visit_date)]);
+    el('pet-fact-list').innerHTML = facts.map(([k, v]) => `
+      <div class="fact-row"><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>
+    `).join('') || '<p class="manage-empty-item">مشخصاتی ثبت نشده است.</p>';
+
+    if (pet.allergies) {
+      el('allergy-text').textContent = pet.allergies;
+      el('allergy-banner').hidden = false;
+    } else {
+      el('allergy-banner').hidden = true;
+    }
+
+    const form = el('pet-details-form') as HTMLFormElement;
+    (form.elements.namedItem('name') as HTMLInputElement).value = pet.name ?? '';
+    (form.elements.namedItem('species_breed') as HTMLInputElement).value = pet.species_breed ?? '';
+    (form.elements.namedItem('sex') as HTMLSelectElement).value = pet.sex ?? '';
+    (form.elements.namedItem('birth_date') as HTMLInputElement).value = pet.birth_date ?? '';
+    (form.elements.namedItem('color_markings') as HTMLInputElement).value = pet.color_markings ?? '';
+    (form.elements.namedItem('microchip_band') as HTMLInputElement).value = pet.microchip_band ?? '';
+    (form.elements.namedItem('allergies') as HTMLInputElement).value = pet.allergies ?? '';
+
+    const visitDateForm = el('visit-date-form') as HTMLFormElement;
+    (visitDateForm.elements.namedItem('next_visit_date') as HTMLInputElement).value = pet.next_visit_date ?? '';
+  }
+
+  async function loadPhoto(petId: number) {
     const { data: files } = await supabase
       .from('client_files')
       .select('*')
-      .eq('client_id', client.id)
+      .eq('pet_id', petId)
       .eq('is_pet_photo', true)
       .order('uploaded_at', { ascending: false })
       .limit(1);
@@ -410,144 +651,157 @@ import Base from '../layouts/Base.astro';
     }
   }
 
-  async function loadFiles() {
-    const { data: files } = await supabase
-      .from('client_files')
-      .select('*')
-      .eq('client_id', client.id)
-      .eq('is_pet_photo', false)
-      .order('uploaded_at', { ascending: false });
-
-    const list = el('files-list');
-    if (!files || !files.length) {
-      list.innerHTML = '<li class="manage-empty-item">فایلی آپلود نشده است.</li>';
-      return;
-    }
-    list.innerHTML = '';
-    for (const f of files) {
-      const li = document.createElement('li');
-      const { data: signed } = await supabase.storage
-        .from('client-files')
-        .createSignedUrl(f.storage_path, 60 * 5);
-      li.innerHTML = `
-        <div class="file-row">
-          <a href="${signed?.signedUrl ?? '#'}" target="_blank" rel="noopener">${esc(f.original_filename)}</a>
-          <button class="icon-btn danger" data-delete-file="${f.id}" data-path="${esc(f.storage_path)}">حذف</button>
-        </div>
-        <div class="file-meta">${esc(f.description ?? '')} ${formatDate(f.uploaded_at)}</div>
-      `;
-      list.appendChild(li);
-    }
-    list.querySelectorAll('[data-delete-file]').forEach((btn) => {
-      btn.addEventListener('click', async () => {
-        const id = (btn as HTMLElement).dataset.deleteFile;
-        const path = (btn as HTMLElement).dataset.path;
-        if (path) await supabase.storage.from('client-files').remove([path]);
-        await supabase.from('client_files').delete().eq('id', id);
-        await loadFiles();
-      });
-    });
-  }
-
-  async function loadNotes() {
-    const { data: notes } = await supabase
-      .from('client_notes')
-      .select('*')
-      .eq('client_id', client.id)
-      .order('created_at', { ascending: false });
-
-    const wrap = el('notes-list');
-    if (!notes || !notes.length) {
-      wrap.innerHTML = '<p class="manage-empty-item">یادداشتی ثبت نشده است.</p>';
-      return;
-    }
-    wrap.innerHTML = '';
-    for (const n of notes) {
-      const div = document.createElement('div');
-      div.className = 'note-item';
-      div.innerHTML = `
+  function timelineRow(opts: {
+    badge: string; date: string; detailHtml: string;
+    visible?: boolean; kind: string; id: number; path?: string;
+  }) {
+    const hasVisibility = opts.kind !== 'file';
+    const toggleBtn = hasVisibility
+      ? `<button class="icon-btn" data-toggle data-kind="${opts.kind}" data-id="${opts.id}" data-visible="${opts.visible}">${opts.visible ? 'مخفی کن' : 'نمایش بده'}</button>`
+      : '';
+    const visBadge = hasVisibility
+      ? `<div class="item-meta"><span class="badge ${opts.visible ? 'badge-visible' : 'badge-hidden'}">${opts.visible ? 'قابل مشاهده برای مشتری' : 'مخفی از مشتری'}</span></div>`
+      : '';
+    return `
+      <div class="note-item">
         <div>
-          <div>${esc(n.note)}</div>
-          <div class="item-meta">
-            ${formatDate(n.created_at)}
-            <span class="badge ${n.is_visible_to_client ? 'badge-visible' : 'badge-hidden'}">${n.is_visible_to_client ? 'قابل مشاهده برای مشتری' : 'مخفی از مشتری'}</span>
-          </div>
+          <div><span class="badge badge-type">${esc(opts.badge)}</span> ${opts.date}</div>
+          <div class="item-meta">${opts.detailHtml}</div>
+          ${visBadge}
         </div>
         <div class="row-actions">
-          <button class="icon-btn" data-toggle-note="${n.id}" data-visible="${n.is_visible_to_client}">${n.is_visible_to_client ? 'مخفی کن' : 'نمایش بده'}</button>
-          <button class="icon-btn danger" data-delete-note="${n.id}">حذف</button>
+          ${toggleBtn}
+          <button class="icon-btn danger" data-delete data-kind="${opts.kind}" data-id="${opts.id}"${opts.path ? ` data-path="${esc(opts.path)}"` : ''}>حذف</button>
         </div>
-      `;
-      wrap.appendChild(div);
+      </div>
+    `;
+  }
+
+  async function loadTimeline(petId: number) {
+    const [{ data: visits }, { data: notes }, { data: medical }, { data: files }] = await Promise.all([
+      supabase.from('visits').select('*').eq('pet_id', petId),
+      supabase.from('client_notes').select('*').eq('pet_id', petId),
+      supabase.from('client_medical_records').select('*').eq('pet_id', petId),
+      supabase.from('client_files').select('*').eq('pet_id', petId).eq('is_pet_photo', false),
+    ]);
+
+    type Entry = { sortKey: string; html: string };
+    const entries: Entry[] = [];
+
+    for (const v of visits ?? []) {
+      const parts = [
+        v.subjective && `<b>S:</b> ${esc(v.subjective)}`,
+        v.objective && `<b>O:</b> ${esc(v.objective)}`,
+        v.assessment && `<b>A:</b> ${esc(v.assessment)}`,
+        v.plan && `<b>P:</b> ${esc(v.plan)}`,
+      ].filter(Boolean).join('<br/>');
+      entries.push({
+        sortKey: `${v.visit_date}T00:00:00_v${v.id}`,
+        html: timelineRow({
+          badge: 'ویزیت', date: formatDate(v.visit_date), detailHtml: parts || '—',
+          visible: v.is_visible_to_client, kind: 'visit', id: v.id,
+        }),
+      });
     }
-    wrap.querySelectorAll('[data-toggle-note]').forEach((btn) => {
+    for (const n of notes ?? []) {
+      entries.push({
+        sortKey: `${n.created_at}_n${n.id}`,
+        html: timelineRow({
+          badge: 'یادداشت', date: formatDate(n.created_at), detailHtml: esc(n.note),
+          visible: n.is_visible_to_client, kind: 'note', id: n.id,
+        }),
+      });
+    }
+    for (const m of medical ?? []) {
+      const valParts = [m.title, m.value].filter(Boolean).map(esc).join(' — ');
+      const detail = [valParts, m.note ? esc(m.note) : ''].filter(Boolean).join('<br/>');
+      entries.push({
+        sortKey: `${m.record_date}T00:00:00_m${m.id}`,
+        html: timelineRow({
+          badge: MEDICAL_TYPE_LABELS[m.record_type] ?? m.record_type, date: formatDate(m.record_date),
+          detailHtml: detail || '—', visible: m.is_visible_to_client, kind: 'medical', id: m.id,
+        }),
+      });
+    }
+    for (const f of files ?? []) {
+      const { data: signed } = await supabase.storage.from('client-files').createSignedUrl(f.storage_path, 60 * 5);
+      const link = `<a href="${signed?.signedUrl ?? '#'}" target="_blank" rel="noopener">${esc(f.original_filename)}</a>`;
+      const detail = [link, f.description ? esc(f.description) : ''].filter(Boolean).join('<br/>');
+      entries.push({
+        sortKey: `${f.uploaded_at}_f${f.id}`,
+        html: timelineRow({
+          badge: 'فایل', date: formatDate(f.uploaded_at), detailHtml: detail,
+          kind: 'file', id: f.id, path: f.storage_path,
+        }),
+      });
+    }
+
+    entries.sort((a, b) => (a.sortKey < b.sortKey ? 1 : -1));
+
+    const wrap = el('timeline-list');
+    if (!entries.length) {
+      wrap.innerHTML = '<p class="manage-empty-item">هنوز چیزی ثبت نشده است.</p>';
+      return;
+    }
+    wrap.innerHTML = entries.map((e) => e.html).join('');
+
+    wrap.querySelectorAll<HTMLButtonElement>('[data-toggle]').forEach((btn) => {
       btn.addEventListener('click', async () => {
-        const id = (btn as HTMLElement).dataset.toggleNote;
-        const current = (btn as HTMLElement).dataset.visible === 'true';
-        await supabase.from('client_notes').update({ is_visible_to_client: !current }).eq('id', id);
-        await loadNotes();
+        const kind = btn.dataset.kind;
+        const id = btn.dataset.id;
+        const current = btn.dataset.visible === 'true';
+        const table = kind === 'visit' ? 'visits' : kind === 'note' ? 'client_notes' : 'client_medical_records';
+        await supabase.from(table).update({ is_visible_to_client: !current }).eq('id', id);
+        await loadTimeline(petId);
       });
     });
-    wrap.querySelectorAll('[data-delete-note]').forEach((btn) => {
+    wrap.querySelectorAll<HTMLButtonElement>('[data-delete]').forEach((btn) => {
       btn.addEventListener('click', async () => {
-        const id = (btn as HTMLElement).dataset.deleteNote;
-        await supabase.from('client_notes').delete().eq('id', id);
-        await loadNotes();
+        const kind = btn.dataset.kind;
+        const id = btn.dataset.id;
+        if (kind === 'file') {
+          const path = btn.dataset.path;
+          if (path) await supabase.storage.from('client-files').remove([path]);
+          await supabase.from('client_files').delete().eq('id', id);
+        } else {
+          const table = kind === 'visit' ? 'visits' : kind === 'note' ? 'client_notes' : 'client_medical_records';
+          await supabase.from(table).delete().eq('id', id);
+        }
+        await loadTimeline(petId);
       });
     });
   }
 
-  async function loadMedical() {
-    const { data: records } = await supabase
-      .from('client_medical_records')
+  async function selectPet(petId: number) {
+    const pet = pets.find((p) => p.id === petId);
+    if (!pet) return;
+    activePetId = petId;
+    renderPetsBar();
+    el('pet-record').hidden = false;
+    renderPetHeader(pet);
+
+    const today = new Date().toISOString().slice(0, 10);
+    document.querySelectorAll<HTMLFormElement>('.medical-subform, #visit-form').forEach((form) => {
+      const dateInput = form.elements.namedItem('record_date') as HTMLInputElement || form.elements.namedItem('visit_date') as HTMLInputElement;
+      if (dateInput) dateInput.value = today;
+    });
+
+    await Promise.all([loadPhoto(petId), loadTimeline(petId)]);
+  }
+
+  async function loadPets() {
+    const { data } = await supabase
+      .from('pets')
       .select('*')
       .eq('client_id', client.id)
-      .order('record_date', { ascending: false })
-      .order('id', { ascending: false });
-
-    for (const type of MEDICAL_TYPES) {
-      const wrap = el(`medical-list-${type}`);
-      const typeRecords = (records ?? []).filter((r: any) => r.record_type === type);
-      if (!typeRecords.length) {
-        wrap.innerHTML = '<p class="manage-empty-item">ثبت نشده است.</p>';
-        continue;
-      }
-      wrap.innerHTML = '';
-      for (const r of typeRecords) {
-        const div = document.createElement('div');
-        div.className = 'note-item';
-        const parts = [r.title, r.value].filter(Boolean).map(esc).join(' — ');
-        div.innerHTML = `
-          <div>
-            <div>${formatDate(r.record_date)}${parts ? ' - ' + parts : ''}</div>
-            ${r.note ? `<div class="item-meta">${esc(r.note)}</div>` : ''}
-            <div class="item-meta">
-              <span class="badge ${r.is_visible_to_client ? 'badge-visible' : 'badge-hidden'}">${r.is_visible_to_client ? 'قابل مشاهده برای مشتری' : 'مخفی از مشتری'}</span>
-            </div>
-          </div>
-          <div class="row-actions">
-            <button class="icon-btn" data-toggle-medical="${r.id}" data-visible="${r.is_visible_to_client}">${r.is_visible_to_client ? 'مخفی کن' : 'نمایش بده'}</button>
-            <button class="icon-btn danger" data-delete-medical="${r.id}">حذف</button>
-          </div>
-        `;
-        wrap.appendChild(div);
-      }
+      .order('created_at', { ascending: true });
+    pets = data ?? [];
+    renderPetsBar();
+    if (pets.length) {
+      await selectPet(activePetId && pets.some((p) => p.id === activePetId) ? activePetId : pets[0].id);
+    } else {
+      el('pet-record').hidden = true;
     }
-    document.querySelectorAll('[data-toggle-medical]').forEach((btn) => {
-      btn.addEventListener('click', async () => {
-        const id = (btn as HTMLElement).dataset.toggleMedical;
-        const current = (btn as HTMLElement).dataset.visible === 'true';
-        await supabase.from('client_medical_records').update({ is_visible_to_client: !current }).eq('id', id);
-        await loadMedical();
-      });
-    });
-    document.querySelectorAll('[data-delete-medical]').forEach((btn) => {
-      btn.addEventListener('click', async () => {
-        const id = (btn as HTMLElement).dataset.deleteMedical;
-        await supabase.from('client_medical_records').delete().eq('id', id);
-        await loadMedical();
-      });
-    });
   }
 
   async function init() {
@@ -586,23 +840,95 @@ import Base from '../layouts/Base.astro';
     client = clientRow;
     el('manage-area').hidden = false;
     el('client-name').textContent = client.full_name;
-    const metaParts = [client.phone, client.pet_name ? `پت: ${client.pet_name}` : '', client.subject ?? ''].filter(Boolean);
-    el('client-meta').textContent = metaParts.join(' - ');
+    el('client-meta').textContent = client.phone ?? '';
 
-    const visitDateForm = el('visit-date-form') as HTMLFormElement;
-    (visitDateForm.elements.namedItem('next_visit_date') as HTMLInputElement).value = client.next_visit_date ?? '';
+    await loadPets();
+  }
 
-    const today = new Date().toISOString().slice(0, 10);
-    document.querySelectorAll('.medical-subform').forEach((form) => {
-      const dateInput = (form as HTMLFormElement).elements.namedItem('record_date') as HTMLInputElement;
-      if (dateInput) dateInput.value = today;
+  el('add-pet-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const btn = form.querySelector('button') as HTMLButtonElement;
+    const msg = el('add-pet-msg') as HTMLParagraphElement;
+    btn.disabled = true;
+    msg.hidden = true;
+
+    const formData = new FormData(form);
+    const result = await callPetFunction({
+      action: 'create',
+      client_id: client.id,
+      fields: {
+        name: String(formData.get('name') || '').trim(),
+        species_breed: String(formData.get('species_breed') || '').trim(),
+      },
     });
 
-    await Promise.all([loadPhoto(), loadFiles(), loadNotes(), loadMedical()]);
-  }
+    msg.hidden = false;
+    if (result.error) {
+      msg.textContent = 'خطا: ' + result.error;
+      msg.className = 'form-msg err';
+    } else {
+      msg.textContent = 'پت اضافه شد.';
+      msg.className = 'form-msg ok';
+      form.reset();
+      el('add-pet-wrap').hidden = true;
+      activePetId = result.pet.id;
+      await loadPets();
+    }
+    btn.disabled = false;
+  });
+
+  el('delete-pet-btn')?.addEventListener('click', async () => {
+    if (!activePetId) return;
+    const pet = pets.find((p) => p.id === activePetId);
+    if (!confirm(`پت «${pet?.name || pet?.species_breed || 'بدون نام'}» و همه‌ی سوابق آن (فایل، یادداشت، ویزیت، سوابق پزشکی) برای همیشه حذف می‌شود. مطمئن هستید؟`)) return;
+
+    const result = await callPetFunction({ action: 'delete', pet_id: activePetId });
+    if (!result.error) {
+      activePetId = null;
+      await loadPets();
+    }
+  });
+
+  el('pet-details-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!activePetId) return;
+    const form = e.target as HTMLFormElement;
+    const btn = form.querySelector('button') as HTMLButtonElement;
+    const msg = el('pet-details-msg') as HTMLParagraphElement;
+    btn.disabled = true;
+    msg.hidden = true;
+
+    const formData = new FormData(form);
+    const result = await callPetFunction({
+      action: 'update',
+      pet_id: activePetId,
+      fields: {
+        name: String(formData.get('name') || '').trim(),
+        species_breed: String(formData.get('species_breed') || '').trim(),
+        sex: String(formData.get('sex') || ''),
+        birth_date: String(formData.get('birth_date') || ''),
+        color_markings: String(formData.get('color_markings') || '').trim(),
+        microchip_band: String(formData.get('microchip_band') || '').trim(),
+        allergies: String(formData.get('allergies') || '').trim(),
+      },
+    });
+
+    msg.hidden = false;
+    if (result.error) {
+      msg.textContent = 'خطا: ' + result.error;
+      msg.className = 'form-msg err';
+    } else {
+      msg.textContent = 'مشخصات ذخیره شد.';
+      msg.className = 'form-msg ok';
+      await loadPets();
+    }
+    btn.disabled = false;
+  });
 
   el('visit-date-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (!activePetId) return;
     const form = e.target as HTMLFormElement;
     const btn = form.querySelector('button') as HTMLButtonElement;
     const msg = el('visit-date-msg') as HTMLParagraphElement;
@@ -610,24 +936,27 @@ import Base from '../layouts/Base.astro';
     msg.hidden = true;
 
     const formData = new FormData(form);
-    const { error } = await supabase
-      .from('clients')
-      .update({ next_visit_date: String(formData.get('next_visit_date') || '') || null })
-      .eq('id', client.id);
+    const result = await callPetFunction({
+      action: 'update',
+      pet_id: activePetId,
+      fields: { next_visit_date: String(formData.get('next_visit_date') || '') },
+    });
 
     msg.hidden = false;
-    if (error) {
+    if (result.error) {
       msg.textContent = 'خطا در ذخیره تاریخ.';
       msg.className = 'form-msg err';
     } else {
       msg.textContent = 'تاریخ ذخیره شد.';
       msg.className = 'form-msg ok';
+      await loadPets();
     }
     btn.disabled = false;
   });
 
   el('photo-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (!activePetId) return;
     const form = e.target as HTMLFormElement;
     const btn = form.querySelector('button') as HTMLButtonElement;
     const msg = el('photo-msg') as HTMLParagraphElement;
@@ -642,9 +971,10 @@ import Base from '../layouts/Base.astro';
       const { error: uploadError } = await supabase.storage.from('client-files').upload(path, file);
       if (uploadError) throw uploadError;
 
-      await supabase.from('client_files').update({ is_pet_photo: false }).eq('client_id', client.id).eq('is_pet_photo', true);
+      await supabase.from('client_files').update({ is_pet_photo: false }).eq('pet_id', activePetId).eq('is_pet_photo', true);
       const { error: insertError } = await supabase.from('client_files').insert({
         client_id: client.id,
+        pet_id: activePetId,
         storage_path: path,
         original_filename: file.name,
         is_pet_photo: true,
@@ -655,7 +985,7 @@ import Base from '../layouts/Base.astro';
       msg.className = 'form-msg ok';
       msg.hidden = false;
       form.reset();
-      await loadPhoto();
+      await loadPhoto(activePetId);
     } catch (err) {
       msg.textContent = 'خطا در آپلود عکس: ' + (err instanceof Error ? err.message : String(err));
       msg.className = 'form-msg err';
@@ -667,6 +997,7 @@ import Base from '../layouts/Base.astro';
 
   el('file-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (!activePetId) return;
     const form = e.target as HTMLFormElement;
     const btn = form.querySelector('button') as HTMLButtonElement;
     const msg = el('file-msg') as HTMLParagraphElement;
@@ -684,6 +1015,7 @@ import Base from '../layouts/Base.astro';
 
       const { error: insertError } = await supabase.from('client_files').insert({
         client_id: client.id,
+        pet_id: activePetId,
         storage_path: path,
         original_filename: file.name,
         description: String(formData.get('description') || '').trim() || null,
@@ -695,7 +1027,7 @@ import Base from '../layouts/Base.astro';
       msg.className = 'form-msg ok';
       msg.hidden = false;
       form.reset();
-      await loadFiles();
+      await loadTimeline(activePetId);
     } catch (err) {
       msg.textContent = 'خطا در آپلود فایل: ' + (err instanceof Error ? err.message : String(err));
       msg.className = 'form-msg err';
@@ -707,6 +1039,7 @@ import Base from '../layouts/Base.astro';
 
   el('note-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (!activePetId) return;
     const form = e.target as HTMLFormElement;
     const btn = form.querySelector('button') as HTMLButtonElement;
     btn.disabled = true;
@@ -714,6 +1047,7 @@ import Base from '../layouts/Base.astro';
     const formData = new FormData(form);
     await supabase.from('client_notes').insert({
       client_id: client.id,
+      pet_id: activePetId,
       note: String(formData.get('note') || '').trim(),
       is_visible_to_client: formData.get('visible') === 'on',
     });
@@ -721,12 +1055,49 @@ import Base from '../layouts/Base.astro';
     form.reset();
     (form.elements.namedItem('visible') as HTMLInputElement).checked = true;
     btn.disabled = false;
-    await loadNotes();
+    await loadTimeline(activePetId);
   });
 
-  document.querySelectorAll('.medical-subform').forEach((formEl) => {
+  el('visit-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!activePetId) return;
+    const form = e.target as HTMLFormElement;
+    const btn = form.querySelector('button') as HTMLButtonElement;
+    const msg = el('visit-msg') as HTMLParagraphElement;
+    btn.disabled = true;
+    msg.hidden = true;
+
+    const formData = new FormData(form);
+    const { error } = await supabase.from('visits').insert({
+      pet_id: activePetId,
+      visit_date: String(formData.get('visit_date') || '') || new Date().toISOString().slice(0, 10),
+      subjective: String(formData.get('subjective') || '').trim() || null,
+      objective: String(formData.get('objective') || '').trim() || null,
+      assessment: String(formData.get('assessment') || '').trim() || null,
+      plan: String(formData.get('plan') || '').trim() || null,
+      is_visible_to_client: formData.get('visible') === 'on',
+    });
+
+    msg.hidden = false;
+    if (error) {
+      msg.textContent = 'خطا در ثبت ویزیت: ' + error.message;
+      msg.className = 'form-msg err';
+    } else {
+      msg.textContent = 'ویزیت ثبت شد.';
+      msg.className = 'form-msg ok';
+      const today = new Date().toISOString().slice(0, 10);
+      form.reset();
+      (form.elements.namedItem('visible') as HTMLInputElement).checked = true;
+      (form.elements.namedItem('visit_date') as HTMLInputElement).value = today;
+      await loadTimeline(activePetId);
+    }
+    btn.disabled = false;
+  });
+
+  document.querySelectorAll<HTMLFormElement>('.medical-subform').forEach((formEl) => {
     formEl.addEventListener('submit', async (e) => {
       e.preventDefault();
+      if (!activePetId) return;
       const form = e.target as HTMLFormElement;
       const recordType = form.dataset.recordType || 'other';
       const btn = form.querySelector('button') as HTMLButtonElement;
@@ -737,6 +1108,7 @@ import Base from '../layouts/Base.astro';
       const formData = new FormData(form);
       const { error } = await supabase.from('client_medical_records').insert({
         client_id: client.id,
+        pet_id: activePetId,
         record_type: recordType,
         record_date: String(formData.get('record_date') || '') || new Date().toISOString().slice(0, 10),
         title: String(formData.get('title') || '').trim() || null,
@@ -756,7 +1128,7 @@ import Base from '../layouts/Base.astro';
         form.reset();
         (form.elements.namedItem('visible') as HTMLInputElement).checked = true;
         (form.elements.namedItem('record_date') as HTMLInputElement).value = today;
-        await loadMedical();
+        await loadTimeline(activePetId);
       }
       btn.disabled = false;
     });

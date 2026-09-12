@@ -241,24 +241,42 @@ import Base from '../layouts/Base.astro';
 
   async function loadClients() {
     const listEl = document.getElementById('clients-list') as HTMLElement;
-    const { data: clients } = await supabase
-      .from('clients')
-      .select('id, full_name, phone, pet_name, subject, next_visit_date')
-      .order('created_at', { ascending: false });
+    const [{ data: clients }, { data: allPets }] = await Promise.all([
+      supabase.from('clients').select('id, full_name, phone').order('created_at', { ascending: false }),
+      supabase.from('pets').select('client_id, name, species_breed, next_visit_date'),
+    ]);
 
     if (!clients || !clients.length) {
       listEl.innerHTML = '<p class="auth-sub">هنوز مشتری‌ای ثبت نشده است.</p>';
       return;
     }
-    listEl.innerHTML = clients.map((c) => `
+
+    const petsByClient = new Map<number, any[]>();
+    for (const p of allPets ?? []) {
+      const list = petsByClient.get(p.client_id) ?? [];
+      list.push(p);
+      petsByClient.set(p.client_id, list);
+    }
+
+    listEl.innerHTML = clients.map((c) => {
+      const clientPets = petsByClient.get(c.id) ?? [];
+      let petMeta = '';
+      if (clientPets.length === 1) {
+        const p = clientPets[0];
+        petMeta = [p.name ? 'پت: ' + p.name : '', p.species_breed ?? '', p.next_visit_date ? 'مراجعه: ' + new Date(p.next_visit_date).toLocaleDateString('fa-IR') : ''].filter(Boolean).join(' - ');
+      } else if (clientPets.length > 1) {
+        petMeta = `${clientPets.length} پت`;
+      }
+      return `
       <div class="client-row">
         <div class="client-row-info">
           <div>${esc(c.full_name)}</div>
-          <div class="client-meta">${[c.phone, c.pet_name ? 'پت: ' + c.pet_name : '', c.subject ?? '', c.next_visit_date ? 'مراجعه: ' + new Date(c.next_visit_date).toLocaleDateString('fa-IR') : ''].filter(Boolean).map(esc).join(' - ')}</div>
+          <div class="client-meta">${[c.phone, petMeta].filter(Boolean).map(esc).join(' - ')}</div>
         </div>
         <a class="manage-link" href="/client-manage?id=${c.id}">مدیریت پرونده</a>
       </div>
-    `).join('');
+    `;
+    }).join('');
   }
 
   async function init() {

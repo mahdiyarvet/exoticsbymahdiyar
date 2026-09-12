@@ -44,15 +44,12 @@ import Base from '../layouts/Base.astro';
           </div>
         </section>
 
-        <section class="record-section record-section-muted">
-          <h2>اسم پت</h2>
-          <form id="pet-name-form" class="inline-form">
-            <label class="span-2">اسم پت اگزوتیک
-              <input type="text" name="pet_name" />
-            </label>
-            <button type="submit" class="span-2">ذخیره</button>
-          </form>
-          <p id="pet-name-msg" class="form-msg" hidden></p>
+        <section class="record-section record-section-muted viewer-notice">
+          <span aria-hidden="true">🔒</span>
+          <div>
+            <h2>پرونده فقط برای مشاهده است</h2>
+            <p>ثبت و ویرایش مشخصات، ویزیت‌ها، نسخه‌ها و فایل‌ها فقط توسط دامپزشک انجام می‌شود.</p>
+          </div>
         </section>
       </div>
     </div>
@@ -216,6 +213,22 @@ import Base from '../layouts/Base.astro';
   .record-section-muted {
     background: var(--bg-soft);
   }
+  .viewer-notice {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .viewer-notice > span {
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--surface-2);
+    flex: none;
+  }
+  .viewer-notice h2 { margin-bottom: 2px; color: var(--text); }
+  .viewer-notice p { color: var(--text-muted); font-size: 12px; }
   .record-section h2 {
     font-size: 14px;
     font-weight: 700;
@@ -366,8 +379,6 @@ import Base from '../layouts/Base.astro';
       el('allergy-banner').hidden = true;
     }
 
-    const form = el('pet-name-form') as HTMLFormElement;
-    (form.elements.namedItem('pet_name') as HTMLInputElement).value = pet.name ?? '';
   }
 
   async function loadPhoto(petId: number) {
@@ -500,37 +511,6 @@ import Base from '../layouts/Base.astro';
 
     await loadPets();
   }
-
-  el('pet-name-form')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    if (!activePetId) return;
-    const form = e.target as HTMLFormElement;
-    const btn = form.querySelector('button') as HTMLButtonElement;
-    const msg = el('pet-name-msg') as HTMLParagraphElement;
-    btn.disabled = true;
-    msg.hidden = true;
-
-    const formData = new FormData(form);
-    const petName = String(formData.get('pet_name') || '').trim();
-    const { error } = await supabase
-      .from('pets')
-      .update({ name: petName || null })
-      .eq('id', activePetId);
-
-    msg.hidden = false;
-    if (error) {
-      msg.textContent = 'خطا در ذخیره اسم پت.';
-      msg.className = 'form-msg err';
-    } else {
-      msg.textContent = 'ذخیره شد.';
-      msg.className = 'form-msg ok';
-      const pet = pets.find((p) => p.id === activePetId);
-      if (pet) pet.name = petName || null;
-      el('pet-title').textContent = petName || pet?.species_breed || 'پت بدون نام';
-      renderPetsBar();
-    }
-    btn.disabled = false;
-  });
 
   el('logout-btn')?.addEventListener('click', async () => {
     await supabase.auth.signOut();

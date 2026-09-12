@@ -19,10 +19,15 @@ import Base from '../layouts/Base.astro';
       <a href="/client-admin" class="back-link">&rarr; بازگشت به لیست مشتریان</a>
 
       <div class="client-bar">
-        <div>
-          <span class="record-kicker">مشتری</span>
+        <div id="owner-avatar" class="owner-avatar" aria-hidden="true">م</div>
+        <div class="owner-copy">
+          <span class="record-kicker">صاحب حیوان</span>
           <h1 id="client-name"></h1>
           <p id="client-meta" class="manage-sub"></p>
+        </div>
+        <div class="owner-stat">
+          <span>تعداد حیوانات</span>
+          <strong id="pets-count">۰</strong>
         </div>
       </div>
 
@@ -45,8 +50,15 @@ import Base from '../layouts/Base.astro';
           <div class="record-header-info">
             <span class="record-kicker">پرونده دامپزشکی</span>
             <h2 id="pet-title">—</h2>
-            <dl class="fact-list" id="pet-fact-list"></dl>
+            <p id="pet-species" class="pet-species">گونه یا نژاد ثبت نشده</p>
+            <dl class="pet-facts">
+              <div><dt>جنسیت</dt><dd id="summary-sex">—</dd></div>
+              <div><dt>سن</dt><dd id="summary-age">—</dd></div>
+              <div><dt>شناسه</dt><dd id="summary-chip">—</dd></div>
+              <div><dt>آخرین وزن</dt><dd id="summary-weight">—</dd></div>
+            </dl>
           </div>
+          <button type="button" id="new-record-btn" class="primary-action">＋ ثبت رکورد جدید</button>
           <button type="button" id="delete-pet-btn" class="danger-link">حذف این پت</button>
         </div>
 
@@ -54,7 +66,33 @@ import Base from '../layouts/Base.astro';
           ⚠️ هشدار آلرژی/حساسیت دارویی: <strong id="allergy-text"></strong>
         </div>
 
-        <section class="record-section">
+        <section class="overview-grid" aria-label="خلاصه پرونده">
+          <article class="overview-card next-visit-card">
+            <div class="card-heading"><span class="card-icon">◷</span><h3>مراجعه بعدی</h3></div>
+            <strong id="summary-next-visit">تعیین نشده</strong>
+            <span id="summary-next-visit-relative" class="card-caption">از بخش مشخصات تعیین کنید</span>
+          </article>
+          <article class="overview-card status-card">
+            <div class="card-heading"><span class="card-icon">✓</span><h3>وضعیت پرونده</h3></div>
+            <strong id="summary-status">پرونده فعال</strong>
+            <span id="summary-status-caption" class="card-caption">اطلاعات این حیوان آماده ثبت و پیگیری است</span>
+          </article>
+          <article class="overview-card weight-card">
+            <div class="card-heading"><span class="card-icon">↗</span><h3>روند وزن</h3></div>
+            <div id="weight-chart" class="weight-chart" aria-label="نمودار تغییرات وزن">
+              <span class="chart-empty">هنوز وزنی ثبت نشده است</span>
+            </div>
+          </article>
+        </section>
+
+        <nav class="record-tabs" aria-label="بخش‌های پرونده">
+          <a href="#timeline-section" class="active">نمای کلی</a>
+          <a href="#medical-section">سوابق پزشکی</a>
+          <a href="#visit-section">ویزیت‌ها</a>
+          <a href="#file-section">فایل‌ها</a>
+        </nav>
+
+        <section class="record-section details-section">
           <h2>مشخصات پت</h2>
           <form id="pet-details-form" class="inline-form">
             <label>نام پت
@@ -87,7 +125,7 @@ import Base from '../layouts/Base.astro';
           <p id="pet-details-msg" class="form-msg" hidden></p>
         </section>
 
-        <section class="record-section">
+        <section class="record-section compact-section">
           <h2>عکس پت</h2>
           <form id="photo-form" class="stack-form-row">
             <input type="file" name="photo" accept="image/*" required />
@@ -96,7 +134,7 @@ import Base from '../layouts/Base.astro';
           <p id="photo-msg" class="form-msg" hidden></p>
         </section>
 
-        <section class="record-section">
+        <section class="record-section compact-section">
           <h2>تاریخ مراجعه بعدی</h2>
           <form id="visit-date-form" class="stack-form-row">
             <input type="date" name="next_visit_date" />
@@ -105,13 +143,27 @@ import Base from '../layouts/Base.astro';
           <p id="visit-date-msg" class="form-msg" hidden></p>
         </section>
 
-        <section class="record-section">
+        <section class="record-section timeline-section" id="timeline-section">
           <h2>جدول زمانی پرونده</h2>
           <p class="manage-hint">همه‌ی ویزیت‌ها، یادداشت‌ها، سوابق پزشکی و فایل‌ها به ترتیب تاریخ.</p>
-          <div id="timeline-list" class="manage-list"></div>
+          <p id="timeline-empty" class="manage-empty-item">هنوز چیزی ثبت نشده است.</p>
+          <div class="table-wrap">
+            <table id="timeline-table" class="ruled-table" hidden>
+              <thead>
+                <tr>
+                  <th>تاریخ</th>
+                  <th>نوع</th>
+                  <th>جزئیات</th>
+                  <th>وضعیت</th>
+                  <th>عملیات</th>
+                </tr>
+              </thead>
+              <tbody id="timeline-list"></tbody>
+            </table>
+          </div>
         </section>
 
-        <section class="record-section">
+        <section class="record-section editor-section" id="visit-section">
           <h2>ثبت ویزیت جدید (SOAP)</h2>
           <form id="visit-form" class="stack-form">
             <input type="date" name="visit_date" required />
@@ -128,7 +180,7 @@ import Base from '../layouts/Base.astro';
           <p id="visit-msg" class="form-msg" hidden></p>
         </section>
 
-        <section class="record-section">
+        <section class="record-section editor-section">
           <h2>افزودن یادداشت پیگیری</h2>
           <form id="note-form" class="stack-form">
             <textarea name="note" rows="3" placeholder="متن یادداشت" required></textarea>
@@ -140,7 +192,7 @@ import Base from '../layouts/Base.astro';
           </form>
         </section>
 
-        <section class="record-section">
+        <section class="record-section editor-section" id="file-section">
           <h2>آپلود مدرک/فایل</h2>
           <form id="file-form" class="stack-form">
             <input type="file" name="file" required />
@@ -150,7 +202,7 @@ import Base from '../layouts/Base.astro';
           <p id="file-msg" class="form-msg" hidden></p>
         </section>
 
-        <section class="record-section">
+        <section class="record-section medical-section" id="medical-section">
           <h2>ثبت سوابق پزشکی و علمی</h2>
           <p id="medical-msg" class="form-msg" hidden></p>
           <div class="medical-grid">
@@ -313,11 +365,7 @@ import Base from '../layouts/Base.astro';
   }
   .pet-photo { width: 100%; height: 100%; object-fit: cover; }
   .pet-photo-placeholder { font-size: 12px; color: var(--text-muted); text-align: center; padding: 4px; }
-  .record-header h2 { font-size: 21px; line-height: 1.3; margin-bottom: 8px; }
-  .fact-list { display: flex; flex-direction: column; gap: 3px; }
-  .fact-row { display: flex; gap: 8px; font-size: 12.5px; }
-  .fact-row dt { color: var(--text-muted); flex: none; width: 130px; }
-  .fact-row dd { color: var(--text); }
+  .record-header h2 { font-size: 21px; line-height: 1.3; }
   .danger-link {
     position: absolute;
     top: 18px;
@@ -525,6 +573,294 @@ import Base from '../layouts/Base.astro';
   .form-msg { font-size: 13px; }
   .form-msg.ok { color: #8fd6a8; }
   .form-msg.err { color: #e88a6a; }
+
+  /* Client record workspace — a calm, high-contrast clinical surface inside the site. */
+  .manage {
+    --dash-bg: #f4f1e9;
+    --dash-surface: #fffefb;
+    --dash-soft: #f8f7f2;
+    --dash-border: #deddd4;
+    --dash-text: #18342d;
+    --dash-muted: #6c7974;
+    --dash-green: #174b3d;
+    --dash-green-2: #236653;
+    --dash-sage: #dfece4;
+    --dash-orange: #cb6346;
+    max-width: 1320px;
+    color: var(--dash-text);
+    background: var(--dash-bg);
+    border: 1px solid #383d28;
+    border-radius: 24px;
+    margin: 32px auto 72px;
+    padding: 26px;
+    box-shadow: 0 28px 70px rgba(0,0,0,.28);
+  }
+  .manage p { color: inherit; }
+  .manage .back-link { color: var(--dash-muted); margin-bottom: 18px; }
+  .manage .back-link:hover { color: var(--dash-green); }
+  .manage-status { color: var(--dash-muted); }
+
+  .client-bar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--dash-surface);
+    border-color: var(--dash-border);
+    border-radius: 16px;
+    padding: 15px 18px;
+    box-shadow: 0 10px 28px rgba(26,63,52,.06);
+  }
+  .owner-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    color: #fff;
+    background: linear-gradient(145deg, var(--dash-green-2), var(--dash-green));
+    font-weight: 700;
+    flex: none;
+  }
+  .owner-copy { min-width: 0; flex: 1; }
+  .client-bar h1 { color: var(--dash-text); font-size: 18px; }
+  .manage .record-kicker { color: var(--dash-green-2); }
+  .manage-sub { color: var(--dash-muted) !important; direction: ltr; text-align: right; }
+  .owner-stat {
+    padding-inline-start: 22px;
+    border-inline-start: 1px solid var(--dash-border);
+    color: var(--dash-muted);
+    font-size: 11px;
+    text-align: center;
+  }
+  .owner-stat strong { display: block; color: var(--dash-text); font-size: 22px; line-height: 1.2; }
+
+  .pets-bar { margin: 14px 0; }
+  .pet-chip {
+    background: rgba(255,255,255,.7);
+    border-color: var(--dash-border);
+    color: var(--dash-text);
+    box-shadow: 0 4px 14px rgba(26,63,52,.04);
+  }
+  .pet-chip:hover { border-color: var(--dash-green-2); }
+  .pet-chip.active { background: var(--dash-green); border-color: var(--dash-green); color: #fff; }
+  .pet-chip.add-chip { color: var(--dash-green-2); }
+  .add-pet-wrap { background: var(--dash-surface); border-color: var(--dash-border); }
+
+  .record { background: transparent; border: none; border-radius: 0; overflow: visible; }
+  .record-header {
+    min-height: 208px;
+    gap: 28px;
+    background: var(--dash-surface);
+    border: 1px solid var(--dash-border);
+    border-radius: 18px;
+    padding: 28px;
+    box-shadow: 0 14px 34px rgba(26,63,52,.07);
+  }
+  .pet-photo-wrap {
+    width: 158px;
+    height: 158px;
+    border-radius: 50%;
+    border: 6px solid #fff;
+    outline: 1px solid var(--dash-border);
+    background: var(--dash-sage);
+    box-shadow: 0 10px 26px rgba(26,63,52,.13);
+  }
+  .pet-photo-placeholder { color: var(--dash-muted); }
+  .record-header h2 { color: var(--dash-text); font-size: clamp(25px, 3vw, 34px); }
+  .pet-species { color: var(--dash-muted) !important; font-size: 14px; margin-top: 3px; }
+  .pet-facts {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(95px, 1fr));
+    margin-top: 22px;
+    max-width: 700px;
+  }
+  .pet-facts > div { padding: 0 16px; border-inline-start: 1px solid var(--dash-border); }
+  .pet-facts > div:first-child { padding-inline-start: 0; border-inline-start: none; }
+  .pet-facts dt { color: var(--dash-muted); font-size: 11px; }
+  .pet-facts dd { color: var(--dash-text); font-weight: 700; font-size: 14px; margin-top: 2px; }
+  .primary-action {
+    position: absolute;
+    top: 26px;
+    left: 26px;
+    border: 0;
+    border-radius: 11px;
+    padding: 11px 17px;
+    background: var(--dash-orange);
+    color: #fff;
+    font: 700 13px var(--font);
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(203,99,70,.22);
+  }
+  .primary-action:hover { background: #b95037; transform: translateY(-1px); }
+  .danger-link {
+    top: auto;
+    bottom: 25px;
+    left: 28px;
+    color: #9a6b61;
+    border-color: #eadbd5;
+  }
+
+  .allergy-banner {
+    margin: 14px 0 0;
+    background: #fff0ed;
+    border-color: #efc0b6;
+    color: #9e382b;
+    border-radius: 13px;
+    padding: 12px 16px;
+  }
+  .overview-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.65fr;
+    gap: 14px;
+    margin-top: 14px;
+  }
+  .overview-card {
+    min-height: 146px;
+    background: var(--dash-surface);
+    border: 1px solid var(--dash-border);
+    border-radius: 16px;
+    padding: 18px;
+    box-shadow: 0 10px 26px rgba(26,63,52,.05);
+  }
+  .card-heading { display: flex; align-items: center; gap: 9px; margin-bottom: 18px; }
+  .card-heading h3 { color: var(--dash-text); font-size: 13px; }
+  .card-icon {
+    width: 28px; height: 28px; display: grid; place-items: center;
+    border-radius: 8px; background: var(--dash-sage); color: var(--dash-green); font-weight: 700;
+  }
+  .overview-card > strong { display: block; color: var(--dash-text); font-size: 18px; }
+  .card-caption { color: var(--dash-muted); font-size: 11px; }
+  .weight-chart { height: 58px; position: relative; }
+  .weight-chart {
+    height: 76px;
+    position: relative;
+    overflow: hidden;
+    padding: 8px 10px 6px;
+    border: 1px solid #e3e7df;
+    border-radius: 11px;
+    background: linear-gradient(180deg, #fbfdf9 0%, #f5f8f3 100%);
+  }
+  .weight-card { overflow: hidden; }
+  .weight-chart svg { display: block; width: 100%; height: 100%; overflow: hidden; }
+  .chart-grid { stroke: #e6e7df; stroke-width: 1; }
+  .chart-area { fill: url(#weight-fill); }
+  .chart-line { fill: none; stroke: var(--dash-green-2); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+  .chart-point { fill: var(--dash-green-2); stroke: #fff; stroke-width: 2; }
+  .chart-empty { display: grid; place-items: center; height: 100%; color: var(--dash-muted); font-size: 12px; }
+
+  .record-tabs {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 14px;
+    padding: 5px;
+    border: 1px solid var(--dash-border);
+    background: var(--dash-surface);
+    border-radius: 13px;
+    overflow-x: auto;
+  }
+  .record-tabs a { color: var(--dash-muted); padding: 8px 17px; border-radius: 9px; font-size: 12px; white-space: nowrap; }
+  .record-tabs a:hover, .record-tabs a.active { color: var(--dash-green); background: var(--dash-sage); font-weight: 700; }
+
+  .record-section {
+    margin-top: 14px;
+    padding: 22px;
+    border: 1px solid var(--dash-border) !important;
+    border-radius: 16px;
+    background: var(--dash-surface);
+    box-shadow: 0 10px 26px rgba(26,63,52,.045);
+  }
+  .record-section h2 { color: var(--dash-text); font-size: 15px; }
+  .details-section { padding-top: 20px; }
+  .compact-section { display: inline-block; width: calc(50% - 9px); vertical-align: top; }
+  .compact-section + .compact-section { margin-inline-start: 13px; }
+  .manage-hint, .manage-empty-item, .file-meta, .item-meta, .cell-muted { color: var(--dash-muted) !important; }
+  .inline-form input, .inline-form select,
+  .stack-form input[type="text"], .stack-form input[type="date"], .stack-form input[type="file"],
+  .stack-form select, .stack-form textarea,
+  .stack-form-row input[type="text"], .stack-form-row input[type="date"], .stack-form-row input[type="file"] {
+    color: var(--dash-text);
+    background: var(--dash-soft);
+    border-color: var(--dash-border);
+  }
+  .inline-form label, .checkbox-row { color: var(--dash-muted); }
+  .inline-form input:focus, .inline-form select:focus, .stack-form input:focus, .stack-form textarea:focus {
+    outline: 3px solid rgba(35,102,83,.12); border-color: var(--dash-green-2);
+  }
+  .inline-form button, .stack-form button, .stack-form-row button { background: var(--dash-green); color: #fff; }
+  .inline-form button:hover, .stack-form button:hover, .stack-form-row button:hover { background: var(--dash-green-2); }
+  .medical-grid { grid-template-columns: repeat(4, 1fr); }
+  .medical-box { background: var(--dash-soft); border-color: var(--dash-border); }
+  .medical-box h3 { color: var(--dash-green); }
+  .table-wrap { overflow-x: auto; border: 1px solid var(--dash-border); border-radius: 13px; }
+  .ruled-table { width: 100%; border-collapse: collapse; min-width: 760px; background: #fff; }
+  .ruled-table th { color: var(--dash-muted); background: var(--dash-soft); font-size: 11px; font-weight: 600; text-align: right; padding: 10px 12px; }
+  .ruled-table td { color: var(--dash-text); font-size: 12px; padding: 13px 12px; border-top: 1px solid #ecece5; vertical-align: top; }
+  .ruled-table tr:hover td { background: #fbfcf8; }
+  .cell-nowrap { white-space: nowrap; }
+  .badge-visible { color: #216044; background: #e0f2e7; }
+  .badge-hidden { color: #756f69; background: #ece9e5; }
+  .badge-type { color: var(--dash-green); background: var(--dash-sage); border: none; }
+  .icon-btn { border-color: var(--dash-border); color: var(--dash-muted); }
+  .icon-btn:hover { border-color: var(--dash-green); color: var(--dash-green); }
+  .form-msg.ok { color: #237049; }
+  .form-msg.err { color: #b74d39; }
+
+  /* Astro scopes static markup; rows/chips are injected by the client script. */
+  .pets-bar :global(.pet-chip) {
+    background: rgba(255,255,255,.7);
+    border: 1px solid var(--dash-border);
+    color: var(--dash-text);
+    border-radius: 999px;
+    padding: 8px 16px;
+    font: 500 13px var(--font);
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(26,63,52,.04);
+  }
+  .pets-bar :global(.pet-chip:hover) { border-color: var(--dash-green-2); }
+  .pets-bar :global(.pet-chip.active) { background: var(--dash-green); border-color: var(--dash-green); color: #fff; font-weight: 700; }
+  .pets-bar :global(.pet-chip.add-chip) { color: var(--dash-green-2); border-style: dashed; }
+  .ruled-table :global(td) { color: var(--dash-text); font-size: 12px; padding: 13px 12px; border-top: 1px solid #ecece5; vertical-align: top; }
+  .ruled-table :global(tr:hover td) { background: #fbfcf8; }
+  .ruled-table :global(.cell-nowrap) { white-space: nowrap; }
+  .ruled-table :global(.badge) { display: inline-block; border-radius: 999px; padding: 3px 9px; font-size: 10px; font-weight: 700; }
+  .ruled-table :global(.badge-visible) { color: #216044; background: #e0f2e7; }
+  .ruled-table :global(.badge-hidden) { color: #756f69; background: #ece9e5; }
+  .ruled-table :global(.badge-type) { color: var(--dash-green); background: var(--dash-sage); border: none; }
+  .ruled-table :global(.cell-muted) { color: var(--dash-muted); }
+  .ruled-table :global(.row-actions) { display: flex; gap: 6px; }
+  .ruled-table :global(.icon-btn) {
+    background: transparent; border: 1px solid var(--dash-border); color: var(--dash-muted);
+    border-radius: 8px; padding: 4px 8px; font: 500 10px var(--font); cursor: pointer; white-space: nowrap;
+  }
+  .ruled-table :global(.icon-btn:hover) { border-color: var(--dash-green); color: var(--dash-green); }
+  .ruled-table :global(.icon-btn.danger:hover) { border-color: #cb6346; color: #b95037; }
+
+  @media (max-width: 980px) {
+    .manage { margin: 18px 12px 50px; padding: 18px; }
+    .overview-grid { grid-template-columns: 1fr 1fr; }
+    .weight-card { grid-column: 1 / -1; }
+    .medical-grid { grid-template-columns: 1fr 1fr; }
+    .pet-facts { grid-template-columns: 1fr 1fr; gap: 12px 0; }
+  }
+  @media (max-width: 620px) {
+    .manage { border-radius: 18px; padding: 12px; margin-inline: 8px; }
+    .client-bar { flex-wrap: wrap; }
+    .owner-stat { margin-inline-start: auto; }
+    .record-header { align-items: center; padding: 72px 18px 24px; text-align: center; }
+    .record-header-info { width: 100%; }
+    .pet-photo-wrap { width: 142px; height: 142px; }
+    .pet-facts { text-align: right; }
+    .primary-action { top: 18px; right: 18px; left: auto; }
+    .danger-link { top: 20px; bottom: auto; left: 18px; }
+    .overview-grid { grid-template-columns: 1fr; }
+    .weight-card { grid-column: auto; }
+    .record-section { padding: 17px 14px; }
+    .compact-section { display: block; width: 100%; }
+    .compact-section + .compact-section { margin-inline-start: 0; }
+    .inline-form, .medical-grid { grid-template-columns: 1fr; }
+    .inline-form .span-2 { grid-column: auto; }
+  }
 </style>
 
 <script>
@@ -557,7 +893,6 @@ import Base from '../layouts/Base.astro';
     other: 'سایر',
   };
   const SEX_LABELS: Record<string, string> = { male: 'نر', female: 'ماده' };
-
   let client: any = null;
   let pets: any[] = [];
   let activePetId: number | null = null;
@@ -592,17 +927,14 @@ import Base from '../layouts/Base.astro';
 
   function renderPetHeader(pet: any) {
     el('pet-title').textContent = pet.name || pet.species_breed || 'پت بدون نام';
-
-    const facts: Array<[string, string]> = [];
-    if (pet.species_breed) facts.push(['گونه/نژاد', pet.species_breed]);
-    if (pet.sex) facts.push(['جنسیت', SEX_LABELS[pet.sex] ?? pet.sex]);
-    if (pet.birth_date) facts.push(['تاریخ تولد', formatDate(pet.birth_date)]);
-    if (pet.color_markings) facts.push(['رنگ‌بندی/نشانه‌ها', pet.color_markings]);
-    if (pet.microchip_band) facts.push(['میکروچیپ/بند پا', pet.microchip_band]);
-    if (pet.next_visit_date) facts.push(['مراجعه بعدی', formatDate(pet.next_visit_date)]);
-    el('pet-fact-list').innerHTML = facts.map(([k, v]) => `
-      <div class="fact-row"><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>
-    `).join('') || '<p class="manage-empty-item">مشخصاتی ثبت نشده است.</p>';
+    el('pet-species').textContent = pet.species_breed || 'گونه یا نژاد ثبت نشده';
+    el('summary-sex').textContent = SEX_LABELS[pet.sex] ?? 'نامشخص';
+    el('summary-chip').textContent = pet.microchip_band || 'ثبت نشده';
+    el('summary-age').textContent = formatAge(pet.birth_date);
+    el('summary-next-visit').textContent = pet.next_visit_date ? formatDate(pet.next_visit_date) : 'تعیین نشده';
+    el('summary-next-visit-relative').textContent = pet.next_visit_date
+      ? relativeVisitDate(pet.next_visit_date)
+      : 'از بخش مشخصات تعیین کنید';
 
     if (pet.allergies) {
       el('allergy-text').textContent = pet.allergies;
@@ -622,6 +954,67 @@ import Base from '../layouts/Base.astro';
 
     const visitDateForm = el('visit-date-form') as HTMLFormElement;
     (visitDateForm.elements.namedItem('next_visit_date') as HTMLInputElement).value = pet.next_visit_date ?? '';
+  }
+
+  function formatAge(birthDate?: string) {
+    if (!birthDate) return 'ثبت نشده';
+    const born = new Date(birthDate);
+    const now = new Date();
+    let months = (now.getFullYear() - born.getFullYear()) * 12 + now.getMonth() - born.getMonth();
+    if (now.getDate() < born.getDate()) months--;
+    if (months < 0) return 'ثبت نشده';
+    if (months < 12) return `${months.toLocaleString('fa-IR')} ماه`;
+    const years = Math.floor(months / 12);
+    const remainder = months % 12;
+    return remainder
+      ? `${years.toLocaleString('fa-IR')} سال و ${remainder.toLocaleString('fa-IR')} ماه`
+      : `${years.toLocaleString('fa-IR')} سال`;
+  }
+
+  function relativeVisitDate(iso: string) {
+    const target = new Date(`${iso}T12:00:00`);
+    const today = new Date();
+    today.setHours(12, 0, 0, 0);
+    const days = Math.round((target.getTime() - today.getTime()) / 86400000);
+    if (days === 0) return 'امروز';
+    if (days === 1) return 'فردا';
+    if (days > 1) return `${days.toLocaleString('fa-IR')} روز دیگر`;
+    return `${Math.abs(days).toLocaleString('fa-IR')} روز گذشته`;
+  }
+
+  function renderWeightChart(records: any[]) {
+    const weights = records
+      .filter((record) => record.record_type === 'weight')
+      .map((record) => ({ date: record.record_date, value: Number.parseFloat(String(record.value).replace(/[^0-9.\-]/g, '')) }))
+      .filter((record) => Number.isFinite(record.value))
+      .sort((a, b) => a.date.localeCompare(b.date))
+      .slice(-8);
+    const chart = el('weight-chart');
+    if (!weights.length) {
+      chart.innerHTML = '<span class="chart-empty">هنوز وزنی ثبت نشده است</span>';
+      el('summary-weight').textContent = 'ثبت نشده';
+      return;
+    }
+    const latest = weights[weights.length - 1];
+    el('summary-weight').textContent = `${latest.value.toLocaleString('fa-IR')} گرم`;
+    const min = Math.min(...weights.map((point) => point.value));
+    const max = Math.max(...weights.map((point) => point.value));
+    const range = Math.max(max - min, max * .08, 1);
+    const coords = weights.map((point, index) => {
+      const x = weights.length === 1 ? 50 : 6 + (index / (weights.length - 1)) * 88;
+      const y = 50 - ((point.value - min) / range) * 36;
+      return { x, y };
+    });
+    const line = coords.map((point) => `${point.x},${point.y}`).join(' ');
+    const area = `6,54 ${line} 94,54`;
+    chart.innerHTML = `
+      <svg viewBox="0 0 100 58" preserveAspectRatio="none" role="img" aria-label="روند وزن حیوان">
+        <defs><linearGradient id="weight-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4f8b73" stop-opacity=".28"/><stop offset="1" stop-color="#4f8b73" stop-opacity="0"/></linearGradient></defs>
+        <line class="chart-grid" x1="4" y1="53" x2="96" y2="53"/>
+        <polygon class="chart-area" points="${area}"/>
+        <polyline class="chart-line" points="${line}"/>
+        ${coords.map((point) => `<circle class="chart-point" cx="${point.x}" cy="${point.y}" r="2.4"/>`).join('')}
+      </svg>`;
   }
 
   async function loadPhoto(petId: number) {
@@ -656,24 +1049,25 @@ import Base from '../layouts/Base.astro';
     visible?: boolean; kind: string; id: number; path?: string;
   }) {
     const hasVisibility = opts.kind !== 'file';
+    const statusCell = hasVisibility
+      ? `<span class="badge ${opts.visible ? 'badge-visible' : 'badge-hidden'}">${opts.visible ? 'قابل مشاهده' : 'مخفی'}</span>`
+      : '<span class="cell-muted">—</span>';
     const toggleBtn = hasVisibility
       ? `<button class="icon-btn" data-toggle data-kind="${opts.kind}" data-id="${opts.id}" data-visible="${opts.visible}">${opts.visible ? 'مخفی کن' : 'نمایش بده'}</button>`
       : '';
-    const visBadge = hasVisibility
-      ? `<div class="item-meta"><span class="badge ${opts.visible ? 'badge-visible' : 'badge-hidden'}">${opts.visible ? 'قابل مشاهده برای مشتری' : 'مخفی از مشتری'}</span></div>`
-      : '';
     return `
-      <div class="note-item">
-        <div>
-          <div><span class="badge badge-type">${esc(opts.badge)}</span> ${opts.date}</div>
-          <div class="item-meta">${opts.detailHtml}</div>
-          ${visBadge}
-        </div>
-        <div class="row-actions">
-          ${toggleBtn}
-          <button class="icon-btn danger" data-delete data-kind="${opts.kind}" data-id="${opts.id}"${opts.path ? ` data-path="${esc(opts.path)}"` : ''}>حذف</button>
-        </div>
-      </div>
+      <tr>
+        <td class="cell-nowrap">${opts.date}</td>
+        <td><span class="badge badge-type">${esc(opts.badge)}</span></td>
+        <td>${opts.detailHtml}</td>
+        <td class="cell-nowrap">${statusCell}</td>
+        <td class="cell-nowrap">
+          <div class="row-actions">
+            ${toggleBtn}
+            <button class="icon-btn danger" data-delete data-kind="${opts.kind}" data-id="${opts.id}"${opts.path ? ` data-path="${esc(opts.path)}"` : ''}>حذف</button>
+          </div>
+        </td>
+      </tr>
     `;
   }
 
@@ -687,6 +1081,12 @@ import Base from '../layouts/Base.astro';
 
     type Entry = { sortKey: string; html: string };
     const entries: Entry[] = [];
+    renderWeightChart(medical ?? []);
+    const hasClinicalContent = (visits?.length ?? 0) + (medical?.length ?? 0) > 0;
+    el('summary-status').textContent = hasClinicalContent ? 'در حال پیگیری' : 'پرونده فعال';
+    el('summary-status-caption').textContent = hasClinicalContent
+      ? `${((visits?.length ?? 0) + (medical?.length ?? 0)).toLocaleString('fa-IR')} رکورد بالینی ثبت شده است`
+      : 'اطلاعات این حیوان آماده ثبت و پیگیری است';
 
     for (const v of visits ?? []) {
       const parts = [
@@ -740,9 +1140,12 @@ import Base from '../layouts/Base.astro';
 
     const wrap = el('timeline-list');
     if (!entries.length) {
-      wrap.innerHTML = '<p class="manage-empty-item">هنوز چیزی ثبت نشده است.</p>';
+      el('timeline-empty').hidden = false;
+      (el('timeline-table') as HTMLElement).hidden = true;
       return;
     }
+    el('timeline-empty').hidden = true;
+    (el('timeline-table') as HTMLElement).hidden = false;
     wrap.innerHTML = entries.map((e) => e.html).join('');
 
     wrap.querySelectorAll<HTMLButtonElement>('[data-toggle]').forEach((btn) => {
@@ -796,6 +1199,7 @@ import Base from '../layouts/Base.astro';
       .eq('client_id', client.id)
       .order('created_at', { ascending: true });
     pets = data ?? [];
+    el('pets-count').textContent = pets.length.toLocaleString('fa-IR');
     renderPetsBar();
     if (pets.length) {
       await selectPet(activePetId && pets.some((p) => p.id === activePetId) ? activePetId : pets[0].id);
@@ -804,7 +1208,65 @@ import Base from '../layouts/Base.astro';
     }
   }
 
+  function renderLocalPreview() {
+    client = { id: 0, full_name: 'سارا احمدی', phone: '۰۹۱۲ ۳۴۵ ۶۷۸۹' };
+    const pet = {
+      id: 0,
+      name: 'آریو',
+      species_breed: 'اژدهای ریش‌دار',
+      sex: 'male',
+      birth_date: '2024-05-10',
+      color_markings: 'نارنجی و کرم',
+      microchip_band: 'EX-1402-031',
+      allergies: 'حساسیت احتمالی به انروفلوکساسین',
+      next_visit_date: new Date(Date.now() + 9 * 86400000).toISOString().slice(0, 10),
+    };
+    pets = [pet];
+    activePetId = pet.id;
+    el('manage-loading').hidden = true;
+    el('manage-area').hidden = false;
+    el('client-name').textContent = client.full_name;
+    el('client-meta').textContent = `شماره تماس: ${client.phone}`;
+    el('owner-avatar').textContent = 'س';
+    el('pets-count').textContent = '۱';
+    renderPetsBar();
+    el('pet-record').hidden = false;
+    renderPetHeader(pet);
+    const img = el('pet-photo') as HTMLImageElement;
+    img.src = '/images/photos/bearded-dragon-1.jpg';
+    img.hidden = false;
+    el('pet-photo-placeholder').hidden = true;
+    const demoWeights = [
+      { record_type: 'weight', record_date: '2026-04-12', value: '365' },
+      { record_type: 'weight', record_date: '2026-05-13', value: '382' },
+      { record_type: 'weight', record_date: '2026-06-11', value: '401' },
+      { record_type: 'weight', record_date: '2026-07-14', value: '418' },
+      { record_type: 'weight', record_date: '2026-08-16', value: '425' },
+      { record_type: 'weight', record_date: '2026-09-09', value: '420' },
+    ];
+    renderWeightChart(demoWeights);
+    el('summary-status').textContent = 'در حال پیگیری';
+    el('summary-status-caption').textContent = '۶ رکورد بالینی ثبت شده است';
+    const demoRows = [
+      timelineRow({ badge: 'ویزیت', date: '۱۴۰۵/۶/۲۰', detailHtml: '<b>معاینه عمومی</b><br>وضعیت عمومی پایدار؛ اشتها و فعالیت طبیعی', visible: true, kind: 'visit', id: 1 }),
+      timelineRow({ badge: 'تشخیص', date: '۱۴۰۵/۶/۲۰', detailHtml: '<b>درماتیت خفیف</b><br>اصلاح شرایط محیطی و پایش پوست', visible: true, kind: 'medical', id: 2 }),
+      timelineRow({ badge: 'وزن', date: '۱۴۰۵/۶/۱۸', detailHtml: '<b>۴۲۰ گرم</b><br>در محدوده مورد انتظار', visible: true, kind: 'medical', id: 3 }),
+      timelineRow({ badge: 'نسخه', date: '۱۴۰۵/۵/۲۱', detailHtml: '<b>مکمل کلسیم و ویتامین D3</b><br>طبق دستور دامپزشک', visible: true, kind: 'medical', id: 4 }),
+    ];
+    el('timeline-empty').hidden = true;
+    el('timeline-table').hidden = false;
+    el('timeline-list').innerHTML = demoRows.join('');
+    document.querySelectorAll<HTMLButtonElement>('form button, [data-toggle], [data-delete], #delete-pet-btn').forEach((button) => {
+      button.disabled = true;
+      button.title = 'حالت پیش‌نمایش محلی';
+    });
+  }
+
   async function init() {
+    if (location.hostname === 'localhost' && new URLSearchParams(location.search).get('preview') === '1') {
+      renderLocalPreview();
+      return;
+    }
     if (!clientId) {
       el('manage-loading').hidden = true;
       el('manage-notfound').hidden = false;
@@ -840,7 +1302,8 @@ import Base from '../layouts/Base.astro';
     client = clientRow;
     el('manage-area').hidden = false;
     el('client-name').textContent = client.full_name;
-    el('client-meta').textContent = client.phone ?? '';
+    el('client-meta').textContent = client.phone ? `شماره تماس: ${client.phone}` : 'شماره تماس ثبت نشده';
+    el('owner-avatar').textContent = String(client.full_name || 'م').trim().charAt(0) || 'م';
 
     await loadPets();
   }
@@ -876,6 +1339,11 @@ import Base from '../layouts/Base.astro';
       await loadPets();
     }
     btn.disabled = false;
+  });
+
+  el('new-record-btn')?.addEventListener('click', () => {
+    el('visit-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    window.setTimeout(() => (el('visit-form').querySelector('textarea') as HTMLTextAreaElement)?.focus(), 450);
   });
 
   el('delete-pet-btn')?.addEventListener('click', async () => {

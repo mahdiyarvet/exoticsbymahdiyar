@@ -3,7 +3,7 @@ const nav = [
   { href: '/', label: 'خانه' },
   { href: '/category/reptiles', label: 'راهنمای حیوانات', activePrefix: '/category' },
   { href: '/articles', label: 'مقالات' },
-  { href: '/tools/reptile-lighting', label: 'محاسبه‌گر نور', activePrefix: '/tools' },
+  { href: '/tools/reptile-lighting', label: 'محاسبه‌گر UV و حرارت', activePrefix: '/tools' },
   { href: '/news', label: 'اخبار' },
   { href: '/books', label: 'کتابخانه' },
   { href: '/visit', label: 'ویزیت آنلاین' },
@@ -130,6 +130,7 @@ const isActive = (item: { href: string; activePrefix?: string }) => {
   .site-header .nav-link {
     padding: 9px 13px; border-radius: 7px; font-size: 14px; font-weight: 500;
     color: var(--text-muted); transition: color .2s, background .2s;
+    white-space: nowrap;
   }
   .site-header .nav-link:hover { color: var(--text); background: var(--surface); }
   .site-header .nav-link.active { color: #e5bd70; background: transparent; box-shadow: inset 0 -2px #c18f3a; }
@@ -219,9 +220,19 @@ const isActive = (item: { href: string; activePrefix?: string }) => {
   .search-no-results p, .site-search-noscript { color: var(--text-muted); font-size: 14px; }
   html.search-is-open { overflow: hidden; }
 
-  @media (max-width: 1050px) {
+  @media (max-width: 1250px) {
+    .site-header .nav { gap: 2px; }
     .site-header .nav-link { padding-inline: 9px; font-size: 13px; }
+  }
+  @media (max-width: 1050px) {
+    .site-header .nav-link { padding-inline: 7px; font-size: 12.5px; }
     .site-header .logo { font-size: 22px; }
+  }
+  /* با ۸ آیتم، منوی افقی زیر ۹۸۰ پیکسل جا نمی‌شود؛ از همان‌جا منوی همبرگری */
+  @media (max-width: 980px) {
+    .site-header .nav { display: none; }
+    .site-header .menu-btn { display: flex; }
+    .site-header .logo { margin-inline-end: auto; }
   }
   @media (max-width: 780px) {
     .site-header .nav { display: none; }

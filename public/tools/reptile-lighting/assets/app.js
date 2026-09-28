@@ -350,7 +350,8 @@
     const anchorEl = view.anchor ? $('#canvasWrap') : null;
     const anchorTop = anchorEl ? anchorEl.getBoundingClientRect().top : 0;
     view.anchor = false;
-    if (needSlots) { renderSlots(); needSlots = false; }
+    const interacting = !!anchorEl;
+    if (needSlots) { renderSlots(); needSlots = false; $('#result').style.minHeight = ''; }
     const ss = simState();
     const tab = state.tab;
     const step = Math.max(1, Math.max(state.encl.W, state.encl.H) / 160);
@@ -369,13 +370,20 @@
     renderSpeciesCard();
     renderSimpleInputs();
     renderResult();
+    if (interacting) {
+      // هنگام کشیدن، کارت نتیجه کوتاه نشود تا چیزی زیر انگشت کاربر جابه‌جا نشود
+      const card = $('#result');
+      const locked = parseFloat(card.style.minHeight) || 0;
+      const h = card.getBoundingClientRect().height;
+      if (h > locked) card.style.minHeight = Math.ceil(h) + 'px';
+    }
     $('#platRange').max = maxDepth(state);
     $('#platRange').min = minDepth(state);
     $('#platRange').value = state.platform.depth;
     $('#platVal').textContent = fmt.distU(state.encl.H - state.encl.sub - state.platform.depth, 0);
     if (anchorEl) {
       const shift = anchorEl.getBoundingClientRect().top - anchorTop;
-      if (Math.abs(shift) > 0.5) window.scrollBy(0, shift);
+      if (Math.abs(shift) > 0.5) window.scrollBy({ top: shift, left: 0, behavior: 'instant' });
     }
   }
 

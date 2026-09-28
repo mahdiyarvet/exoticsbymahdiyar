@@ -345,6 +345,11 @@
   }
 
   function render() {
+    // هنگام کشیدن سنگ یا لامپ، نقشه روی صفحه ثابت بماند حتی اگر محتوای بالای آن (کارت نتیجه) کوتاه یا بلند شود.
+    // (سافاری آیفون «scroll anchoring» ندارد، پس دستی جبران می‌کنیم.)
+    const anchorEl = view.anchor ? $('#canvasWrap') : null;
+    const anchorTop = anchorEl ? anchorEl.getBoundingClientRect().top : 0;
+    view.anchor = false;
     if (needSlots) { renderSlots(); needSlots = false; }
     const ss = simState();
     const tab = state.tab;
@@ -368,6 +373,10 @@
     $('#platRange').min = minDepth(state);
     $('#platRange').value = state.platform.depth;
     $('#platVal').textContent = fmt.distU(state.encl.H - state.encl.sub - state.platform.depth, 0);
+    if (anchorEl) {
+      const shift = anchorEl.getBoundingClientRect().top - anchorTop;
+      if (Math.abs(shift) > 0.5) window.scrollBy(0, shift);
+    }
   }
 
   /* ---------------- حالت ساده: انتخاب جانور و ابعاد ---------------- */
@@ -567,7 +576,7 @@
       c.onpointerdown = e => {
         e.preventDefault(); c.setPointerCapture(e.pointerId);
         const rect = tr.getBoundingClientRect();
-        const mv = ev => { slot.x = clampSlotX(slot, (ev.clientX - rect.left) / rect.width * W); c.style.left = (slot.x / W * 100) + '%'; commit(); };
+        const mv = ev => { slot.x = clampSlotX(slot, (ev.clientX - rect.left) / rect.width * W); c.style.left = (slot.x / W * 100) + '%'; view.anchor = true; commit(); };
         const up = () => { c.removeEventListener('pointermove', mv); c.removeEventListener('pointerup', up); };
         c.addEventListener('pointermove', mv); c.addEventListener('pointerup', up);
       };
@@ -611,6 +620,7 @@
   cv.addEventListener('pointermove', e => {
     const [px, py] = localXY(e);
     if (drag) {
+      view.anchor = true;
       if (drag.type === 'lamp') {
         const slot = slotByKey(drag.key);
         slot.x = clampSlotX(slot, geo.invX(px) - drag.dx);
@@ -658,7 +668,7 @@
   $('#assistChk').onchange = e => { state.assist = e.target.checked; commit(); };
   $('#spreadChk').onchange = e => { state.spread = e.target.checked; commit(); };
   $('#contourChk').onchange = e => { state.contours = e.target.checked; commit(); };
-  $('#platRange').oninput = e => { state.platform.depth = +e.target.value; commit(); };
+  $('#platRange').oninput = e => { state.platform.depth = +e.target.value; view.anchor = true; commit(); };
   $('#autoBtn').onclick = () => { const ok = autoBoth(state); commit(); toast(ok ? 'سنگ در ارتفاع مناسب قرار گرفت' : 'با این لامپ‌ها ارتفاع کاملاً مناسبی نیست؛ نزدیک‌ترین ارتفاع انتخاب شد'); };
   $('#addBasking').onclick = () => {
     if (state.basking.length >= 4) return toast('حداکثر ۴ لامپ حرارتی');

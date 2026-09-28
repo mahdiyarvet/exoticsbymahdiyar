@@ -229,7 +229,9 @@ const Draw = (() => {
     // فضای بالا برای لامپ‌های روی توری
     const plotW = cssW - padL - padR;
     let s = plotW / W;
-    const maxPlotH = Math.min(520, Math.max(260, window.innerHeight * 0.55));
+    // ارتفاع نقشه فقط با تغییر عرض صفحه (مثلاً چرخش گوشی) عوض شود، نه با جمع/بازشدن نوار آدرس موبایل
+    if (plotCap.w !== window.innerWidth) { plotCap.w = window.innerWidth; plotCap.h = Math.min(520, Math.max(260, window.innerHeight * 0.55)); }
+    const maxPlotH = plotCap.h;
     if (H * s > maxPlotH) s = maxPlotH / H;
     const lampTop = srcs.reduce((m, q) => Math.max(m, -q.y), 0);
     const padT = Math.max(40, lampTop * s + Math.min(20, Math.max(9, 3.2 * s)) * 1.5 + 26);
@@ -410,6 +412,8 @@ const Draw = (() => {
     geo.platform = { x0: px0, x1: px1, top: Y(pD), back: by, bot: botY };
     return geo;
   }
+
+  const plotCap = { w: -1, h: 400 };
 
   function niceStep(range, maxTicks) {
     const raw = range / Math.max(2, maxTicks);

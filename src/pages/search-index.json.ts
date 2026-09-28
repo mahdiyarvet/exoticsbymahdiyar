@@ -86,6 +86,18 @@ export const GET = (async () => {
       image: '/images/photos/macaw-1.jpg', keywords: ['دکتر مهدیار', 'دامپزشک'], timestamp: 0,
     },
     {
+      title: 'محاسبه‌گر نور و گرمای خزندگان',
+      description: 'ارتفاع درست سنگ آفتاب‌گیری و فاصلهٔ لامپ UVB و حرارتی تا جانور را بر اساس منابع علمی محاسبه کنید.',
+      url: '/tools/reptile-lighting', type: 'page', typeLabel: 'ابزار', category: 'ابزار',
+      keywords: ['UVB', 'لامپ', 'لامپ حرارتی', 'یووی', 'شاخص UV', 'تراریوم', 'نورپردازی', 'خزندگان', 'بیردد دراگون', 'فاصله لامپ'], timestamp: 0,
+    },
+    {
+      title: 'لامپ‌های UVB و حرارتی خزندگان در بازار ایران',
+      description: 'فهرست مدل‌های لامپ خزندگان موجود در ایران با وات و کاربرد.',
+      url: '/tools/reptile-lighting/lamps', type: 'page', typeLabel: 'ابزار', category: 'ابزار',
+      keywords: ['لاکی هرپ', 'رپتی زو', 'اگزو ترا', 'لامپ UVB', 'لامپ سرامیکی'], timestamp: 0,
+    },
+    {
       title: 'سؤالات متداول',
       description: 'پاسخ پرسش‌های رایج درباره نگهداری و ویزیت حیوانات اگزوتیک.',
       url: '/faq', type: 'page', typeLabel: 'صفحه', category: 'راهنما',

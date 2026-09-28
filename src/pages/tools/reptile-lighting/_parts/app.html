@@ -1,0 +1,269 @@
+<div class="rl-head">
+  <div>
+    <span class="rl-eyebrow">ابزار رایگان</span>
+    <h1>محاسبه‌گر نور و گرمای خزندگان</h1>
+    <p>جانور، اندازهٔ محفظه و مدل لامپ خودتان را وارد کنید تا ببینید چقدر نور UVB و گرما به پشت جانور می‌رسد و سنگ آفتاب‌گیری را در چه ارتفاعی بگذارید.</p>
+  </div>
+  <div class="rl-head-tools">
+    <a class="btn btn-ghost" href="/tools/reptile-lighting/guide">📘 راهنما و مقاله‌ها</a>
+    <a class="btn btn-ghost" href="/tools/reptile-lighting/lamps">💡 لامپ‌های بازار ایران</a>
+    <div class="dropdown" id="settingsDD">
+      <button class="btn btn-ghost" data-dd-toggle>
+        <svg class="ic" viewBox="0 0 24 24"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>
+        تنظیمات <span class="caret">▾</span>
+      </button>
+      <div class="dd-menu dd-left settings-menu">
+        <div class="dd-row">
+          <span>واحد فاصله</span>
+          <div class="seg seg-sm" id="unitSeg">
+            <button data-unit="cm">سانتی‌متر</button><button data-unit="in">اینچ</button>
+          </div>
+        </div>
+        <div class="dd-row">
+          <span>اعداد</span>
+          <div class="seg seg-sm" id="digitSeg">
+            <button data-digits="fa">۱۲۳</button><button data-digits="en">123</button>
+          </div>
+        </div>
+        <hr>
+        <div class="dd-title">طرح‌های ذخیره‌شده</div>
+        <div id="savedList" class="saved-list"></div>
+        <hr>
+        <button class="dd-item" id="copyLinkBtn">🔗 کپی لینک همین طرح</button>
+        <button class="dd-item" id="openGuideBtn">🦎 نمایش راهنمای مبتدی</button>
+        <button class="dd-item danger" id="resetBtn">↺ بازنشانی همه‌چیز</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="layout">
+    <!-- ================= ستون تنظیمات ================= -->
+    <aside class="sidebar rl-card">
+      <section>
+        <h3 class="sec-title"><span class="step">۱</span> جانور شما چیست؟</h3>
+        <div id="speciesPickerSide"></div>
+        <p class="step-hint" id="speciesHint"></p>
+      </section>
+
+      <section>
+        <h3 class="sec-title"><span class="step">۲</span> اندازهٔ محفظه (سانتی‌متر)</h3>
+        <div class="grid3">
+          <div><label class="fl">طول</label><input type="number" id="sW" min="20" max="400" inputmode="numeric"></div>
+          <div><label class="fl">عرض</label><input type="number" id="sD" min="20" max="200" inputmode="numeric"></div>
+          <div><label class="fl">ارتفاع</label><input type="number" id="sH" min="20" max="250" inputmode="numeric"></div>
+        </div>
+        <label class="fl">درپوش بالای محفظه</label>
+        <select id="sLid">
+          <option value="mesh">توری فلزی (معمولی)</option>
+          <option value="open">بدون در / لامپ داخل محفظه</option>
+          <option value="glass">شیشه یا پلکسی</option>
+        </select>
+      </section>
+
+      <section>
+        <h3 class="sec-title"><span class="step">۳</span> لامپ‌ها</h3>
+        <p class="step-hint">مدل لامپی را که دارید یا می‌خواهید امتحان کنید انتخاب کنید. نتیجه بالای صفحه نشان داده می‌شود.</p>
+
+        <div class="lamp-group">
+          <div class="lg-head">
+            <span class="lg-icon uv">UV</span><span>لامپ UVB</span>
+          </div>
+          <div id="uvbSlot"></div>
+        </div>
+
+        <div class="lamp-group">
+          <div class="lg-head">
+            <span class="lg-icon heat">☀</span><span>لامپ حرارتی</span>
+            <button class="add-btn heat" id="addBasking" title="افزودن لامپ حرارتی">+</button>
+          </div>
+          <div id="baskingSlots"></div>
+        </div>
+
+        <div class="lamp-group adv">
+          <div class="lg-head">
+            <span class="lg-icon led">✦</span><span>نور LED</span>
+            <button class="add-btn led" id="addLed" title="افزودن LED">+</button>
+          </div>
+          <div id="ledSlots"></div>
+        </div>
+      </section>
+
+      <section class="adv">
+        <h3 class="sec-title">جزئیات بیشتر</h3>
+        <button class="summary-btn" id="enclBtn">
+          <span id="enclSummary">—</span>
+          <span class="chev">‹</span>
+        </button>
+        <label class="fl">محل نصب لامپ‌ها</label>
+        <div class="seg seg-full" id="mountSeg">
+          <button data-mount="above">روی توری</button>
+          <button data-mount="inside">داخل محفظه</button>
+          <button data-mount="mixed">ترکیبی</button>
+        </div>
+      </section>
+
+      <section class="species-rl-card adv" id="speciesCard"></section>
+
+      <button class="adv-toggle" id="advToggle">⚙️ <span>نمایش تنظیمات پیشرفته</span></button>
+    </aside>
+
+    <!-- ================= بخش اصلی شبیه‌ساز ================= -->
+    <section class="stage rl-card">
+      <div class="result" id="result"></div>
+
+      <div class="tabs-row">
+        <div class="tabs" id="tabs" role="tablist">
+          <button data-tab="uvb" role="tab"><span class="t-ic uv">UV</span> نور UVB</button>
+          <button data-tab="heat" role="tab"><span class="t-ic heat">☀</span> گرما</button>
+          <button data-tab="led" role="tab" class="adv"><span class="t-ic led">✦</span> روشنایی</button>
+          <button data-tab="combined" role="tab" class="adv"><span class="t-ic comb">◐</span> ترکیبی</button>
+          <button id="finishBtn" class="finish"><span class="t-ic">🖨</span> برگهٔ نصب و ذخیره</button>
+        </div>
+      </div>
+
+      <div class="stats" id="stats">
+        <div class="stat" data-stat="uvb"><label>نور UV روی پشت جانور</label><div class="sv"><b id="svUvi">—</b><i id="stUvi"></i></div><div class="meter" id="mUvi"></div></div>
+        <div class="stat" data-stat="heat"><label>گرمای تابشی روی پشت</label><div class="sv"><b id="svHeat">—</b><i id="stHeat"></i></div><div class="meter" id="mHeat"></div></div>
+        <div class="stat adv" data-stat="led"><label>روشنایی</label><div class="sv"><b id="svLux">—</b><i id="stLux"></i></div><div class="meter" id="mLux"></div></div>
+        <div class="stat adv"><label>فاصلهٔ مناسب سنگ تا سقف <span class="tip" data-tip="اگر سطح سنگ آفتاب‌گیری در این فاصله از سقف (توری) باشد، پشت جانور به مقدار مناسب می‌رسد.">؟</span></label><div class="sv"><b id="svDepth">—</b></div></div>
+        <div class="stat adv"><label>انسداد توری</label><div class="sv"><b id="svMesh">—</b></div></div>
+        <div class="dropdown targets-dd adv" id="targetsDD">
+          <button class="btn btn-link" data-dd-toggle>اهداف <span class="caret">▾</span></button>
+          <div class="dd-menu dd-left targets-menu" id="targetsMenu"></div>
+        </div>
+      </div>
+
+      <div class="viz">
+        <div class="viz-main">
+          <div class="viz-tools">
+            <label class="chk adv"><input type="checkbox" id="assistChk"> راهنمای هدف</label>
+            <label class="chk adv"><input type="checkbox" id="spreadChk"> نمودار پخش</label>
+            <label class="chk adv"><input type="checkbox" id="contourChk" checked> خطوط هم‌تراز</label>
+            <span class="hint" id="vizHint">👆 سنگ آفتاب‌گیری را بالا و پایین بکشید و ببینید اعداد چطور تغییر می‌کنند</span>
+          </div>
+          <div id="animalStatus" class="animal-status" role="status" aria-live="polite" aria-atomic="true"></div>
+          <div class="canvas-wrap" id="canvasWrap">
+            <canvas id="viz"></canvas>
+            <div class="tooltip" id="vizTip"></div>
+          </div>
+          <div class="spread-wrap" id="spreadWrap" hidden>
+            <canvas id="spread"></canvas>
+          </div>
+        </div>
+        <div class="viz-side">
+          <label>ارتفاع سنگ</label>
+          <b id="platVal">—</b>
+          <small class="plat-sub">از کف بستر</small>
+          <input type="range" id="platRange" class="vrange" min="0" max="60" step="0.5" orient="vertical" aria-label="ارتفاع سکو">
+          <button class="btn btn-sm" id="autoBtn">خودکار</button>
+        </div>
+      </div>
+
+      <div class="positions adv">
+        <span class="pos-lbl">جایگاه لامپ‌ها</span>
+        <span class="pos-end" id="posStart">۰</span>
+        <div class="pos-track" id="posTrack"></div>
+        <span class="pos-end" id="posEnd">—</span>
+      </div>
+
+      <div class="legend-wrap">
+        <div class="legend-ends"><span>🌳 سایه</span><span>آفتاب کامل ☀</span></div>
+        <div class="legend" id="legend"></div>
+      </div>
+
+      <p class="disclaimer">اعداد تخمینی هستند. بعد از نصب، دمای سطح سنگ را با دماسنج لیزری بسنجید. <a href="/tools/reptile-lighting/guide">راهنمای ساده</a> · <a href="/tools/reptile-lighting/guide#articles">مقاله‌ها</a></p>
+    </section>
+  </div>
+<!-- ================= مودال‌ها ================= -->
+  <div class="modal" id="enclModal" hidden>
+    <div class="modal-box">
+      <div class="modal-head"><h3>محفظه و جانور</h3><button class="x" data-close>✕</button></div>
+      <div class="modal-body">
+        <div class="form-row between">
+          <label class="fl">واحد فاصله</label>
+          <div class="seg seg-sm" id="unitSeg2"><button data-unit="cm">سانتی‌متر</button><button data-unit="in">اینچ</button></div>
+        </div>
+        <div class="grid2">
+          <div>
+            <label class="fl">گونهٔ جانور</label>
+            <div class="picker" id="speciesPicker"></div>
+          </div>
+          <div>
+            <label class="fl">نام جانور</label>
+            <input type="text" id="petName" placeholder="اختیاری — مثلاً «رکس»" maxlength="30">
+          </div>
+        </div>
+        <div class="animal-preview" id="animalPreview"></div>
+        <div class="grid2">
+          <div>
+            <label class="fl">ارتفاع پشت جانور از سنگ (<span class="u">cm</span>)</label>
+            <input type="number" id="backH" step="0.5" min="0.5">
+          </div>
+          <div>
+            <label class="fl">منطقهٔ فرگوسن</label>
+            <select id="zoneSel">
+              <option value="1">منطقهٔ ۱ — سایه‌زی</option>
+              <option value="2">منطقهٔ ۲ — آفتاب‌گیری جزئی</option>
+              <option value="3">منطقهٔ ۳ — نیمه‌سایه / آفتاب باز</option>
+              <option value="4">منطقهٔ ۴ — آفتاب‌گیر کامل</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid3">
+          <div><label class="fl">طول (<span class="u">cm</span>)</label><input type="number" id="encW" min="20" max="400"></div>
+          <div><label class="fl">عرض (<span class="u">cm</span>)</label><input type="number" id="encD" min="20" max="200"></div>
+          <div><label class="fl">ارتفاع (<span class="u">cm</span>)</label><input type="number" id="encH" min="20" max="250"></div>
+        </div>
+        <div class="form-row between">
+          <label class="fl">ضخامت بستر (<span class="u">cm</span>)</label>
+          <input type="number" id="encSub" class="w-sm" step="0.5" min="0">
+        </div>
+        <label class="fl">نوع درپوش / توری</label>
+        <select id="brandSel"></select>
+        <div class="form-row between">
+          <label class="fl">درصد انسداد توری</label>
+          <input type="number" id="meshPct" class="w-sm" min="0" max="100">
+        </div>
+        <p class="note" id="meshNote"></p>
+      </div>
+      <div class="modal-foot"><button class="btn btn-primary" data-close>تأیید</button></div>
+    </div>
+  </div>
+
+  <div class="modal" id="finishModal" hidden>
+    <div class="modal-box wide">
+      <div class="modal-head"><h3>برگهٔ نصب</h3><button class="x" data-close>✕</button></div>
+      <div class="modal-body">
+        <label class="fl">نام این طرح</label>
+        <div class="form-row">
+          <input type="text" id="setupName" maxlength="60">
+          <button class="btn" id="saveSetupBtn">ذخیره</button>
+        </div>
+        <p class="note">یک نسخه روی همین دستگاه ذخیره می‌شود. طرح‌های ذخیره‌شده در منوی تنظیمات هستند.</p>
+        <div id="finishContent" class="finish-content"></div>
+      </div>
+      <div class="modal-foot between">
+        <button class="btn" id="shareSetupBtn">🔗 کپی لینک همین طرح</button>
+        <button class="btn btn-primary" id="printBtn">🖨 چاپ برگهٔ نصب</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="guideModal" hidden>
+    <div class="modal-box guide-box">
+      <div class="guide-art" id="guideArt"></div>
+      <div class="guide-body">
+        <div class="kicker" id="guideKicker">راهنمای مبتدی</div>
+        <h2 id="guideTitle"></h2>
+        <div id="guideText"></div>
+        <div class="guide-dots" id="guideDots"></div>
+        <div class="guide-nav">
+          <button class="btn btn-dark" id="guideNext">شروع راهنما</button>
+          <button class="btn" id="guidePrev">الان نه</button>
+        </div>
+        <button class="link-btn" id="guideNever">دیگر نمایش نده</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>

@@ -1,0 +1,69 @@
+<a class="rl-back" href="/tools/reptile-lighting">→ بازگشت به محاسبه‌گر</a><article class="rl-card page-card">      <h1>لامپ‌های خزندگان در بازار ایران</h1>
+      <p class="lead">لامپ‌های UVB، حرارتی و سرامیکی خزندگان که در فروشگاه‌های ایرانی (ترب، دیجی‌کالا، بسلام و فروشگاه‌های تخصصی) پیدا می‌شوند؛ همراه با کاربرد هر کدام. این فهرست فقط برای معرفی است و خرید یا فروشی انجام نمی‌دهیم؛ همهٔ این لامپ‌ها در شبیه‌ساز قابل انتخاب‌اند تا نتیجه‌شان را ببینید.</p>
+
+      <div class="prod-tools">
+        <input type="text" id="prodSearch" placeholder="🔍 جستجوی برند، مدل یا وات… (مثلاً «لاکی هرپ ۱۰۰»)">
+        <div class="chips" id="brandChips"></div>
+      </div>
+      <p class="note" id="prodCount"></p>
+      <div id="prodList"></div>
+
+      <div class="callout warn">
+        <strong>⚠️ این لامپ‌ها را برای خزنده نخرید:</strong>
+        لامپ‌های <b>UVC</b> و «UV آکواریوم» (مثل Sobo L-5W، L-9W و L-11W و RS-112) ضدعفونی‌کننده‌اند و به چشم و پوست جانور آسیب جدی می‌زنند. لامپ‌های درمان پوست (Philips TL01)، لامپ‌های ناخن، لامپ‌های رشد گیاه و لامپ‌های بخار جیوهٔ روشنایی خیابان هم مناسب خزنده نیستند.
+      </div>
+      <div class="callout">
+        <strong>ℹ️ برندهایی که در بازار ایران پیدا نشدند:</strong>
+        Arcadia، سری ReptiSun و PowerSun از Zoo Med، و Solar Glo و Intense Basking از Exo Terra. این‌ها در شبیه‌ساز با برچسب «✈️ وارداتی، در ایران کمیاب» آمده‌اند.
+      </div>
+      <p class="muted">مشخصات بر اساس توضیحات فروشندگان است؛ «؟» یعنی فروشنده آن را ننوشته است. اعداد شبیه‌ساز برای این لامپ‌ها تخمینی‌اند. آخرین بررسی: مهر ۱۴۰۵.</p>
+      <p><a class="btn btn-primary cta" href="/tools/reptile-lighting">امتحان در شبیه‌ساز ←</a></p>
+
+      <script src="/tools/reptile-lighting/assets/data.js?v=3"></script>
+      <script src="/tools/reptile-lighting/assets/iran-lamps.js?v=3"></script>
+      <script>
+        (function () {
+          var fa = function (n) { return n == null ? '؟' : Number(n).toLocaleString('fa-IR'); };
+          var all = IRAN_LAMPS.map(function (l) { return Object.assign({ sim: true }, l); })
+            .concat(IRAN_CATALOG_ONLY.map(function (l) { return Object.assign({ sim: false }, l); }));
+          var brands = [];
+          all.forEach(function (l) { if (brands.indexOf(l.brand) < 0) brands.push(l.brand); });
+          var activeBrand = '';
+          var chips = document.getElementById('brandChips');
+          chips.innerHTML = '<button class="chip on" data-b="">همه</button>' + brands.map(function (b) { return '<button class="chip" data-b="' + b + '">' + b + '</button>'; }).join('');
+          chips.addEventListener('click', function (e) {
+            var b = e.target.closest('.chip'); if (!b) return;
+            activeBrand = b.dataset.b;
+            [].forEach.call(chips.children, function (c) { c.classList.toggle('on', c === b); });
+            render();
+          });
+          var search = document.getElementById('prodSearch');
+          search.addEventListener('input', render);
+          // تبدیل ارقام فارسی به انگلیسی برای جستجو
+          var norm = function (s) { return String(s).replace(/[۰-۹]/g, function (d) { return '۰۱۲۳۴۵۶۷۸۹'.indexOf(d); }).replace(/ي/g, 'ی').toLowerCase(); };
+          function render() {
+            var q = norm(search.value.trim());
+            var words = q ? q.split(/\s+/) : [];
+            var html = '', count = 0;
+            IRAN_CATS.forEach(function (c) {
+              var items = all.filter(function (l) {
+                if (l.cat !== c.id) return false;
+                if (activeBrand && l.brand !== activeBrand) return false;
+                var hay = norm(l.brand + ' ' + l.name + ' ' + (l.watts || '') + ' ' + (l.use || '') + (l.brand === 'Lucky Herp' ? ' لاکی هرپ' : '') + (l.brand === 'Repti Zoo' ? ' رپتی زو' : '') + (l.brand === 'Exo Terra' ? ' اگزو ترا' : '') + (l.brand === 'Nomoy Pet' ? ' نوموی پت' : '') + (l.brand === 'Philips' ? ' فیلیپس' : ''));
+                return words.every(function (w) { return hay.indexOf(w) >= 0; });
+              });
+              if (!items.length) return;
+              count += items.length;
+              html += '<h2>' + c.icon + ' ' + c.fa + ' <small class="muted">(' + fa(items.length) + ')</small></h2><div class="table-scroll"><table class="prod-table"><tr><th>برند</th><th>مدل</th><th>وات</th><th>کاربرد</th></tr>' +
+                items.map(function (l) {
+                  var warn = /خطر|مناسب نیست|خیلی قوی|بسیار قوی|دامداری/.test(l.use || '');
+                  return '<tr' + (warn ? ' class="warn-row"' : '') + '><td><b>' + l.brand + '</b></td><td>' + l.name + (l.sim ? '' : ' <span class="tag-mini">فقط فهرست</span>') + '</td><td>' + fa(l.watts) + '</td><td>' + (warn ? '⚠️ ' : '') + (l.use || '') + '</td></tr>';
+                }).join('') + '</table></div>';
+            });
+            document.getElementById('prodList').innerHTML = html || '<p class="note">چیزی پیدا نشد.</p>';
+            document.getElementById('prodCount').textContent = fa(count) + ' محصول';
+          }
+          render();
+        })();
+      </script>
+</article>

@@ -431,7 +431,7 @@ import Base from '../layouts/Base.astro';
   .overview-card > strong { display: block; color: var(--dash-text); font-size: 18px; }
   .card-caption { color: var(--dash-muted); font-size: 11px; }
   .weight-chart {
-    height: 76px; position: relative; overflow: hidden; padding: 8px 10px 6px;
+    height: 118px; position: relative; overflow: hidden; padding: 10px 12px;
     border: 1px solid #e3e7df; border-radius: 11px; background: linear-gradient(180deg,#fbfdf9,#f5f8f3);
   }
   .weight-chart svg { display: block; width: 100%; height: 100%; overflow: hidden; }
@@ -440,11 +440,29 @@ import Base from '../layouts/Base.astro';
   .weight-chart :global(.chart-area) { fill: url(#portal-weight-fill); }
   .weight-chart :global(.chart-line) { fill: none; stroke: var(--dash-green-2); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
   .weight-chart :global(.chart-point) { fill: var(--dash-green-2); stroke: #fff; stroke-width: 2; }
+  .weight-chart :global(.chart-point.latest) { filter: drop-shadow(0 2px 3px rgba(23,75,61,.28)); }
+  .weight-chart :global(.chart-reading) { position: absolute; top: 12px; right: 14px; z-index: 2; display: flex; align-items: baseline; gap: 4px; }
+  .weight-chart :global(.chart-reading strong) { color: var(--dash-text); font-size: 22px; line-height: 1; }
+  .weight-chart :global(.chart-reading span) { color: var(--dash-muted); font-size: 10px; }
+  .weight-chart :global(.chart-reading em) { margin-right: 6px; padding: 2px 6px; border-radius: 999px; font-size: 9px; font-style: normal; }
+  .weight-chart :global(.chart-reading em.up) { color: #267052; background: #dff1e6; }
+  .weight-chart :global(.chart-reading em.down) { color: #a04836; background: #fae7e1; }
+  .weight-chart :global(.chart-reading em.neutral) { color: var(--dash-muted); background: #ecefe9; }
+  .weight-chart :global(.chart-plot) { height: 78px; margin-top: 16px; position: relative; }
+  .weight-chart :global(.chart-plot svg) { height: 62px; }
+  .weight-chart :global(.chart-dates) { display: flex; justify-content: space-between; color: var(--dash-muted); font-size: 8px; margin-top: -2px; }
+  .weight-chart :global(.chart-insufficient) { height: 100%; padding-right: 112px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--dash-muted); text-align: center; }
+  .weight-chart :global(.chart-insufficient strong) { color: var(--dash-text); font-size: 11px; }
+  .weight-chart :global(.chart-insufficient small) { font-size: 9px; }
+  .weight-chart :global(.single-dot) { width: 9px; height: 9px; border-radius: 50%; margin-bottom: 5px; background: var(--dash-green-2); box-shadow: 0 0 0 5px rgba(35,102,83,.12); }
   .chart-grid { stroke: #e6e7df; stroke-width: 1; }
   .chart-area { fill: url(#portal-weight-fill); }
   .chart-line { fill: none; stroke: var(--dash-green-2); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
   .chart-point { fill: var(--dash-green-2); stroke: #fff; stroke-width: 2; }
-  .chart-empty { display: grid; place-items: center; height: 100%; color: var(--dash-muted); font-size: 12px; }
+  .chart-empty { display: grid; place-items: center; align-content: center; gap: 1px; height: 100%; color: var(--dash-muted); font-size: 12px; text-align: center; }
+  .chart-empty span { color: var(--dash-green-2); font-size: 20px; line-height: 1.2; }
+  .chart-empty strong { color: var(--dash-text); font-size: 11px; }
+  .chart-empty small { font-size: 9px; }
   .record-tabs {
     display: flex; gap: 4px; margin-top: 14px; padding: 5px; overflow-x: auto;
     background: var(--dash-surface); border: 1px solid var(--dash-border); border-radius: 13px;
@@ -595,28 +613,49 @@ import Base from '../layouts/Base.astro';
       .slice(-8);
     const chart = el('weight-chart');
     if (!weights.length) {
-      chart.innerHTML = '<span class="chart-empty">هنوز وزنی ثبت نشده است</span>';
+      chart.innerHTML = '<div class="chart-empty"><span>⚖</span><strong>هنوز وزنی ثبت نشده</strong><small>پس از ثبت وزن توسط دامپزشک، روند اینجا نمایش داده می‌شود</small></div>';
       el('summary-weight').textContent = 'ثبت نشده';
       return;
     }
     const latest = weights[weights.length - 1];
     el('summary-weight').textContent = `${latest.value.toLocaleString('fa-IR')} گرم`;
+    const previous = weights.at(-2);
+    const change = previous ? latest.value - previous.value : null;
+    const changeText = change === null ? 'اولین ثبت وزن' : `${change > 0 ? '+' : ''}${change.toLocaleString('fa-IR')} گرم`;
+    const changeClass = change === null ? 'neutral' : change > 0 ? 'up' : change < 0 ? 'down' : 'neutral';
+    if (weights.length === 1) {
+      chart.innerHTML = `
+        <div class="chart-reading"><strong>${latest.value.toLocaleString('fa-IR')}</strong><span>گرم</span><em class="neutral">اولین ثبت</em></div>
+        <div class="chart-insufficient"><span class="single-dot"></span><strong>شروع پایش وزن</strong><small>با ثبت وزن بعدی، روند تغییرات نمایش داده می‌شود</small></div>`;
+      return;
+    }
     const min = Math.min(...weights.map((point) => point.value));
     const max = Math.max(...weights.map((point) => point.value));
     const range = Math.max(max - min, max * .08, 1);
     const coords = weights.map((point, index) => ({
-      x: weights.length === 1 ? 50 : 6 + (index / (weights.length - 1)) * 88,
-      y: 50 - ((point.value - min) / range) * 36,
+      x: 12 + (index / (weights.length - 1)) * 276,
+      y: 54 - ((point.value - min) / range) * 38,
     }));
-    const line = coords.map((point) => `${point.x},${point.y}`).join(' ');
+    let path = `M ${coords[0].x} ${coords[0].y}`;
+    for (let i = 1; i < coords.length; i++) {
+      const prev = coords[i - 1];
+      const point = coords[i];
+      const middle = (prev.x + point.x) / 2;
+      path += ` C ${middle} ${prev.y}, ${middle} ${point.y}, ${point.x} ${point.y}`;
+    }
+    const area = `${path} L 288 60 L 12 60 Z`;
     chart.innerHTML = `
-      <svg viewBox="0 0 100 58" preserveAspectRatio="none" role="img" aria-label="روند وزن حیوان">
+      <div class="chart-reading"><strong>${latest.value.toLocaleString('fa-IR')}</strong><span>گرم</span><em class="${changeClass}">${changeText}</em></div>
+      <div class="chart-plot">
+      <svg viewBox="0 0 300 66" preserveAspectRatio="none" role="img" aria-label="روند وزن حیوان">
         <defs><linearGradient id="portal-weight-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4f8b73" stop-opacity=".28"/><stop offset="1" stop-color="#4f8b73" stop-opacity="0"/></linearGradient></defs>
-        <line class="chart-grid" x1="4" y1="53" x2="96" y2="53"/>
-        <polygon class="chart-area" points="6,54 ${line} 94,54"/>
-        <polyline class="chart-line" points="${line}"/>
-        ${coords.map((point) => `<circle class="chart-point" cx="${point.x}" cy="${point.y}" r="2.4"/>`).join('')}
-      </svg>`;
+        <line class="chart-grid" x1="8" y1="59" x2="292" y2="59"/>
+        <path class="chart-area" d="${area}"/>
+        <path class="chart-line" d="${path}"/>
+        ${coords.map((point, index) => `<circle class="chart-point ${index === coords.length - 1 ? 'latest' : ''}" cx="${point.x}" cy="${point.y}" r="${index === coords.length - 1 ? 4 : 2.5}"/>`).join('')}
+      </svg>
+      <div class="chart-dates"><span>${formatDate(weights[0].date)}</span><span>${formatDate(latest.date)}</span></div>
+      </div>`;
   }
 
   async function loadPhoto(petId: number) {

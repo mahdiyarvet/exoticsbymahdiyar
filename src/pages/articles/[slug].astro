@@ -39,6 +39,12 @@ const breadcrumb = {
     { '@type': 'ListItem', position: 3, name: d.title, item: canonicalUrl },
   ],
 };
+const vetCta = ({
+  'پرندگان': { href: '/bird-vet', label: 'دامپزشک پرندگان', text: 'اگر دربارهٔ سلامت پرنده‌تان نگران هستید، می‌توانید شرح حال، عکس و فیلم را برای دامپزشک پرندگان بفرستید و ارزیابی اولیه بگیرید.' },
+  'خزندگان': { href: '/reptile-vet', label: 'دامپزشک خزندگان', text: 'اگر دربارهٔ سلامت مار، مارمولک یا لاک‌پشت‌تان نگران هستید، می‌توانید شرح حال و عکس ترارییوم را برای دامپزشک خزندگان بفرستید و ارزیابی اولیه بگیرید.' },
+} as Record<string, { href: string; label: string; text: string }>)[d.category]
+  ?? { href: '/exotic-vet', label: 'دامپزشک اگزوتیک', text: 'اگر دربارهٔ سلامت حیوان اگزوتیک‌تان سؤال یا نگرانی دارید، می‌توانید شرح حال، عکس و فیلم را برای دامپزشک اگزوتیک بفرستید و ارزیابی اولیه بگیرید.' };
+
 const related = allArticles
   .filter((a) => a.id !== article.id && a.data.category === d.category)
   .sort((a, b) => {
@@ -60,6 +66,14 @@ const related = allArticles
     </div>
     {d.cover && <img class="cover" src={d.cover} alt={d.title} loading="eager" decoding="async" fetchpriority="high" />}
     <div class="prose"><Content /></div>
+
+    <aside class="vet-cta" aria-label="ویزیت آنلاین">
+      <p>{vetCta.text}</p>
+      <div class="vet-cta__links">
+        <a class="btn" href="/visit">ویزیت آنلاین رایگان</a>
+        <a class="btn btn-ghost" href={vetCta.href}>{vetCta.label}</a>
+      </div>
+    </aside>
 
     {d.sources.length > 0 && (
       <div class="sources">
@@ -95,6 +109,9 @@ const related = allArticles
   .post-meta { flex-wrap: wrap; }
   .post-meta a { color: var(--brand); font-weight: 700; }
   .cover { width: 100%; border-radius: var(--radius); margin-bottom: 30px; aspect-ratio: 16/9; object-fit: cover; }
+  .vet-cta { margin-top: 40px; padding: 22px 24px; background: var(--surface); border: 1px solid var(--border); border-inline-start: 4px solid var(--brand); border-radius: var(--radius); }
+  .vet-cta p { line-height: 1.95; margin-bottom: 14px; }
+  .vet-cta__links { display: flex; gap: 10px; flex-wrap: wrap; }
   .sources { margin-top: 44px; padding: 22px 24px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
   .sources h3 { font-size: 18px; margin-bottom: 12px; }
   .sources ol { padding-inline-start: 1.3em; }

@@ -22,7 +22,26 @@ const {
 } = Astro.props;
 
 const site = 'اگزوتیک با مهدیار';
-const fullTitle = title === site ? title : `${title} | ${site}`;
+
+// Search results cut titles at ~60 characters and descriptions at ~160, so keep
+// the part that carries the keyword and only append the brand when it still fits.
+const TITLE_MAX = 62;
+const shortenTitle = (t: string) => {
+  if (t.length <= TITLE_MAX) return t;
+  const head = t.split(/\s*[:：—–|]\s*/)[0].trim();
+  return head.length >= 18 && head.length <= TITLE_MAX ? head : t;
+};
+const trimDescription = (d: string, max = 160) => {
+  if (d.length <= max) return d;
+  const cut = d.slice(0, max);
+  const stop = Math.max(cut.lastIndexOf('. '), cut.lastIndexOf('؛'), cut.lastIndexOf('؟'));
+  if (stop >= 90) return cut.slice(0, stop + 1);
+  const space = cut.lastIndexOf(' ');
+  return cut.slice(0, space >= 90 ? space : max).replace(/[،,؛:\s-]+$/, '') + '…';
+};
+const pageTitle = title === site ? title : shortenTitle(title);
+const fullTitle = pageTitle === site ? pageTitle : (`${pageTitle} | ${site}`.length <= 70 ? `${pageTitle} | ${site}` : pageTitle);
+const metaDescription = trimDescription(description);
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const ogImage = new URL(image, Astro.site).href;
 const isHome = Astro.url.pathname === '/';
@@ -77,13 +96,13 @@ const websiteSchema = {
     </script>
 
     <title>{fullTitle}</title>
-    <meta name="description" content={description} />
+    <meta name="description" content={metaDescription} />
     <link rel="canonical" href={canonical} />
     {noindex && <meta name="robots" content="noindex, nofollow" />}
 
     <meta property="og:type" content={type} />
     <meta property="og:title" content={fullTitle} />
-    <meta property="og:description" content={description} />
+    <meta property="og:description" content={metaDescription} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
@@ -95,7 +114,7 @@ const websiteSchema = {
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={fullTitle} />
-    <meta name="twitter:description" content={description} />
+    <meta name="twitter:description" content={metaDescription} />
     <meta name="twitter:image" content={ogImage} />
 
     <link rel="alternate" type="application/rss+xml" title={site} href="/rss.xml" />

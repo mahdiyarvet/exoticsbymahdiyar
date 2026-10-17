@@ -1,10 +1,9 @@
 ---
 import Base from '../layouts/Base.astro';
+import { WHATSAPP_NUMBER, TELEGRAM_USER } from '../lib/contact.js';
 
 // اطلاعات تماس دکتر مهدیار رمزگویان:
 const CONTACT_EMAIL = 'm.ramzgooyan@gmail.com';    // ایمیل دریافت درخواست‌های ویزیت
-const WHATSAPP_NUMBER = '989365240686';            // شماره واتساپ با کد کشور، بدون + و صفر ابتدایی (خط کاری)
-const TELEGRAM_USER = 'exoticsbymahdiyar';         // آیدی تلگرام بدون @
 
 const waText = encodeURIComponent('سلام، برای ویزیت آنلاین حیوان اگزوتیکم می‌خواستم عکس و فیلم بفرستم.');
 const steps = [

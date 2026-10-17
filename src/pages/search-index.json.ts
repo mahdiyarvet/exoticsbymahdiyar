@@ -74,6 +74,24 @@ export const GET = (async () => {
 
   const pages: SearchItem[] = [
     {
+      title: 'دامپزشک اگزوتیک',
+      description: 'ویزیت آنلاین خزندگان، پرندگان زینتی و پستانداران کوچک با دکتر مهدیار رمزگویان.',
+      url: '/exotic-vet', type: 'page', typeLabel: 'صفحه', category: 'خدمات',
+      image: '/images/photos/macaw-1.jpg', keywords: ['دامپزشک اگزوتیک', 'ویزیت آنلاین', 'دامپزشک'], timestamp: 0,
+    },
+    {
+      title: 'دامپزشک خزندگان',
+      description: 'ویزیت آنلاین مار، مارمولک و لاک‌پشت؛ بررسی UVB، دما، رطوبت و علائم بیماری.',
+      url: '/reptile-vet', type: 'page', typeLabel: 'صفحه', category: 'خدمات',
+      image: '/images/photos/bearded-dragon-1.jpg', keywords: ['دامپزشک خزندگان', 'مار', 'مارمولک', 'لاک‌پشت'], timestamp: 0,
+    },
+    {
+      title: 'دامپزشک پرندگان',
+      description: 'ویزیت آنلاین مرغ عشق، عروس هلندی، کاسکو و سایر پرندگان زینتی.',
+      url: '/bird-vet', type: 'page', typeLabel: 'صفحه', category: 'خدمات',
+      image: '/images/photos/cockatiel-1.jpg', keywords: ['دامپزشک پرندگان', 'مرغ عشق', 'طوطی', 'کاسکو'], timestamp: 0,
+    },
+    {
       title: 'ویزیت آنلاین حیوانات اگزوتیک',
       description: 'ارسال شرح حال، عکس و فیلم حیوان برای دریافت راهنمایی دامپزشکی.',
       url: '/visit', type: 'page', typeLabel: 'صفحه', category: 'خدمات',

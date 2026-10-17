@@ -2,6 +2,7 @@ import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
 import { getContentCategory } from '../contentCategories';
 import { getNewsCover, normalizeContentTitle } from '../contentImages';
+import { speciesPages } from '../data/vet-species.js';
 
 type SearchItem = {
   title: string;
@@ -72,7 +73,15 @@ export const GET = (async () => {
     timestamp: entry.data.year ? new Date(entry.data.year, 0, 1).getTime() : 0,
   }));
 
+  const speciesItems: SearchItem[] = speciesPages.map((s) => ({
+    title: s.h1,
+    description: s.metaDescription,
+    url: s.path, type: 'page', typeLabel: 'صفحه', category: 'خدمات',
+    image: s.image, keywords: [s.label, 'ویزیت آنلاین', 'دامپزشک', s.group], timestamp: 0,
+  }));
+
   const pages: SearchItem[] = [
+    ...speciesItems,
     {
       title: 'دامپزشک اگزوتیک',
       description: 'ویزیت آنلاین خزندگان، پرندگان زینتی و پستانداران کوچک با دکتر مهدیار رمزگویان.',

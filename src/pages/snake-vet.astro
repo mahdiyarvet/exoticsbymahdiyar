@@ -1,0 +1,7 @@
+---
+import VetLanding from '../components/VetLanding.astro';
+import { speciesPages } from '../data/vet-species.js';
+
+const page = speciesPages.find((p) => p.path === '/snake-vet')!;
+---
+<VetLanding {...page} />

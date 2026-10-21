@@ -8,7 +8,7 @@ mkdirSync(OUT_DIR, { recursive: true });
 
 // species: [slug, search query on Commons]
 const SPECIES = [
-  ['falcon', 'Saker falcon Falco cherrug'],
+  ['owl', 'Eurasian eagle-owl Bubo bubo'],
 ];
 
 const GOOD_LICENSE = /^(cc0|public domain|pd|cc by( |-)?\d|cc by-sa( |-)?\d)/i;

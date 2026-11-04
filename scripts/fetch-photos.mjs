@@ -8,7 +8,7 @@ mkdirSync(OUT_DIR, { recursive: true });
 
 // species: [slug, search query on Commons]
 const SPECIES = [
-  ['mynah', 'Common hill myna Gracula religiosa'],
+  ['tegu', 'Salvator merianae Argentine black and white tegu'],
 ];
 
 const GOOD_LICENSE = /^(cc0|public domain|pd|cc by( |-)?\d|cc by-sa( |-)?\d)/i;

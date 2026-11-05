@@ -1,0 +1,328 @@
+---
+import Base from '../layouts/Base.astro';
+import { CLINICS, CATEGORIES } from '../data/booking.js';
+---
+
+<Base title="مدیریت نوبت‌ها" description="مدیریت نوبت‌های ویزیت حضوری" noindex={true}>
+  <section class="section container ap">
+    <p id="ap-loading" class="muted">در حال بررسی دسترسی…</p>
+    <p id="ap-denied" class="muted" hidden>این حساب دسترسی مدیریت ندارد. <a href="/login">بازگشت به ورود</a></p>
+
+    <div id="ap-area" hidden>
+      <div class="ap-top">
+        <h1>مدیریت نوبت‌ها</h1>
+        <a class="btn btn-ghost" href="/client-admin">پرونده‌ی مشتریان</a>
+      </div>
+
+      <div class="ap-filters">
+        <label>بازه
+          <select id="f-scope">
+            <option value="upcoming">امروز و آینده</option>
+            <option value="past">گذشته</option>
+            <option value="all">همه</option>
+          </select>
+        </label>
+        <label>کلینیک
+          <select id="f-clinic">
+            <option value="">همه</option>
+            {CLINICS.map((c) => <option value={c.id}>{c.name}</option>)}
+          </select>
+        </label>
+        <label>وضعیت
+          <select id="f-status">
+            <option value="">همه</option>
+            <option value="confirmed">ثبت‌شده</option>
+            <option value="done">انجام شد</option>
+            <option value="no_show">عدم مراجعه</option>
+            <option value="cancelled">لغو شده</option>
+            <option value="blocked">مسدود</option>
+          </select>
+        </label>
+      </div>
+
+      <div id="ap-list" class="ap-list"><p class="muted">در حال بارگذاری…</p></div>
+
+      <details class="ap-add">
+        <summary>ثبت نوبت دستی / مسدود کردن یک زمان</summary>
+        <form id="ap-add-form" novalidate>
+          <div class="ap-add-grid">
+            <label>نوع
+              <select name="kind" id="a-kind">
+                <option value="blocked">مسدود کردن زمان</option>
+                <option value="manual">نوبت دستی (تلفنی/حضوری)</option>
+              </select>
+            </label>
+            <label>کلینیک
+              <select name="clinic" id="a-clinic">
+                {CLINICS.map((c) => <option value={c.id}>{c.name}</option>)}
+              </select>
+            </label>
+            <label>تاریخ
+              <input type="date" name="date" id="a-date" required />
+              <span class="ap-hint" id="a-date-hint"></span>
+            </label>
+            <label>ساعت
+              <select name="time" id="a-time"></select>
+            </label>
+          </div>
+          <div class="ap-add-grid" id="a-manual" hidden>
+            <label>نام *<input type="text" name="owner_name" maxlength="80" /></label>
+            <label>موبایل *<input type="tel" name="phone" dir="ltr" inputmode="tel" /></label>
+            <label>نوع حیوان
+              <select name="category">
+                {CATEGORIES.map((c) => <option value={c.id}>{c.label}</option>)}
+              </select>
+            </label>
+            <label>گونه / توضیح<input type="text" name="pet_species" maxlength="80" /></label>
+          </div>
+          <p id="a-msg" class="ap-msg" hidden></p>
+          <button type="submit" class="btn">ثبت</button>
+        </form>
+      </details>
+    </div>
+  </section>
+</Base>
+
+<style is:global>
+  .ap-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 22px; }
+  .ap-top h1 { font-size: clamp(1.5rem, 3vw, 2rem); }
+  .ap-filters { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 22px; }
+  .ap label { display: flex; flex-direction: column; gap: 6px; font-size: 14px; color: var(--text-muted); }
+  .ap select, .ap input {
+    background: var(--bg-soft); border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: 9px 12px; color: var(--text); font-family: inherit; font-size: 14.5px; min-width: 150px;
+  }
+  .ap select:focus, .ap input:focus { outline: 2px solid var(--brand); outline-offset: 1px; }
+  .ap-day { margin-bottom: 26px; }
+  .ap-day h2 { font-size: 16px; margin-bottom: 10px; color: var(--brand-strong); }
+  .ap-card {
+    display: grid; grid-template-columns: 74px 1fr auto; gap: 14px; align-items: start;
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: 14px 16px; margin-bottom: 10px;
+  }
+  .ap-card--cancelled { opacity: .55; }
+  .ap-card--blocked { border-style: dashed; }
+  .ap-time { font-weight: 700; font-size: 18px; color: var(--brand-strong); }
+  .ap-clinic { display: block; font-size: 12px; color: var(--text-muted); font-weight: 400; margin-top: 2px; }
+  .ap-body { font-size: 14.5px; line-height: 1.8; }
+  .ap-body .ap-meta { color: var(--text-muted); font-size: 13.5px; }
+  .ap-body a { color: var(--brand-strong); border-bottom: 1px solid rgba(196,154,74,.35); }
+  .ap-status { display: inline-block; padding: 1px 10px; border-radius: 999px; font-size: 12.5px; background: rgba(196,154,74,.18); color: var(--brand-strong); margin-inline-start: 8px; }
+  .ap-status--cancelled, .ap-status--no_show { background: rgba(214,106,50,.15); color: #f0a07a; }
+  .ap-status--done { background: rgba(143,214,168,.15); color: #8fd6a8; }
+  .ap-actions { display: flex; flex-direction: column; gap: 6px; }
+  .ap-actions button, .ap-add button {
+    font-family: inherit; font-size: 13px; cursor: pointer; border-radius: var(--radius-sm); padding: 6px 12px;
+    border: 1px solid var(--border); background: transparent; color: var(--text); white-space: nowrap;
+  }
+  .ap-actions button:hover { border-color: var(--brand); }
+  .ap-actions button.danger:hover { border-color: #e88a6a; color: #e88a6a; }
+  .ap-add { margin-top: 34px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 18px; }
+  .ap-add summary { cursor: pointer; font-weight: 700; }
+  .ap-add form { margin-top: 16px; display: flex; flex-direction: column; gap: 14px; }
+  .ap-add-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; }
+  .ap-add .ap-add-grid[hidden], .ap-msg[hidden] { display: none; }
+  .ap-add select, .ap-add input { width: 100%; }
+  .ap-add .btn { align-self: flex-start; }
+  .ap-hint { font-size: 12.5px; color: var(--brand-strong); min-height: 1em; }
+  .ap-msg { font-size: 14px; }
+  .ap-msg.ok { color: #8fd6a8; }
+  .ap-msg.err { color: #e88a6a; }
+  @media (max-width: 640px) {
+    .ap-card { grid-template-columns: 1fr; }
+    .ap-actions { flex-direction: row; flex-wrap: wrap; }
+  }
+</style>
+
+<script>
+  import { supabase } from '../lib/supabase.js';
+  import {
+    CLINICS, CATEGORIES, STATUS_LABELS, tehranNow, slotsFor,
+    formatDayLong, formatTime, formatPrice, normalizePhone, weekdayOf,
+  } from '../data/booking.js';
+
+  const $ = (id: string) => document.getElementById(id) as HTMLElement;
+  const esc = (v: unknown) =>
+    String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c] as string));
+
+  const listEl = $('ap-list');
+  const fScope = $('f-scope') as HTMLSelectElement;
+  const fClinic = $('f-clinic') as HTMLSelectElement;
+  const fStatus = $('f-status') as HTMLSelectElement;
+
+  const clinicName = (id: string) => CLINICS.find((c) => c.id === id)?.name ?? id;
+  const categoryLabel = (id: string) => CATEGORIES.find((c) => c.id === id)?.label ?? '';
+
+  async function load() {
+    const today = tehranNow().date;
+    let q = supabase.from('booking_appointments').select('*');
+    if (fScope.value === 'upcoming') q = q.gte('appt_date', today);
+    if (fScope.value === 'past') q = q.lt('appt_date', today);
+    if (fClinic.value) q = q.eq('clinic_id', fClinic.value);
+    if (fStatus.value) q = q.eq('status', fStatus.value);
+    q = q.order('appt_date', { ascending: fScope.value !== 'past' }).order('start_time', { ascending: true });
+
+    const { data, error } = await q;
+    if (error) {
+      listEl.innerHTML = `<p class="ap-msg err">خطا در بارگذاری: ${esc(error.message)}<br />آیا فایل supabase/booking.sql در Supabase اجرا شده است؟</p>`;
+      return;
+    }
+    if (!data?.length) {
+      listEl.innerHTML = '<p class="muted">نوبتی پیدا نشد.</p>';
+      return;
+    }
+
+    const byDate = new Map<string, any[]>();
+    for (const a of data) {
+      const list = byDate.get(a.appt_date) ?? [];
+      list.push(a);
+      byDate.set(a.appt_date, list);
+    }
+
+    listEl.innerHTML = [...byDate.entries()].map(([d, items]) => `
+      <div class="ap-day">
+        <h2>${esc(formatDayLong(d))}</h2>
+        ${items.map(card).join('')}
+      </div>`).join('');
+  }
+
+  function card(a: any) {
+    const t = String(a.start_time).slice(0, 5);
+    const isBlocked = a.status === 'blocked';
+    const phone = String(a.phone || '');
+    const wa = /^09\d{9}$/.test(phone) ? `https://wa.me/98${phone.slice(1)}` : '';
+    const label = (STATUS_LABELS as any)[a.status] ?? a.status;
+
+    const body = isBlocked
+      ? '<b>زمان مسدود شده</b>'
+      : `<b>${esc(a.owner_name)}</b>
+         <span class="ap-status ap-status--${esc(a.status)}">${esc(label)}</span><br />
+         <a href="tel:${esc(phone)}" dir="ltr">${esc(phone)}</a>${wa ? ` · <a href="${wa}" target="_blank" rel="noopener">واتساپ</a>` : ''}
+         <div class="ap-meta">
+           ${[categoryLabel(a.category_id), a.pet_name && 'نام: ' + a.pet_name, a.pet_species, a.price_toman ? formatPrice(a.price_toman) : ''].filter(Boolean).map(esc).join(' · ')}
+           ${a.reason ? `<br />${esc(a.reason)}` : ''}
+           <br />کد پیگیری: <span dir="ltr">${esc(a.manage_code)}</span>
+         </div>`;
+
+    let actions = '';
+    if (a.status === 'confirmed') {
+      actions = `<button data-act="done" data-id="${a.id}">انجام شد</button>
+                 <button data-act="no_show" data-id="${a.id}">عدم مراجعه</button>
+                 <button class="danger" data-act="cancelled" data-id="${a.id}">لغو</button>`;
+    } else if (isBlocked) {
+      actions = `<button class="danger" data-act="delete" data-id="${a.id}">آزاد کردن زمان</button>`;
+    } else {
+      actions = `<button data-act="confirmed" data-id="${a.id}">بازگردانی به ثبت‌شده</button>`;
+    }
+
+    return `<div class="ap-card ap-card--${esc(a.status)}">
+      <div class="ap-time">${formatTime(t)}<span class="ap-clinic">${esc(clinicName(a.clinic_id))}</span></div>
+      <div class="ap-body">${body}</div>
+      <div class="ap-actions">${actions}</div>
+    </div>`;
+  }
+
+  listEl.addEventListener('click', async (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('button[data-act]');
+    if (!btn) return;
+    const { act, id } = btn.dataset;
+    if (act === 'cancelled' && !confirm('این نوبت لغو شود؟ زمان آن دوباره قابل رزرو می‌شود.')) return;
+    if (act === 'delete' && !confirm('این زمان آزاد شود؟')) return;
+    btn.disabled = true;
+    const res = act === 'delete'
+      ? await supabase.from('booking_appointments').delete().eq('id', id)
+      : await supabase.from('booking_appointments').update({ status: act }).eq('id', id);
+    if (res.error) {
+      alert(res.error.code === '23505'
+        ? 'این زمان در این فاصله توسط نوبت دیگری پر شده و بازگردانی ممکن نیست.'
+        : 'خطا: ' + res.error.message);
+      btn.disabled = false;
+      return;
+    }
+    load();
+  });
+
+  [fScope, fClinic, fStatus].forEach((el) => el.addEventListener('change', load));
+
+  // ---------- manual booking / block ----------
+  const addForm = $('ap-add-form') as HTMLFormElement;
+  const aKind = $('a-kind') as HTMLSelectElement;
+  const aClinic = $('a-clinic') as HTMLSelectElement;
+  const aDate = $('a-date') as HTMLInputElement;
+  const aTime = $('a-time') as HTMLSelectElement;
+  const aMsg = $('a-msg');
+
+  function refreshTimes() {
+    const clinic = CLINICS.find((c) => c.id === aClinic.value)!;
+    $('a-date-hint').textContent = aDate.value ? formatDayLong(aDate.value) : '';
+    const slots = aDate.value ? slotsFor(clinic, aDate.value) : [];
+    aTime.innerHTML = slots.length
+      ? slots.map((t) => `<option value="${t}">${formatTime(t)}</option>`).join('')
+      : `<option value="">${aDate.value ? (weekdayOf(aDate.value) === 5 ? 'جمعه — ساعت کاری ندارد' : 'این کلینیک این روز کار نمی‌کند') : 'ابتدا تاریخ را انتخاب کنید'}</option>`;
+  }
+  aClinic.addEventListener('change', refreshTimes);
+  aDate.addEventListener('change', refreshTimes);
+  aKind.addEventListener('change', () => { ($('a-manual') as HTMLElement).hidden = aKind.value !== 'manual'; });
+  refreshTimes();
+
+  addForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    aMsg.hidden = false;
+    const fd = new FormData(addForm);
+    const kind = String(fd.get('kind'));
+    const row: Record<string, unknown> = {
+      clinic_id: String(fd.get('clinic')),
+      appt_date: String(fd.get('date')),
+      start_time: String(fd.get('time')),
+      manage_code: crypto.randomUUID().replace(/-/g, '').slice(0, 8).toUpperCase(),
+    };
+    if (!row.appt_date || !row.start_time) {
+      aMsg.className = 'ap-msg err';
+      aMsg.textContent = 'تاریخ و ساعت معتبر انتخاب کنید.';
+      return;
+    }
+    if (kind === 'blocked') {
+      Object.assign(row, { status: 'blocked', owner_name: 'مسدود', phone: '-' });
+    } else {
+      const name = String(fd.get('owner_name') || '').trim();
+      const phone = normalizePhone(String(fd.get('phone') || ''));
+      const cat = CATEGORIES.find((c) => c.id === fd.get('category'));
+      if (name.length < 2 || !/^09\d{9}$/.test(phone) || !cat) {
+        aMsg.className = 'ap-msg err';
+        aMsg.textContent = 'نام و شماره موبایل معتبر (۰۹…) را وارد کنید.';
+        return;
+      }
+      Object.assign(row, {
+        status: 'confirmed', owner_name: name, phone, category_id: cat.id, price_toman: cat.price,
+        pet_species: String(fd.get('pet_species') || '').trim() || null,
+      });
+    }
+    const { error } = await supabase.from('booking_appointments').insert(row);
+    if (error) {
+      aMsg.className = 'ap-msg err';
+      aMsg.textContent = error.code === '23505' ? 'این زمان قبلاً پر یا مسدود شده است.' : 'خطا: ' + error.message;
+      return;
+    }
+    aMsg.className = 'ap-msg ok';
+    aMsg.textContent = 'ثبت شد.';
+    load();
+  });
+
+  // ---------- auth guard (same pattern as the other admin pages) ----------
+  async function init() {
+    const { data: sessionData } = await supabase.auth.getSession();
+    if (!sessionData.session) {
+      window.location.href = '/login';
+      return;
+    }
+    const { data: isAdmin } = await supabase.rpc('is_admin');
+    $('ap-loading').hidden = true;
+    if (!isAdmin) {
+      $('ap-denied').hidden = false;
+      return;
+    }
+    $('ap-area').hidden = false;
+    load();
+  }
+  init();
+</script>

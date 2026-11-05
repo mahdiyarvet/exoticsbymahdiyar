@@ -1,0 +1,504 @@
+---
+import Base from '../layouts/Base.astro';
+import { WHATSAPP_NUMBER, TELEGRAM_USER } from '../lib/contact.js';
+import { CLINICS, CATEGORIES, VISIT_INCLUDES, TARIFF_NOTE, formatPrice, hoursSummary } from '../data/booking.js';
+
+const waText = encodeURIComponent('سلام، برای هماهنگی نوبت حضوری (روز جمعه) پیام می‌دهم.');
+---
+
+<Base
+  title="رزرو آنلاین نوبت ویزیت حضوری"
+  description="رزرو آنلاین نوبت ویزیت حضوری حیوانات اگزوتیک (پرنده، جونده، خزنده و پستانداران کوچک) در کلینیک‌های میراکل و روما، با تعرفه‌ی مشخص و زمان‌بندی ۳۰ دقیقه‌ای."
+>
+  <section class="section container bk">
+    <span class="eyebrow">نوبت حضوری</span>
+    <h1>رزرو آنلاین نوبت ویزیت حضوری</h1>
+    <p class="lead muted">
+      کلینیک و روز را انتخاب کن، یکی از زمان‌های خالی ۳۰ دقیقه‌ای را بردار و اطلاعات حیوانت را وارد کن؛ نوبت همان لحظه ثبت می‌شود.
+    </p>
+
+    <div class="bk-note">
+      ⚠️ برای موارد <b>اورژانسی</b> (بی‌حالی شدید، مشکل تنفسی، خونریزی) منتظر نوبت نمان؛ مستقیم تماس بگیر یا به نزدیک‌ترین کلینیک مراجعه کن.
+    </div>
+
+    <!-- prices -->
+    <h2 class="bk-h2">تعرفه‌ی ویزیت</h2>
+    <div class="bk-prices">
+      {CATEGORIES.map((c) => (
+        <div class="bk-price">
+          <h3>{c.label}</h3>
+          <p class="muted">{c.examples}</p>
+          <strong>{formatPrice(c.price)}</strong>
+        </div>
+      ))}
+    </div>
+    <div class="bk-includes">
+      <p><b>هزینه‌ی بالا مربوط به ویزیت کامل است و شامل:</b></p>
+      <ul>
+        {VISIT_INCLUDES.map((i) => <li>{i}</li>)}
+      </ul>
+      <p class="muted">{TARIFF_NOTE}</p>
+    </div>
+
+    <!-- booking -->
+    <h2 class="bk-h2" id="reserve">رزرو نوبت</h2>
+    <div id="bk-app" class="bk-app">
+      <div id="bk-flow">
+        <div class="bk-step">
+          <h3><span class="bk-n">۱</span> کلینیک را انتخاب کن</h3>
+          <div class="bk-clinics">
+            {CLINICS.map((c) => (
+              <button type="button" class="bk-clinic" data-clinic={c.id} aria-pressed="false">
+                <span class="bk-clinic-name">{c.name}</span>
+                {c.address && <span class="bk-clinic-addr muted">{c.address}</span>}
+                <span class="bk-clinic-hours">
+                  {hoursSummary(c).map((h) => (
+                    <span><b>{h.day}</b> {h.text}</span>
+                  ))}
+                </span>
+              </button>
+            ))}
+          </div>
+          <p class="bk-friday muted">
+            روزهای <b>جمعه</b> نوبت آنلاین ندارند؛ برای هماهنگی پیام بده:{' '}
+            <a href={`https://wa.me/${WHATSAPP_NUMBER}?text=${waText}`} target="_blank" rel="noopener">واتساپ</a>{' · '}
+            <a href={`https://t.me/${TELEGRAM_USER}`} target="_blank" rel="noopener">تلگرام</a>
+          </p>
+        </div>
+
+        <p id="bk-error" class="bk-msg bk-msg--err" role="alert" hidden></p>
+
+        <div class="bk-step" id="bk-step-day" hidden>
+          <h3><span class="bk-n">۲</span> روز را انتخاب کن</h3>
+          <div id="bk-days" class="bk-days"></div>
+        </div>
+
+        <div class="bk-step" id="bk-step-time" hidden>
+          <h3><span class="bk-n">۳</span> ساعت را انتخاب کن</h3>
+          <div id="bk-times" class="bk-times"></div>
+        </div>
+
+        <form class="bk-step bk-form" id="bk-form" hidden novalidate>
+          <h3><span class="bk-n">۴</span> اطلاعات خودت و حیوانت</h3>
+          <p id="bk-summary" class="bk-summary"></p>
+
+          <label>نوع حیوان *
+            <select name="category" required>
+              <option value="">انتخاب کنید…</option>
+              {CATEGORIES.map((c) => <option value={c.id}>{c.label} — {formatPrice(c.price)}</option>)}
+            </select>
+            <span class="bk-hint" id="bk-category-hint"></span>
+          </label>
+          <label>نام و نام خانوادگی *
+            <input type="text" name="owner_name" required maxlength="80" autocomplete="name" />
+          </label>
+          <label>شماره موبایل *
+            <input type="tel" name="phone" required inputmode="tel" dir="ltr" placeholder="09123456789" autocomplete="tel" />
+          </label>
+          <div class="bk-row">
+            <label>نام حیوان
+              <input type="text" name="pet_name" maxlength="80" />
+            </label>
+            <label>گونه / نژاد
+              <input type="text" name="pet_species" maxlength="80" placeholder="مثلاً بردد دراگون، کاکادو" />
+            </label>
+          </div>
+          <label>دلیل مراجعه / علائم
+            <textarea name="reason" rows="3" maxlength="1000" placeholder="در صورت تمایل، توضیح کوتاهی بنویسید…"></textarea>
+          </label>
+          <!-- honeypot: real visitors never see or fill this -->
+          <input type="text" name="website" tabindex="-1" autocomplete="off" class="bk-hp" aria-hidden="true" />
+
+          <p id="bk-form-msg" class="bk-msg bk-msg--err" role="alert" hidden></p>
+          <button type="submit" class="btn" id="bk-submit">ثبت نوبت</button>
+        </form>
+      </div>
+
+      <div id="bk-done" class="bk-done" hidden></div>
+    </div>
+
+    <!-- track / cancel -->
+    <h2 class="bk-h2" id="track">پیگیری یا لغو نوبت</h2>
+    <form class="bk-track" id="bk-track-form">
+      <label>کد پیگیری
+        <input type="text" name="code" required dir="ltr" autocomplete="off" placeholder="مثلاً 9F3A1C7E" />
+      </label>
+      <label>شماره موبایل
+        <input type="tel" name="phone" required inputmode="tel" dir="ltr" placeholder="09123456789" />
+      </label>
+      <button type="submit" class="btn btn-ghost">پیگیری نوبت</button>
+    </form>
+    <div id="bk-track-result" class="bk-track-result" hidden></div>
+  </section>
+</Base>
+
+<style is:global>
+  .bk .lead { font-size: clamp(1.02rem, 2vw, 1.18rem); max-width: 64ch; margin-top: 12px; }
+  .bk-h2 { font-size: clamp(1.3rem, 2.6vw, 1.7rem); margin: 48px 0 18px; }
+  .bk-note {
+    margin-top: 22px; background: rgba(217,164,65,.1); border: 1px solid rgba(217,164,65,.3);
+    border-radius: var(--radius-sm); padding: 14px 18px; line-height: 1.8; font-size: 15px;
+  }
+  .bk-prices { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; }
+  .bk-price {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: 18px; display: flex; flex-direction: column; gap: 6px;
+  }
+  .bk-price h3 { font-size: 16px; }
+  .bk-price p { font-size: 13.5px; line-height: 1.7; flex: 1; }
+  .bk-price strong { color: var(--brand-strong); font-size: 17px; margin-top: 6px; }
+  .bk-includes {
+    margin-top: 18px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 18px 20px; font-size: 15px;
+  }
+  .bk-includes ul { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; margin: 12px 0 14px; padding: 0; }
+  .bk-includes li {
+    background: var(--bg-soft); border: 1px solid var(--border); border-radius: 999px;
+    padding: 3px 14px; font-size: 13.5px;
+  }
+  .bk-includes .muted { font-size: 14px; line-height: 1.9; }
+
+  .bk-app { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: clamp(16px, 3vw, 28px); }
+  .bk-step { margin-bottom: 26px; }
+  .bk-step:last-child { margin-bottom: 0; }
+  .bk-step h3 { font-size: 17px; margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+  .bk-n {
+    display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%;
+    background: rgba(196,154,74,.18); color: var(--brand-strong); font-size: 14px;
+  }
+  .bk-step[hidden], .bk-done[hidden], .bk-msg[hidden], #bk-track-result[hidden] { display: none; }
+
+  .bk-clinics { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+  .bk-clinic, .bk-day, .bk-time {
+    font-family: inherit; color: var(--text); background: var(--bg-soft); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); cursor: pointer; transition: border-color .15s ease, background .15s ease;
+  }
+  .bk-clinic { text-align: start; padding: 16px 18px; display: flex; flex-direction: column; gap: 6px; }
+  .bk-clinic-name { font-weight: 700; font-size: 16px; }
+  .bk-clinic-addr { font-size: 13.5px; }
+  .bk-clinic-hours { display: flex; flex-direction: column; gap: 2px; font-size: 13.5px; color: var(--text-muted); }
+  .bk-clinic-hours b { color: var(--text); font-weight: 600; }
+  .bk-clinic:hover, .bk-day:hover:not(:disabled), .bk-time:hover:not(:disabled) { border-color: var(--brand); }
+  .bk-clinic[aria-pressed="true"], .bk-day[aria-pressed="true"], .bk-time[aria-pressed="true"] {
+    border-color: var(--brand-strong); background: rgba(196,154,74,.16); box-shadow: 0 0 0 1px var(--brand-strong) inset;
+  }
+  .bk-friday { margin-top: 14px; font-size: 14px; }
+  .bk-friday a { color: var(--brand-strong); border-bottom: 1px solid rgba(196,154,74,.4); }
+
+  .bk-days { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 10px; }
+  .bk-day { padding: 10px 8px; display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center; }
+  .bk-day-wd { font-weight: 700; font-size: 14px; }
+  .bk-day-d { font-size: 13.5px; }
+  .bk-day-free { font-size: 12px; color: var(--text-muted); }
+  .bk-times { display: grid; grid-template-columns: repeat(auto-fill, minmax(86px, 1fr)); gap: 10px; }
+  .bk-time { padding: 10px 6px; font-size: 15px; font-weight: 500; }
+  .bk-day:disabled, .bk-time:disabled { opacity: .4; cursor: not-allowed; text-decoration: line-through; }
+  .bk-loading { color: var(--text-muted); font-size: 14px; }
+
+  .bk-form { border-top: 1px solid var(--border); padding-top: 24px; }
+  .bk-summary {
+    background: rgba(196,154,74,.1); border: 1px solid rgba(196,154,74,.3); border-radius: var(--radius-sm);
+    padding: 10px 14px; font-size: 14.5px; margin-bottom: 18px;
+  }
+  .bk-form label, .bk-track label { display: block; margin-bottom: 14px; font-size: 14.5px; font-weight: 500; }
+  .bk-form input, .bk-form select, .bk-form textarea, .bk-track input {
+    width: 100%; margin-top: 7px; background: var(--bg); color: var(--text);
+    border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 11px 14px;
+    font-family: inherit; font-size: 15px;
+  }
+  .bk-form input:focus, .bk-form select:focus, .bk-form textarea:focus, .bk-track input:focus { outline: none; border-color: var(--brand); }
+  .bk-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .bk-hint { display: block; margin-top: 6px; font-size: 13px; color: var(--brand-strong); min-height: 1em; }
+  .bk-hp { position: absolute; inset-inline-start: -9999px; width: 1px; height: 1px; opacity: 0; }
+  .bk-msg { font-size: 14.5px; border-radius: var(--radius-sm); padding: 10px 14px; margin-bottom: 14px; }
+  .bk-msg--err { background: rgba(214,106,50,.12); border: 1px solid rgba(214,106,50,.4); color: #f0a07a; }
+  #bk-submit { width: 100%; justify-content: center; }
+  #bk-submit:disabled { opacity: .6; cursor: default; transform: none; box-shadow: none; }
+
+  .bk-done { text-align: center; padding: 10px 0; }
+  .bk-done h3 { font-size: 20px; margin-bottom: 8px; color: #8fd6a8; }
+  .bk-code {
+    display: inline-block; margin: 14px 0; padding: 10px 22px; border-radius: var(--radius-sm);
+    background: var(--bg); border: 1px dashed var(--brand); font-size: 26px; font-weight: 700;
+    letter-spacing: .12em; color: var(--brand-strong); direction: ltr;
+  }
+  .bk-detail { list-style: none; padding: 0; margin: 10px auto 18px; max-width: 420px; text-align: start; display: grid; gap: 6px; font-size: 15px; }
+  .bk-detail li { display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
+  .bk-detail li span:first-child { color: var(--text-muted); }
+  .bk-done .bk-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 8px; }
+
+  .bk-track { display: grid; grid-template-columns: 1fr 1fr auto; gap: 14px; align-items: end; max-width: 760px; }
+  .bk-track label { margin-bottom: 0; }
+  .bk-track .btn { height: 46px; justify-content: center; }
+  .bk-track-result { margin-top: 16px; max-width: 760px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 18px 20px; }
+  .bk-track-result .bk-detail { margin-inline: 0; max-width: none; }
+  .bk-status { display: inline-block; padding: 2px 12px; border-radius: 999px; font-size: 13px; background: rgba(196,154,74,.18); color: var(--brand-strong); }
+  .bk-status--cancelled, .bk-status--no_show { background: rgba(214,106,50,.15); color: #f0a07a; }
+  .bk-status--done { background: rgba(143,214,168,.15); color: #8fd6a8; }
+
+  @media (max-width: 640px) {
+    .bk-row, .bk-track { grid-template-columns: 1fr; }
+    .bk-track .btn { width: 100%; }
+  }
+</style>
+
+<script>
+  import { supabase } from '../lib/supabase.js';
+  import {
+    CLINICS, CATEGORIES, BOOKING_DAYS, STATUS_LABELS,
+    tehranNow, addDays, openDays, slotsFor, isBookable,
+    formatDayParts, formatDayLong, formatTime, formatPrice, faDigits, normalizePhone, errorMessage,
+  } from '../data/booking.js';
+
+  const $ = (id: string) => document.getElementById(id) as HTMLElement;
+  const esc = (v: unknown) =>
+    String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c] as string));
+
+  const flow = $('bk-flow');
+  const doneBox = $('bk-done');
+  const errBox = $('bk-error');
+  const stepDay = $('bk-step-day');
+  const stepTime = $('bk-step-time');
+  const daysEl = $('bk-days');
+  const timesEl = $('bk-times');
+  const form = $('bk-form') as HTMLFormElement;
+  const formMsg = $('bk-form-msg');
+  const submitBtn = $('bk-submit') as HTMLButtonElement;
+
+  let clinicId = '';
+  let date = '';
+  let time = '';
+  let now = tehranNow();
+  const bookedCache = new Map<string, Set<string>>();
+
+  const clinicOf = (id: string) => CLINICS.find((c) => c.id === id)!;
+  const categoryOf = (id: string) => CATEGORIES.find((c) => c.id === id);
+
+  function showError(el: HTMLElement, text: string) {
+    el.textContent = text;
+    el.hidden = false;
+  }
+
+  async function loadBooked(id: string): Promise<Set<string>> {
+    now = tehranNow();
+    const { data, error } = await supabase.rpc('booking_get_booked_slots', {
+      p_clinic: id,
+      p_from: now.date,
+      p_to: addDays(now.date, BOOKING_DAYS + 5),
+    });
+    if (error) throw error;
+    const set = new Set<string>((data ?? []).map((r: any) => `${r.appt_date}|${String(r.start_time).slice(0, 5)}`));
+    bookedCache.set(id, set);
+    return set;
+  }
+
+  const freeSlots = (iso: string) => {
+    const booked = bookedCache.get(clinicId) ?? new Set<string>();
+    return slotsFor(clinicOf(clinicId), iso).filter((t) => isBookable(iso, t, now) && !booked.has(`${iso}|${t}`));
+  };
+
+  function renderDays() {
+    const days = openDays(clinicOf(clinicId), now);
+    if (!days.length) {
+      daysEl.innerHTML = '<p class="bk-loading">فعلاً روز قابل رزروی وجود ندارد. لطفاً پیام بدهید.</p>';
+      return;
+    }
+    daysEl.innerHTML = days.map((iso) => {
+      const free = freeSlots(iso).length;
+      const p = formatDayParts(iso);
+      return `<button type="button" class="bk-day" data-date="${iso}" aria-pressed="${iso === date}" ${free ? '' : 'disabled'}>
+        <span class="bk-day-wd">${esc(p.weekday)}</span>
+        <span class="bk-day-d">${esc(p.dayMonth)}</span>
+        <span class="bk-day-free">${free ? faDigits(free) + ' نوبت خالی' : 'تکمیل'}</span>
+      </button>`;
+    }).join('');
+  }
+
+  function renderTimes() {
+    const free = new Set(freeSlots(date));
+    timesEl.innerHTML = slotsFor(clinicOf(clinicId), date).map((t) =>
+      `<button type="button" class="bk-time" data-time="${t}" aria-pressed="${t === time}" ${free.has(t) ? '' : 'disabled'}>${formatTime(t)}</button>`
+    ).join('');
+  }
+
+  function updateSummary() {
+    $('bk-summary').textContent =
+      `${clinicOf(clinicId).name} — ${formatDayLong(date)} — ساعت ${formatTime(time)}`;
+  }
+
+  function resetBelow(level: 'day' | 'time' | 'form') {
+    if (level === 'day') { date = ''; stepTime.hidden = true; }
+    if (level === 'day' || level === 'time') { time = ''; form.hidden = true; }
+    if (level === 'form') form.hidden = true;
+  }
+
+  async function selectClinic(id: string) {
+    clinicId = id;
+    errBox.hidden = true;
+    document.querySelectorAll<HTMLElement>('.bk-clinic').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.clinic === id)));
+    resetBelow('day');
+    stepDay.hidden = false;
+    daysEl.innerHTML = '<p class="bk-loading">در حال دریافت زمان‌های خالی…</p>';
+    try {
+      await loadBooked(id);
+    } catch {
+      if (clinicId !== id) return;
+      stepDay.hidden = true;
+      showError(errBox, 'دریافت زمان‌های خالی ممکن نشد. اتصال اینترنت را بررسی کنید و دوباره روی کلینیک بزنید.');
+      return;
+    }
+    if (clinicId !== id) return;
+    renderDays();
+  }
+
+  $('bk-flow').querySelector('.bk-clinics')!.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLElement>('.bk-clinic');
+    if (btn?.dataset.clinic) selectClinic(btn.dataset.clinic);
+  });
+
+  daysEl.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('.bk-day');
+    if (!btn || btn.disabled) return;
+    date = btn.dataset.date!;
+    time = '';
+    form.hidden = true;
+    renderDays();
+    renderTimes();
+    stepTime.hidden = false;
+    stepTime.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+
+  timesEl.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('.bk-time');
+    if (!btn || btn.disabled) return;
+    time = btn.dataset.time!;
+    renderTimes();
+    updateSummary();
+    formMsg.hidden = true;
+    form.hidden = false;
+    form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+
+  (form.elements.namedItem('category') as HTMLSelectElement).addEventListener('change', (e) => {
+    const c = categoryOf((e.target as HTMLSelectElement).value);
+    $('bk-category-hint').textContent = c ? `هزینه‌ی ویزیت کامل: ${formatPrice(c.price)}` : '';
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    formMsg.hidden = true;
+    const fd = new FormData(form);
+    if (fd.get('website')) return; // honeypot tripped
+
+    const category = String(fd.get('category') || '');
+    const ownerName = String(fd.get('owner_name') || '').trim();
+    const phone = normalizePhone(String(fd.get('phone') || ''));
+    if (!categoryOf(category)) return showError(formMsg, 'نوع حیوان را انتخاب کنید.');
+    if (ownerName.length < 2) return showError(formMsg, 'نام و نام خانوادگی را وارد کنید.');
+    if (!/^09\d{9}$/.test(phone)) return showError(formMsg, 'شماره موبایل باید با ۰۹ شروع شود و ۱۱ رقم باشد.');
+
+    submitBtn.disabled = true;
+    const { data, error } = await supabase.rpc('booking_create', {
+      p_clinic: clinicId,
+      p_date: date,
+      p_time: time,
+      p_category: category,
+      p_owner_name: ownerName,
+      p_phone: phone,
+      p_pet_name: String(fd.get('pet_name') || ''),
+      p_pet_species: String(fd.get('pet_species') || ''),
+      p_reason: String(fd.get('reason') || ''),
+    });
+    submitBtn.disabled = false;
+
+    if (error) {
+      showError(formMsg, errorMessage(error));
+      if (/slot_taken|slot_unavailable/.test(error.message ?? '')) {
+        // the slot is gone: refresh availability and send the user back to time selection
+        try { await loadBooked(clinicId); } catch { /* keep the old view */ }
+        time = '';
+        form.hidden = true;
+        renderDays();
+        renderTimes();
+        errBox.textContent = errorMessage(error);
+        errBox.hidden = false;
+      }
+      return;
+    }
+
+    const clinic = clinicOf(clinicId);
+    const cat = categoryOf(category)!;
+    flow.hidden = true;
+    doneBox.hidden = false;
+    doneBox.innerHTML = `
+      <h3>نوبت شما ثبت شد ✓</h3>
+      <p class="muted">این کد پیگیری را نگه دارید؛ برای لغو یا پیگیری لازم است.</p>
+      <div class="bk-code" id="bk-code">${esc(data.code)}</div>
+      <ul class="bk-detail">
+        <li><span>کلینیک</span><span>${esc(clinic.name)}</span></li>
+        <li><span>زمان</span><span>${esc(formatDayLong(date))}، ساعت ${esc(formatTime(time))}</span></li>
+        <li><span>نوع حیوان</span><span>${esc(cat.label)}</span></li>
+        <li><span>هزینه‌ی ویزیت کامل</span><span>${esc(formatPrice(data.price))}</span></li>
+      </ul>
+      ${clinic.address ? `<p class="muted">آدرس: ${esc(clinic.address)}</p>` : ''}
+      <div class="bk-actions">
+        <button type="button" class="btn" id="bk-copy">کپی کد پیگیری</button>
+        <a class="btn btn-ghost" href="/book">ثبت نوبت دیگر</a>
+      </div>`;
+    doneBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    $('bk-copy').addEventListener('click', async (ev) => {
+      try { await navigator.clipboard.writeText(String(data.code)); (ev.target as HTMLElement).textContent = 'کپی شد ✓'; } catch { /* manual copy */ }
+    });
+  });
+
+  // ---------- track / cancel ----------
+  const trackForm = $('bk-track-form') as HTMLFormElement;
+  const trackResult = $('bk-track-result');
+
+  function renderTrack(a: any, code: string, phone: string) {
+    const clinic = CLINICS.find((c) => c.id === a.clinic_id);
+    const cat = categoryOf(a.category_id);
+    const canCancel = a.status === 'confirmed';
+    trackResult.innerHTML = `
+      <ul class="bk-detail">
+        <li><span>وضعیت</span><span class="bk-status bk-status--${esc(a.status)}">${esc((STATUS_LABELS as any)[a.status] ?? a.status)}</span></li>
+        <li><span>نام</span><span>${esc(a.owner_name)}</span></li>
+        <li><span>کلینیک</span><span>${esc(clinic?.name ?? a.clinic_id)}</span></li>
+        <li><span>زمان</span><span>${esc(formatDayLong(a.date))}، ساعت ${esc(formatTime(a.time))}</span></li>
+        ${cat ? `<li><span>نوع حیوان</span><span>${esc(cat.label)}</span></li>` : ''}
+        ${a.price ? `<li><span>هزینه‌ی ویزیت کامل</span><span>${esc(formatPrice(a.price))}</span></li>` : ''}
+      </ul>
+      ${canCancel ? '<button type="button" class="btn btn-ghost" id="bk-cancel">لغو این نوبت</button>' : ''}
+      <p id="bk-cancel-msg" class="bk-msg bk-msg--err" role="alert" hidden></p>`;
+    trackResult.hidden = false;
+    document.getElementById('bk-cancel')?.addEventListener('click', async () => {
+      if (!confirm('این نوبت لغو شود؟')) return;
+      const { data, error } = await supabase.rpc('booking_cancel', { p_code: code, p_phone: phone });
+      if (error || !data) {
+        showError($('bk-cancel-msg'), error ? errorMessage(error) : 'لغو انجام نشد (ممکن است زمان نوبت گذشته باشد).');
+        return;
+      }
+      bookedCache.clear();
+      renderTrack({ ...a, status: 'cancelled' }, code, phone);
+    });
+  }
+
+  trackForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fd = new FormData(trackForm);
+    const code = String(fd.get('code') || '').trim();
+    const phone = normalizePhone(String(fd.get('phone') || ''));
+    trackResult.hidden = false;
+    trackResult.innerHTML = '<p class="bk-loading">در حال جست‌وجو…</p>';
+    const { data, error } = await supabase.rpc('booking_find', { p_code: code, p_phone: phone });
+    if (error) {
+      trackResult.innerHTML = `<p class="bk-msg bk-msg--err">${esc(errorMessage(error))}</p>`;
+      return;
+    }
+    if (!data) {
+      trackResult.innerHTML = '<p class="bk-msg bk-msg--err">نوبتی با این کد و شماره موبایل پیدا نشد.</p>';
+      return;
+    }
+    renderTrack(data, code, phone);
+  });
+</script>

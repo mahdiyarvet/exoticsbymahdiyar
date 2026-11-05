@@ -43,6 +43,12 @@ sources:
 کتاب: `src/content/books/` — فیلدهای author، lang، year، pages، downloadUrl.
 عکس‌ها در `public/images/` با مسیر `/images/name.jpg`.
 
+## نوبت‌دهی حضوری (`/book` و `/appointments-admin`)
+- **یک‌بار** محتوای `supabase/booking.sql` را در Supabase → SQL Editor اجرا کن (جدول‌ها، RLS و توابع رزرو).
+- کلینیک‌ها، ساعات کاری، آدرس و تعرفه‌ها در `src/data/booking.js` هستند. اگر ساعت یا قیمت را عوض کردی، همان را در `supabase/booking.sql` هم عوض و دوباره اجرا کن (سرور ساعت و قیمت را از دیتابیس می‌خواند).
+- آدرس کلینیک‌ها: فیلد `address` را در `src/data/booking.js` پر کن.
+- مدیریت نوبت‌ها: با حساب ادمین وارد `/appointments-admin` شو.
+
 ## SEO
 - sitemap، robots.txt، Open Graph، JSON-LD و RSS خودکار ساخته می‌شوند.
 - سایت را در Google Search Console ثبت و `http://exoticsbymahdiyar.ir/sitemap-index.xml` را سابمیت کن.

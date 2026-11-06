@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
+import { photoWebp } from '../lib/photo.js';
 import { WHATSAPP_NUMBER, INSTAGRAM_URL } from '../lib/contact.js';
 import { speciesLinks } from '../data/vet-species.js';
 
@@ -99,7 +100,10 @@ const breadcrumbSchema = {
         </div>
         <p class="vl-warn">ویزیت آنلاین جایگزین معاینهٔ حضوری در موارد اورژانسی نیست.</p>
       </div>
-      <img class="vl-hero__img" src={p.image} alt={p.imageAlt} width="720" height="540" fetchpriority="high" />
+      <picture>
+        {photoWebp(p.image) && <source srcset={photoWebp(p.image)} type="image/webp" />}
+        <img class="vl-hero__img" src={p.image} alt={p.imageAlt} width="720" height="540" fetchpriority="high" />
+      </picture>
     </header>
 
     <div class="prose vl-body">

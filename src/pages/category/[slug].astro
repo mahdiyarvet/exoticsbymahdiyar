@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import { photoWebp } from '../../lib/photo.js';
 import Card from '../../components/Card.astro';
 import { contentCategories, getContentCategorySlug, type ContentCategory } from '../../contentCategories';
 import { getNewsCover, normalizeContentTitle } from '../../contentImages';
@@ -90,7 +91,7 @@ const listSchema = {
           <span><b>{news.length.toLocaleString('fa-IR')}</b> خبر مرتبط</span>
         </div>
       </div>
-      <div class="hero-image"><img src={category.cover} alt={category.label} width="960" height="720" fetchpriority="high" /></div>
+      <div class="hero-image"><picture>{photoWebp(category.cover) && <source srcset={photoWebp(category.cover)} type="image/webp" />}<img src={category.cover} alt={category.label} width="960" height="720" fetchpriority="high" /></picture></div>
     </div>
 
     <nav class="category-tabs" aria-label="دسته‌بندی حیوانات">

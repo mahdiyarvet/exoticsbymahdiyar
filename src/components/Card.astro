@@ -1,4 +1,6 @@
 ---
+import { photoWebp } from '../lib/photo.js';
+
 export interface Props {
   href: string;
   title: string;
@@ -8,12 +10,16 @@ export interface Props {
   meta?: string;
 }
 const { href, title, description, cover, tag, meta } = Astro.props;
+const coverWebp = photoWebp(cover, { thumb: true });
 ---
 
 <a href={href} class="card">
   <div class="thumb">
     {cover
-      ? <img src={cover} alt={tag ? `${title} — ${tag}` : title} loading="lazy" width="640" height="400" />
+      ? <picture>
+          {coverWebp && <source srcset={coverWebp} type="image/webp" />}
+          <img src={cover} alt={tag ? `${title} — ${tag}` : title} loading="lazy" decoding="async" width="640" height="400" />
+        </picture>
       : <div class="thumb-fallback"><span>🦎</span></div>}
     {tag && <span class="card-tag">{tag}</span>}
   </div>

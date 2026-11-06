@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
+import { photoWebp } from '../lib/photo.js';
 import { getContentTopic, getNewsCover, isPhotographicCover, normalizeContentTitle } from '../contentImages';
 
 const fa = (d: Date) => d.toLocaleDateString('fa-IR', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -86,7 +87,7 @@ const railItems = [selectedNews[0], selectedArticles[0], selectedNews[1], select
         <div class="rail-list">
           {railItems.map((item) => (
             <a href={item.href} class="rail-item" title={item.title}>
-              <img src={item.cover} alt={item.title} loading="lazy" width="120" height="90" />
+              <picture>{photoWebp(item.cover, { thumb: true }) && <source srcset={photoWebp(item.cover, { thumb: true })} type="image/webp" />}<img src={item.cover} alt={item.title} loading="lazy" decoding="async" width="120" height="90" /></picture>
               <span><b>{compactRailTitle(item.title)}</b><small><em>{item.kind}</em>{fa(item.pubDate)}</small></span>
             </a>
           ))}
@@ -95,7 +96,7 @@ const railItems = [selectedNews[0], selectedArticles[0], selectedNews[1], select
       </aside>
 
       <div class="hero-collage">
-        <div class="hero-animal hero-iguana"><img src="/images/photos/iguana-3.jpg" alt="نمای کامل صورت ایگوانا" width="900" height="900" fetchpriority="high" /></div>
+        <div class="hero-animal hero-iguana"><picture><source srcset="/images/photos/iguana-3.webp" type="image/webp" /><img src="/images/photos/iguana-3.jpg" alt="نمای کامل صورت ایگوانا" width="900" height="900" fetchpriority="high" /></picture></div>
         <div class="hero-copy">
           <span class="kicker">دانش، تجربه و احترام به طبیعت</span>
           <h1 id="hero-title">زندگی بهتر<br /><span>برای حیوانات اگزوتیک</span></h1>
@@ -107,8 +108,8 @@ const railItems = [selectedNews[0], selectedArticles[0], selectedNews[1], select
           <a href="/articles" class="guide-link guide-link--secondary">مطالعه راهنمای ویژه <span>←</span></a>
         </div>
         <div class="hero-stack">
-          <img class="macaw" src="/images/photos/macaw-3.jpg" alt="طوطی ماکائو آبی و طلایی" width="800" height="650" fetchpriority="high" />
-          <img class="snake" src="/images/photos/corn-snake-3.jpg" alt="مار کورن اسنیک" width="800" height="520" fetchpriority="high" />
+          <picture><source srcset="/images/photos/macaw-3.webp" type="image/webp" /><img class="macaw" src="/images/photos/macaw-3.jpg" alt="طوطی ماکائو آبی و طلایی" width="800" height="650" fetchpriority="high" /></picture>
+          <picture><source srcset="/images/photos/corn-snake-3.webp" type="image/webp" /><img class="snake" src="/images/photos/corn-snake-3.jpg" alt="مار کورن اسنیک" width="800" height="520" fetchpriority="high" /></picture>
         </div>
       </div>
 
@@ -122,7 +123,7 @@ const railItems = [selectedNews[0], selectedArticles[0], selectedNews[1], select
         <div class="guide-grid">
           {guides.map((item) => (
             <a href={`/articles/${item.id}`} class="guide-card">
-              <div class="guide-image">{item.data.cover ? <img src={item.data.cover} alt={item.data.title} loading="lazy" width="520" height="600" /> : <div class="fallback">✦</div>}</div>
+              <div class="guide-image">{item.data.cover ? <picture>{photoWebp(item.data.cover, { thumb: true }) && <source srcset={photoWebp(item.data.cover, { thumb: true })} type="image/webp" />}<img src={item.data.cover} alt={item.data.title} loading="lazy" decoding="async" width="520" height="600" /></picture> : <div class="fallback">✦</div>}</div>
               <div class="guide-body"><h3>{item.data.title}</h3><span>{item.data.category} · {fa(item.data.pubDate)}</span></div>
             </a>
           ))}

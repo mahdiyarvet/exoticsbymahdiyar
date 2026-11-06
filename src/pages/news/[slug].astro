@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import { photoWebp } from '../../lib/photo.js';
 import { getContentCategory } from '../../contentCategories';
 
 export async function getStaticPaths() {
@@ -49,7 +50,12 @@ const breadcrumb = {
       : <span class="tag">خبر</span>}
     <h1>{d.title}</h1>
     <div class="post-meta muted"><span>{fa(d.pubDate)}</span>{d.source && <><span>•</span><span>منبع: {d.source}</span></>}</div>
-    {d.cover && <img class="cover" src={d.cover} alt={d.title} />}
+    {d.cover && (
+      <picture>
+        {photoWebp(d.cover) && <source srcset={photoWebp(d.cover)} type="image/webp" />}
+        <img class="cover" src={d.cover} alt={d.title} />
+      </picture>
+    )}
     <div class="prose"><Content /></div>
     {d.sourceUrl && <a class="btn btn-ghost" href={d.sourceUrl} target="_blank" rel="noopener" style="margin-top:30px">مشاهده منبع اصلی</a>}
   </article>

@@ -1,5 +1,6 @@
 import { writeFileSync, readFileSync, mkdirSync, existsSync } from 'fs';
 import sharp from 'sharp';
+import { makeVariants } from './image-variants.mjs';
 
 const OUT_DIR = 'public/images/photos';
 const CREDITS_PATH = `${OUT_DIR}/CREDITS.json`;
@@ -92,6 +93,7 @@ async function main() {
           if (!r.ok || !/^image\//.test(ct)) throw new Error(`bad response ${r.status} ${ct}`);
           const buf = Buffer.from(await r.arrayBuffer());
           await sharp(buf).resize({ width: 1200, withoutEnlargement: true }).jpeg({ quality: 82, mozjpeg: true }).toFile(outPath);
+          await makeVariants(outPath, { force: true }); // WebP + 640w thumbnail next to the JPG
           CREDITS[`${slug}-${i + 1}.jpg`] = { title: c.title, license: c.license, artist: c.artist || 'Wikimedia Commons contributor' };
           console.log(`  saved ${outPath}  [${c.license}] ${c.title}`);
           ok = true;

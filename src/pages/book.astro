@@ -243,7 +243,7 @@ const waText = encodeURIComponent('سلام، برای هماهنگی نوبت �
 </style>
 
 <script>
-  import { supabase } from '../lib/supabase.js';
+  import { rpc } from '../lib/booking-api.js';
   import {
     CLINICS, CATEGORIES, BOOKING_DAYS, STATUS_LABELS,
     tehranNow, addDays, openDays, slotsFor, isBookable,
@@ -281,7 +281,7 @@ const waText = encodeURIComponent('سلام، برای هماهنگی نوبت �
 
   async function loadBooked(id: string): Promise<Set<string>> {
     now = tehranNow();
-    const { data, error } = await supabase.rpc('booking_get_booked_slots', {
+    const { data, error } = await rpc('booking_get_booked_slots', {
       p_clinic: id,
       p_from: now.date,
       p_to: addDays(now.date, BOOKING_DAYS + 5),
@@ -398,7 +398,7 @@ const waText = encodeURIComponent('سلام، برای هماهنگی نوبت �
     if (!/^09\d{9}$/.test(phone)) return showError(formMsg, 'شماره موبایل باید با ۰۹ شروع شود و ۱۱ رقم باشد.');
 
     submitBtn.disabled = true;
-    const { data, error } = await supabase.rpc('booking_create', {
+    const { data, error } = await rpc('booking_create', {
       p_clinic: clinicId,
       p_date: date,
       p_time: time,
@@ -473,7 +473,7 @@ const waText = encodeURIComponent('سلام، برای هماهنگی نوبت �
     trackResult.hidden = false;
     document.getElementById('bk-cancel')?.addEventListener('click', async () => {
       if (!confirm('این نوبت لغو شود؟')) return;
-      const { data, error } = await supabase.rpc('booking_cancel', { p_code: code, p_phone: phone });
+      const { data, error } = await rpc('booking_cancel', { p_code: code, p_phone: phone });
       if (error || !data) {
         showError($('bk-cancel-msg'), error ? errorMessage(error) : 'لغو انجام نشد (ممکن است زمان نوبت گذشته باشد).');
         return;
@@ -490,7 +490,7 @@ const waText = encodeURIComponent('سلام، برای هماهنگی نوبت �
     const phone = normalizePhone(String(fd.get('phone') || ''));
     trackResult.hidden = false;
     trackResult.innerHTML = '<p class="bk-loading">در حال جست‌وجو…</p>';
-    const { data, error } = await supabase.rpc('booking_find', { p_code: code, p_phone: phone });
+    const { data, error } = await rpc('booking_find', { p_code: code, p_phone: phone });
     if (error) {
       trackResult.innerHTML = `<p class="bk-msg bk-msg--err">${esc(errorMessage(error))}</p>`;
       return;
